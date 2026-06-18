@@ -365,7 +365,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 }
 .spec-row {
   display: flex; align-items: center;
-  padding: 9px 14px; border-bottom: 1px solid var(--line); gap: 10px;
+  padding: 6px 14px; border-bottom: 1px solid var(--line); gap: 10px;
 }
 .spec-row:last-child { border-bottom: none; }
 .spec-key {
@@ -380,7 +380,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   display: flex;
   align-items: center;
 }
-.spec-val { font-size: 13px; word-break: break-word; }
+.spec-val { font-family: "Space Grotesk", sans-serif; font-size: 14px; font-weight: 500; word-break: break-word; }
 
 .modal-info .desc {
   white-space: pre-wrap; color: var(--ink); font-size: 14px; line-height: 1.7;
