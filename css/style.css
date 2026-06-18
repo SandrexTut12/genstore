@@ -693,9 +693,9 @@ footer.footer-hidden { transform: translateY(100%); }
   .btn-cta { min-width: 0; font-size: 13px; padding: 11px 10px; gap: 5px; flex: 1; }
   .modal-info .cta { gap: 6px; }
 
-  /* footer mobile — only icons, no labels */
+  /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
-  .foot-social { gap: 4px; }
+  .foot-social { gap: 4px; margin-left: auto; }
   .foot-social-btn { padding: 7px; gap: 0; }
   .foot-social-btn .sl { display: none; }
 
