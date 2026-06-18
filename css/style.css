@@ -73,7 +73,7 @@ html[data-theme="dark"] .previews .pv-star   { background: rgba(4,10,24,.75); co
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
-  font-family: "Noto Sans Georgian", "Space Grotesk", system-ui, sans-serif;
+  font-family: "Space Grotesk", "Noto Sans Georgian", system-ui, sans-serif;
   color: var(--ink);
   background: var(--canvas);
   line-height: 1.5;
