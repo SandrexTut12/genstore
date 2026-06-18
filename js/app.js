@@ -59,7 +59,10 @@ async function dbList() {
 
 async function dbSave(p) {
   try {
-    await db.collection("products").doc(p.id).set(p);
+    const write = db.collection("products").doc(p.id).set(p);
+    const timeout = new Promise((_, rej) =>
+      setTimeout(() => rej(new Error("timeout — ქსელი ან Firestore არ პასუხობს")), 15000));
+    await Promise.race([write, timeout]);
     return true;
   } catch (e) {
     console.error("dbSave failed:", e.code, e.message, e);
@@ -858,23 +861,35 @@ async function saveProduct() {
 
   const isNew = !editingId;
 
-  // keep the document under Firestore's ~1MB per-doc limit
-  const fits = await fitProductSize(p);
-  if (!fits) {
-    toast("ფოტოები ძალიან დიდია — შეამცირე რაოდენობა");
-    return;
-  }
+  try {
+    const sizeMB = s => (new Blob([JSON.stringify(s)]).size / 1048576).toFixed(2);
+    console.log("[save] images:", p.images.length, "doc size before shrink:", sizeMB(p), "MB");
 
-  const ok = await dbSave(p);
-  if (!ok) return;
-  formImgs = p.images.slice();
-  PRODUCTS = await dbList();
-  if (isNew) adminPage = 1;
-  resetForm();
-  renderAdminList();
-  renderChips();
-  renderGrid();
-  toast(isNew ? "დაემატა" : "განახლდა");
+    // keep the document under Firestore's ~1MB per-doc limit
+    const fits = await fitProductSize(p);
+    console.log("[save] doc size after shrink:", sizeMB(p), "MB, fits:", fits);
+    if (!fits) {
+      toast("ფოტო ძალიან დიდია (" + sizeMB(p) + "MB). შეამცირე რაოდენობა");
+      return;
+    }
+
+    console.log("[save] writing to Firestore…");
+    const ok = await dbSave(p);
+    console.log("[save] dbSave result:", ok);
+    if (!ok) return;
+
+    formImgs = p.images.slice();
+    PRODUCTS = await dbList();
+    if (isNew) adminPage = 1;
+    resetForm();
+    renderAdminList();
+    renderChips();
+    renderGrid();
+    toast(isNew ? "დაემატა" : "განახლდა");
+  } catch (e) {
+    console.error("[save] unexpected error:", e);
+    toast("შეცდომა: " + (e.message || e));
+  }
 }
 
 function editProduct(id) {
