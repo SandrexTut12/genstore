@@ -18,6 +18,53 @@
   --shadow:     0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.08);
 }
 
+/* ---- dark theme override ---- */
+html[data-theme="dark"] {
+  --ink:        #E8F4FF;
+  --muted:      #6499C2;
+  --line:       #163466;
+  --canvas:     #071428;
+  --surface:    #0C2050;
+  --surface2:   #112B6A;
+  --brand:      #00BAFF;
+  --brand-dark: #0099D6;
+  --brand-soft: #082244;
+  --green:      #00E5A0;
+  --green-soft: #002B1E;
+  --amber:      #FFB830;
+  --amber-soft: #2A1800;
+  --red:        #FF5C78;
+  --red-soft:   #2A0810;
+  --shadow:     0 4px 12px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.4);
+}
+html[data-theme="dark"] header.bar           { background: rgba(7,20,40,0.9); }
+html[data-theme="dark"] .chips-wrap          { background: rgba(12,32,80,0.6); }
+html[data-theme="dark"] .sold-overlay        { background: rgba(7,20,40,.55); }
+html[data-theme="dark"] .overlay             { background: rgba(4,10,24,0.85); }
+html[data-theme="dark"] .modal               { box-shadow: 0 32px 80px rgba(0,0,0,.8); }
+html[data-theme="dark"] .thumbs              { background: rgba(0,0,0,.3); }
+html[data-theme="dark"] footer               { background: rgba(7,20,40,0.96); }
+html[data-theme="dark"] .btn-primary         { color: #071428; }
+html[data-theme="dark"] .chip.active         { color: #071428; }
+html[data-theme="dark"] .pg-btn.active       { color: #071428; }
+html[data-theme="dark"] .spec-chip           { background: rgba(255,255,255,.04); }
+html[data-theme="dark"] #lightbox .lb-nav:hover { color: #071428; }
+html[data-theme="dark"] .gallery-prev:hover,
+html[data-theme="dark"] .gallery-next:hover  { color: #071428; }
+html[data-theme="dark"] .previews .pv-star:hover { color: #071428; }
+html[data-theme="dark"] .previews .pv-badge  { color: #071428; }
+html[data-theme="dark"] .modal-close         { background: rgba(7,20,40,.85); }
+
+/* ---- theme toggle button ---- */
+.btn-theme {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: .15s; flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
