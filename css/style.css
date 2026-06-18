@@ -370,9 +370,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .spec-row:last-child { border-bottom: none; }
 .spec-key {
   font-family: "Space Grotesk", sans-serif;
-  font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .07em;
-  flex-shrink: 0;
-  width: 100px; min-width: 100px;
+  font-size: 12px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .06em;
+  flex-shrink: 0; white-space: nowrap;
+  width: 110px; min-width: 110px;
   border-right: 2px solid var(--line);
   padding-right: 14px;
   margin-right: 4px;
@@ -380,7 +380,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   display: flex;
   align-items: center;
 }
-.spec-val { font-size: 14px; word-break: break-word; }
+.spec-val { font-size: 13px; word-break: break-word; }
 
 .modal-info .desc {
   white-space: pre-wrap; color: var(--ink); font-size: 14px; line-height: 1.7;
