@@ -604,6 +604,7 @@ footer.footer-hidden { transform: translateY(100%); }
 .foot-social-btn.ig:hover { color: #E1306C; border-color: #E1306C; }
 .foot-social-btn.wa:hover { color: #25D366; border-color: #25D366; }
 .foot-social-btn.tt:hover { color: #FE2C55; border-color: #FE2C55; }
+.foot-social-btn.call:hover { color: var(--brand); border-color: var(--brand); }
 
 /* ---- crop overlay ---- */
 #cropOverlay {
@@ -692,10 +693,11 @@ footer.footer-hidden { transform: translateY(100%); }
   .btn-cta { min-width: 0; font-size: 13px; padding: 11px 10px; gap: 5px; flex: 1; }
   .modal-info .cta { gap: 6px; }
 
-  /* footer mobile — one row */
-  .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 12px; font-size: 12px; }
-  .foot-social { gap: 3px; }
-  .foot-social-btn { padding: 5px 8px; font-size: 12px; gap: 4px; }
+  /* footer mobile — only icons, no labels */
+  .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
+  .foot-social { gap: 4px; }
+  .foot-social-btn { padding: 7px; gap: 0; }
+  .foot-social-btn .sl { display: none; }
 
   /* admin prod-row mobile — icon-only buttons */
   .prod-actions .blabel { display: none; }
