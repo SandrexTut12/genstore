@@ -38,6 +38,7 @@ html[data-theme="dark"] {
   --shadow:     0 4px 12px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.4);
 }
 html[data-theme="dark"] header.bar           { background: rgba(7,20,40,0.9); }
+html[data-theme="dark"] .card                { border-color: var(--line); }
 html[data-theme="dark"] .chips-wrap          { background: rgba(12,32,80,0.6); }
 html[data-theme="dark"] .sold-overlay        { background: rgba(7,20,40,.55); }
 html[data-theme="dark"] .overlay             { background: rgba(4,10,24,0.85); }
@@ -150,7 +151,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
 
 .card {
-  background: var(--surface); border: 2px solid var(--line);
+  background: var(--surface); border: 2px solid #9EB3CC;
   border-radius: var(--radius); overflow: hidden; cursor: pointer;
   transition: transform .18s, box-shadow .18s, border-color .18s;
   display: flex; flex-direction: column;
