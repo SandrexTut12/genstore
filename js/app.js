@@ -706,7 +706,7 @@ function renderAdminList() {
   <div class="actions">
     <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">რედაქტ.</button>
     <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">
-      ${p.sold ? "ისევ გამოფინე" : "გავყიდი"}
+      ${p.sold ? "ისევ გამოფინე" : "გაიყიდა"}
     </button>
     <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">წაშლა</button>
   </div>
