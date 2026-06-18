@@ -98,10 +98,10 @@ function recompressDataUrl(dataUrl, maxDim, quality) {
   });
 }
 
-// shrink product images so the whole doc stays small (keeps write bandwidth low)
-async function fitProductSize(p, limit = 320000) {
+// shrink product images only if needed to stay under Firestore's ~1MB doc limit
+async function fitProductSize(p, limit = 980000) {
   const size = () => new Blob([JSON.stringify(p)]).size;
-  const steps = [[850, 0.65], [750, 0.58], [650, 0.5], [550, 0.44], [480, 0.4], [400, 0.36]];
+  const steps = [[1200, 0.85], [1100, 0.8], [1000, 0.75], [900, 0.68], [800, 0.6], [700, 0.52], [600, 0.45]];
   for (const [dim, q] of steps) {
     if (size() <= limit) break;
     p.images = await Promise.all(
@@ -733,7 +733,7 @@ function cropExisting(i) {
 
 function saveCrop() {
   if (!C.img) return;
-  const K = Math.min(3, 900 / Math.max(C.cropW, C.cropH));
+  const K = Math.min(3, 1200 / Math.max(C.cropW, C.cropH));
   const ow = Math.round(C.cropW * K), oh = Math.round(C.cropH * K);
   const oc = document.createElement("canvas"); oc.width = ow; oc.height = oh;
   const octx = oc.getContext("2d");
@@ -744,7 +744,7 @@ function saveCrop() {
   octx.scale(C.scale * K, C.scale * K);
   octx.drawImage(C.img, -C.img.naturalWidth/2, -C.img.naturalHeight/2);
   octx.restore();
-  const result = oc.toDataURL("image/jpeg", 0.7);
+  const result = oc.toDataURL("image/jpeg", 0.85);
   if (cropEditIdx >= 0) {
     formImgs[cropEditIdx] = result; cropEditIdx = -1;
     closeCropModal(); renderPreviews(); toast("ფოტო განახლდა");
@@ -790,7 +790,7 @@ function setCropRatio(ratio, key) {
   if (btn) btn.classList.add("active");
 }
 
-function compressImage(file, maxDim = 850, quality = 0.65) {
+function compressImage(file, maxDim = 1200, quality = 0.85) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = e => {
