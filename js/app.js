@@ -920,14 +920,16 @@ function renderAdminList() {
       : `<div class="nophoto"></div>`;
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}">
   ${imgEl}
-  <div class="info">
-    <div class="t">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.title)}</div>
-    <div class="m">${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
-  </div>
-  <div class="actions">
-    <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">რედაქტ.</button>
-    <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">${p.sold ? "გამოფინე" : "გაიყიდა"}</button>
-    <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">წაშლა</button>
+  <div class="prod-body">
+    <div class="prod-meta">
+      <div class="t">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.title)}</div>
+      <div class="m">${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+    </div>
+    <div class="prod-actions">
+      <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">რედაქტ.</button>
+      <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">${p.sold ? "გამოფინე" : "გაიყიდა"}</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">წაშლა</button>
+    </div>
   </div>
 </div>`;
   }).join("");
