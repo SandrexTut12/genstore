@@ -748,41 +748,17 @@ function compressImage(file, maxDim = 1000, quality = 0.78) {
   });
 }
 
-function handleFiles(files) {
+async function handleFiles(files) {
   const imgs = Array.from(files).filter(f => f.type.startsWith("image/"));
   if (!imgs.length) return;
-  autoProcessQueue(imgs);
-}
-
-async function autoProcessQueue(files) {
   let added = 0;
-  for (const file of files) {
+  for (const file of imgs) {
     if (formImgs.length >= 10) break;
-    formImgs.push(await autoCropSquare(file));
+    formImgs.push(await compressImage(file));
     added++;
   }
   renderPreviews();
   if (added) toast(added + " ფოტო დაემატა");
-}
-
-async function autoCropSquare(file, size = 800) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const s = Math.min(img.naturalWidth, img.naturalHeight);
-        const sx = (img.naturalWidth - s) / 2;
-        const sy = (img.naturalHeight - s) / 2;
-        const cv = document.createElement("canvas");
-        cv.width = cv.height = size;
-        cv.getContext("2d").drawImage(img, sx, sy, s, s, 0, 0, size, size);
-        resolve(cv.toDataURL("image/jpeg", 0.85));
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
 }
 
 async function saveProduct() {
