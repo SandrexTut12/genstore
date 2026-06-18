@@ -364,10 +364,20 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
 }
 .spec-row {
-  display: flex; align-items: baseline;
-  padding: 8px 14px; border-bottom: 1px solid var(--line); gap: 10px;
+  display: flex; align-items: center;
+  padding: 9px 14px; border-bottom: 1px solid var(--line); gap: 10px;
 }
 .spec-row:last-child { border-bottom: none; }
+.spec-row:not(:last-child)::after {
+  content: "|";
+  margin-left: auto;
+  padding-left: 20px;
+  color: var(--line);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+  flex-shrink: 0;
+}
 .spec-key {
   font-family: "Space Grotesk", sans-serif;
   font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .07em;
