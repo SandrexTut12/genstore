@@ -373,6 +373,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   min-width: 0;
   word-break: break-word;
   overflow-wrap: break-word;
+  border-left: 1px solid var(--line);
 }
 .modal-close {
   position: absolute; top: 16px; right: 16px;
@@ -683,7 +684,7 @@ footer.footer-hidden { transform: translateY(100%); }
     width: 32px; height: 32px; font-size: 18px;
     background: rgba(15,31,61,.85);
   }
-  .modal-info { padding: 16px 16px 32px; flex: none; overflow: visible; }
+  .modal-info { padding: 16px 16px 32px; flex: none; overflow: visible; border-left: none; }
   .modal-info h2 { font-size: 18px; }
   .modal-info .mprice { margin: 10px 0; }
   .modal-info .mprice .now { font-size: 24px; }
