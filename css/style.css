@@ -54,6 +54,11 @@ html[data-theme="dark"] .gallery-next:hover  { color: #071428; }
 html[data-theme="dark"] .previews .pv-star:hover { color: #071428; }
 html[data-theme="dark"] .previews .pv-badge  { color: #071428; }
 html[data-theme="dark"] .modal-close         { background: rgba(7,20,40,.85); }
+html[data-theme="dark"] .gallery             { background: #040C1E; }
+html[data-theme="dark"] .gallery-prev,
+html[data-theme="dark"] .gallery-next        { background: rgba(7,20,40,.75); color: var(--ink); }
+html[data-theme="dark"] .previews .pv .rm    { background: rgba(4,10,24,.85); }
+html[data-theme="dark"] .previews .pv-star   { background: rgba(4,10,24,.75); color: var(--muted); }
 
 /* ---- theme toggle button ---- */
 .btn-theme {
