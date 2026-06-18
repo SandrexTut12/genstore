@@ -350,7 +350,7 @@ function openProduct(id) {
         </div>
         ${specTable}
         ${p.desc ? `<div class="desc">${esc(p.desc)}</div>` : ""}
-        <div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>
+        ${p.sold ? `<div class="sold-badge-modal">გაიყიდა</div>` : `<div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>`}
       </div>
     </div>
   </div>

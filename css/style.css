@@ -388,6 +388,12 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   overflow-wrap: break-word; word-break: break-word;
 }
 .modal-info .cta { display: flex; gap: 8px; flex-wrap: wrap; }
+.sold-badge-modal {
+  display: inline-block; padding: 10px 20px;
+  background: var(--red-soft); color: var(--red);
+  border: 1px solid var(--red); border-radius: 10px;
+  font-weight: 700; font-size: 15px; letter-spacing: .04em;
+}
 .btn-cta {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 11px 16px; border-radius: 10px;
