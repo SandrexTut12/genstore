@@ -436,7 +436,8 @@ footer.footer-hidden { transform: translateY(100%); }
 .panel h3 { font-size: 16px; margin-bottom: 18px; }
 
 .field { margin-bottom: 16px; }
-.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
+.field label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
+.field label .lbl-ic { width: 15px; height: 15px; flex-shrink: 0; color: var(--brand); }
 .field input, .field select, .field textarea {
   width: 100%; padding: 11px 13px; border: 1px solid var(--line);
   border-radius: 10px; outline: none; background: var(--canvas);

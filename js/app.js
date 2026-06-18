@@ -514,6 +514,7 @@ function resetForm() {
   $id("fGPUBrand").value  = "Integrated";
   $id("fGPUModel").value  = "";
   $id("fRAM").selectedIndex     = 0;
+  $id("fRAMType").selectedIndex = 0;
   $id("fStorage").selectedIndex = 0;
   $id("fScreenSize").selectedIndex = 0;
   $id("fScreenInfo").value = "";
@@ -793,7 +794,7 @@ async function saveProduct() {
   const specs = {
     cpu    : [$id("fCPUBrand").value, $id("fCPUModel").value.trim()].filter(Boolean).join(" "),
     gpu    : [$id("fGPUBrand").value, $id("fGPUModel").value.trim()].filter(Boolean).join(" "),
-    ram    : $id("fRAM").value,
+    ram    : [$id("fRAM").value, $id("fRAMType").value].filter(Boolean).join(" "),
     storage: $id("fStorage").value,
     screen     : [$id("fScreenSize").value, $id("fScreenInfo").value.trim()].filter(Boolean).join(" "),
     resolution : $id("fResolution").value,
@@ -850,7 +851,11 @@ function editProduct(id) {
   $id("fGPUBrand").value = gpuMatch || "Integrated";
   $id("fGPUModel").value = gpuMatch ? (s.gpu||"").slice(gpuMatch.length).trim() : "";
 
-  $id("fRAM").value     = s.ram     || "";
+  const ramStr  = s.ram || "";
+  const ramType = (ramStr.match(/DDR\d/i) || [""])[0].toUpperCase();
+  const ramSize = ramStr.replace(/DDR\d/i, "").trim();
+  $id("fRAM").value     = ramSize;
+  $id("fRAMType").value = ramType;
   $id("fStorage").value = s.storage || "";
 
   const screenSizes = ['11.6"','12"','13.3"','14"','15.6"','16"','17.3"'];

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260618b">
+  <link rel="stylesheet" href="css/style.css?v=20260618c">
 </head>
 <body>
 
@@ -117,13 +117,13 @@
       <h3 id="formTitle">ახალი პროდუქტის დამატება</h3>
 
       <div class="field">
-        <label>სათაური *</label>
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>სათაური *</label>
         <input id="fTitle" type="text" placeholder="მაგ: iPhone 15 128GB">
       </div>
 
       <div class="row2">
         <div class="field">
-          <label>ბრენდი</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>ბრენდი</label>
           <select id="fBrand">
             <option value="">— ბრენდი —</option>
             <option>Apple</option>
@@ -152,7 +152,7 @@
           </select>
         </div>
         <div class="field">
-          <label>კატეგორია</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>კატეგორია</label>
           <select id="fCat">
             <option>ლეპტოპი</option>
             <option>ტელეფონი</option>
@@ -165,11 +165,11 @@
       </div>
       <div class="row2">
         <div class="field">
-          <label>ფასი (&#8382;) *</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ფასი (&#8382;) *</label>
           <input id="fPrice" type="number" min="0" placeholder="0">
         </div>
         <div class="field">
-          <label>ძველი ფასი (&#8382;) &mdash; არასავალდებულო</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ძველი ფასი (&#8382;) &mdash; არასავალდებულო</label>
           <input id="fOld" type="number" min="0" placeholder="">
         </div>
       </div>
@@ -178,7 +178,7 @@
 
       <div class="row2">
         <div class="field">
-          <label>CPU</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>CPU</label>
           <div class="split-field">
             <select id="fCPUBrand" style="flex:1">
               <option value="">— CPU —</option>
@@ -204,7 +204,7 @@
           </div>
         </div>
         <div class="field">
-          <label>GPU</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><rect x="5" y="10" width="4" height="4" rx="1"/><rect x="13" y="10" width="4" height="4" rx="1"/><path d="M6 6V4M10 6V4M14 6V4M18 6V4"/></svg>GPU</label>
           <div class="split-field">
             <select id="fGPUBrand" style="width:130px">
               <option>Integrated</option>
@@ -217,18 +217,27 @@
       </div>
       <div class="row2">
         <div class="field">
-          <label>RAM</label>
-          <select id="fRAM">
-            <option value="">— არ არის მითითებული —</option>
-            <option>4GB</option>
-            <option>8GB</option>
-            <option>12GB</option>
-            <option>16GB</option>
-            <option>32GB</option>
-          </select>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="7" width="22" height="10" rx="1"/><path d="M6 7V5M10 7V5M14 7V5M18 7V5M6 17v2M10 17v2M14 17v2M18 17v2"/></svg>RAM</label>
+          <div class="split-field">
+            <select id="fRAM" style="flex:1">
+              <option value="">— არ არის მითითებული —</option>
+              <option>4GB</option>
+              <option>8GB</option>
+              <option>12GB</option>
+              <option>16GB</option>
+              <option>32GB</option>
+              <option>64GB</option>
+            </select>
+            <select id="fRAMType" style="width:110px">
+              <option value="">— ტიპი —</option>
+              <option>DDR3</option>
+              <option>DDR4</option>
+              <option>DDR5</option>
+            </select>
+          </div>
         </div>
         <div class="field">
-          <label>SSD / HDD</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="10" ry="3"/><path d="M2 6v6c0 1.66 4.48 3 10 3s10-1.34 10-3V6"/><path d="M2 12v6c0 1.66 4.48 3 10 3s10-1.34 10-3v-6"/></svg>SSD / HDD</label>
           <select id="fStorage">
             <option value="">— არ არის მითითებული —</option>
             <optgroup label="M.2 SSD">
@@ -257,7 +266,7 @@
       </div>
       <div class="row2">
         <div class="field">
-          <label>ეკრანი <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>ეკრანი <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
           <div class="split-field">
             <select id="fScreenSize" style="width:90px">
               <option value="">— ზომა —</option>
@@ -274,7 +283,7 @@
           </div>
         </div>
         <div class="field">
-          <label>რეზოლუცია <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M7 8h10M7 12h6"/></svg>რეზოლუცია <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
           <select id="fResolution">
             <option value="">— არ არის მითითებული —</option>
             <optgroup label="HD">
@@ -303,11 +312,11 @@
         </div>
       </div>
       <div class="field">
-        <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/></svg>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
         <input id="fBattery" type="text" placeholder="მაგ: 72Wh / 89%">
       </div>
       <div class="field">
-        <label>OS</label>
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>OS</label>
         <select id="fOS">
           <option value="">— არ არის მითითებული —</option>
           <optgroup label="Windows">
@@ -328,12 +337,12 @@
       </div>
 
       <div class="field">
-        <label>აღწერა / დამატებითი ინფო</label>
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>აღწერა / დამატებითი ინფო</label>
         <textarea id="fDesc" placeholder="მაგ: ბატარეა 89%, კომპლექტი სრული, კორპუსი იდეალური..."></textarea>
       </div>
 
       <div class="field">
-        <label>ფოტოები</label>
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>ფოტოები</label>
         <div class="drop" id="drop">
           &#128247; ჩააგდე ფოტოები ან დააწექი ასარჩევად
         </div>
@@ -397,6 +406,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260618b"></script>
+<script src="js/app.js?v=20260618c"></script>
 </body>
 </html>
