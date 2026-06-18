@@ -55,7 +55,7 @@ html[data-theme="dark"] .gallery-next:hover  { color: #071428; }
 html[data-theme="dark"] .previews .pv-star:hover { color: #071428; }
 html[data-theme="dark"] .previews .pv-badge  { color: #071428; }
 html[data-theme="dark"] .modal-close         { background: rgba(7,20,40,.85); }
-html[data-theme="dark"] .gallery             { background: #040C1E; }
+html[data-theme="dark"] .gallery-side        { background: #040C1E; }
 html[data-theme="dark"] .gallery-prev,
 html[data-theme="dark"] .gallery-next        { background: rgba(7,20,40,.75); color: var(--ink); }
 html[data-theme="dark"] .previews .pv .rm    { background: rgba(4,10,24,.85); }
@@ -252,13 +252,40 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   overflow: visible;
 }
 
-/* gallery — left column, fixed height so it doesn't collapse */
-.gallery {
+/* left column wrapper — gallery + optional FB banner */
+.gallery-side {
   display: flex; flex-direction: column;
   background: #111827;
-  overflow: hidden;
-  height: 560px;
+  min-height: 560px;
 }
+/* gallery — fills the left column, FB banner sits below */
+.gallery {
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  flex: 1; min-height: 0;
+}
+
+/* Facebook product banner */
+.fb-cta {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(24,119,242,.14), rgba(24,119,242,.04));
+  border-top: 1px solid rgba(24,119,242,.3);
+}
+.fb-cta-txt {
+  display: flex; align-items: center; gap: 10px;
+  color: #E8F4FF; font-size: 14px; font-weight: 600;
+}
+.fb-cta-txt svg { flex-shrink: 0; }
+.fb-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: #1877F2; color: #fff;
+  padding: 12px 18px; border-radius: 10px;
+  font-weight: 700; font-size: 14px; text-decoration: none;
+  transition: background .15s, transform .15s;
+}
+.fb-cta-btn:hover { background: #1465d8; transform: translateY(-1px); }
 .gallery .main {
   flex: 1; min-height: 0;
   position: relative;
@@ -642,7 +669,8 @@ footer.footer-hidden { transform: translateY(100%); }
     display: flex;
     flex-direction: column;
   }
-  .gallery { height: 58vh; min-height: 260px; max-height: 480px; flex-shrink: 0; }
+  .gallery-side { min-height: 0; flex-shrink: 0; }
+  .gallery { height: 58vh; min-height: 260px; max-height: 480px; flex: none; flex-shrink: 0; }
   .thumbs {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;

@@ -372,6 +372,19 @@ function openProduct(id) {
     ? `<a class="btn btn-ghost" href="tel:${CONFIG.phone}">დარეკვა ${esc(CONFIG.phone)}</a>`
     : "";
 
+  const fbBanner = p.fbPost
+    ? `<div class="fb-cta">
+        <div class="fb-cta-txt">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="#1877F2"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+          <span>იხილე ეს პროდუქტი ჩვენს Facebook გვერდზე</span>
+        </div>
+        <a class="fb-cta-btn" href="${esc(p.fbPost)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+          Facebook-ზე ნახვა
+        </a>
+      </div>`
+    : "";
+
   const s = p.specs || {};
   const specRows = [
     ["CPU",      s.cpu],
@@ -392,12 +405,15 @@ function openProduct(id) {
   $id("modalMount").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-top">
-      <div class="gallery">
-        <div class="main" onclick="openLightbox()">
-          ${mainImg}
-          ${arrows}
+      <div class="gallery-side">
+        <div class="gallery">
+          <div class="main" onclick="openLightbox()">
+            ${mainImg}
+            ${arrows}
+          </div>
+          ${thumbs}
         </div>
-        ${thumbs}
+        ${fbBanner}
       </div>
       <div class="modal-info">
         <button class="modal-close" onclick="closeModal()">&#215;</button>
@@ -558,6 +574,7 @@ function resetForm() {
   $id("fPrice").value   = "";
   $id("fOld").value     = "";
   $id("fDesc").value    = "";
+  $id("fFbPost").value  = "";
   $id("fCPUBrand").selectedIndex = 0;
   $id("fCPUModel").value  = "";
   $id("fGPUBrand").value  = "Integrated";
@@ -862,6 +879,7 @@ async function saveProduct() {
     cond    : "used",
     specs,
     desc    : $id("fDesc").value.trim(),
+    fbPost  : $id("fFbPost").value.trim(),
     images  : formImgs.slice(),
     created : existing?.created || Date.now(),
     sold    : existing?.sold    || false,
@@ -912,6 +930,7 @@ function editProduct(id) {
   $id("fPrice").value   = p.price;
   $id("fOld").value     = p.oldPrice || "";
   $id("fDesc").value    = p.desc || "";
+  $id("fFbPost").value  = p.fbPost || "";
   const cpuOpts = ["Intel Core i3","Intel Core i5","Intel Core i7","Intel Core i9","Intel Core Ultra 5","Intel Core Ultra 7","Intel Celeron","Intel Pentium","AMD Ryzen 3","AMD Ryzen 5","AMD Ryzen 7","AMD Ryzen 9","AMD Athlon"];
   const cpuMatch = cpuOpts.find(o => (s.cpu||"").startsWith(o));
   $id("fCPUBrand").value = cpuMatch || "";
