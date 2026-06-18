@@ -557,6 +557,43 @@ footer {
 .foot-social-btn.ig:hover { color: #E1306C; border-color: #E1306C; }
 .foot-social-btn.wa:hover { color: #25D366; border-color: #25D366; }
 
+/* ---- crop overlay ---- */
+#cropOverlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5, 10, 20, 0.95);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.crop-modal {
+  background: var(--surface); border-radius: 16px;
+  width: 100%; max-width: 860px;
+  display: flex; flex-direction: column; gap: 0;
+  overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.5);
+}
+.crop-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px; border-bottom: 1px solid var(--line);
+  font-weight: 700; font-size: 15px;
+}
+.crop-counter { font-size: 13px; color: var(--muted); font-weight: 400; }
+.crop-canvas-wrap {
+  background: #0a0e18;
+  max-height: 58vh; min-height: 280px;
+  overflow: hidden; position: relative;
+}
+.crop-canvas-wrap img { display: block; max-width: 100%; }
+.crop-bar {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 8px; padding: 12px 16px;
+  border-top: 1px solid var(--line);
+}
+.crop-ratios { display: flex; gap: 6px; }
+.crop-tools  { display: flex; gap: 6px; margin-left: 8px; }
+.crop-actions { display: flex; gap: 8px; margin-left: auto; }
+.crop-ratio-btn { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+.crop-ratio-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+.crop-ratio-btn:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
+
 /* ---- responsive ---- */
 @media (max-width: 720px) {
   .bar-inner { flex-wrap: wrap; gap: 10px; }

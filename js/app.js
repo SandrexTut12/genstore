@@ -523,6 +523,91 @@ function removeImg(i) {
   renderPreviews();
 }
 
+// ============ CROPPER ============
+let cropperInst = null;
+let cropQueue   = [];
+let cropResults = [];
+
+function openCropQueue(files) {
+  cropQueue   = Array.from(files);
+  cropResults = [];
+  processCropQueue();
+}
+
+function processCropQueue() {
+  if (!cropQueue.length) {
+    for (const r of cropResults) {
+      if (formImgs.length < 10) formImgs.push(r);
+    }
+    renderPreviews();
+    if (cropResults.length) toast(cropResults.length + " ფოტო დაემატა");
+    return;
+  }
+  const total   = cropResults.length + cropQueue.length;
+  const current = cropResults.length + 1;
+  $id("cropCounter").textContent = current + " / " + total;
+
+  const reader = new FileReader();
+  reader.onload = e => showCropModal(e.target.result);
+  reader.readAsDataURL(cropQueue[0]);
+}
+
+function showCropModal(src) {
+  $id("cropOverlay").classList.remove("hidden");
+  const img = $id("cropImg");
+  if (cropperInst) { cropperInst.destroy(); cropperInst = null; }
+  img.src = src;
+  img.onload = () => {
+    cropperInst = new Cropper(img, {
+      aspectRatio: 4 / 3, viewMode: 1, dragMode: "move",
+      autoCropArea: 0.95, guides: true, center: true,
+      highlight: true, cropBoxMovable: true, cropBoxResizable: true,
+      toggleDragModeOnDblclick: false, background: false,
+    });
+    document.querySelectorAll(".crop-ratio-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector(".crop-ratio-btn[data-ratio='4:3']").classList.add("active");
+  };
+}
+
+function saveCrop() {
+  if (!cropperInst) return;
+  const canvas = cropperInst.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: "high" });
+  cropResults.push(canvas.toDataURL("image/jpeg", 0.82));
+  cropQueue.shift();
+  closeCropModal();
+  processCropQueue();
+}
+
+async function skipCrop() {
+  const file = cropQueue.shift();
+  closeCropModal();
+  const compressed = await compressImage(file);
+  cropResults.push(compressed);
+  processCropQueue();
+}
+
+function closeCropModal() {
+  if (cropperInst) { cropperInst.destroy(); cropperInst = null; }
+  $id("cropOverlay").classList.add("hidden");
+}
+
+function cropRotate(deg) { if (cropperInst) cropperInst.rotate(deg); }
+
+function cropFlip() {
+  if (!cropperInst) return;
+  const d = cropperInst.getData();
+  cropperInst.scaleX(d.scaleX === -1 ? 1 : -1);
+}
+
+function cropZoom(r) { if (cropperInst) cropperInst.zoom(r); }
+
+function setCropRatio(ratio, key) {
+  if (cropperInst) cropperInst.setAspectRatio(ratio);
+  document.querySelectorAll(".crop-ratio-btn").forEach(b => b.classList.remove("active"));
+  const btn = document.querySelector(".crop-ratio-btn[data-ratio='" + key + "']");
+  if (btn) btn.classList.add("active");
+}
+
 function compressImage(file, maxDim = 1000, quality = 0.78) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -545,17 +630,10 @@ function compressImage(file, maxDim = 1000, quality = 0.78) {
   });
 }
 
-async function handleFiles(files) {
+function handleFiles(files) {
   const imgs = Array.from(files).filter(f => f.type.startsWith("image/"));
   if (!imgs.length) return;
-  toast("იტვირთება...");
-  const results = await Promise.allSettled(imgs.map(f => compressImage(f)));
-  let added = 0;
-  for (const r of results) {
-    if (r.status === "fulfilled") { formImgs.push(r.value); added++; }
-  }
-  renderPreviews();
-  if (added) toast(added + " ფოტო დაემატა");
+  openCropQueue(imgs);
 }
 
 async function saveProduct() {
