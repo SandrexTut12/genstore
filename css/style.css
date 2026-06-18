@@ -151,7 +151,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
 
 .card {
-  background: var(--surface); border: 2px solid #9EB3CC;
+  background: var(--surface); border: 1px solid #9EB3CC;
   border-radius: var(--radius); overflow: hidden; cursor: pointer;
   transition: transform .18s, box-shadow .18s, border-color .18s;
   display: flex; flex-direction: column;
