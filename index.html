@@ -270,13 +270,39 @@
               <option>16"</option>
               <option>17.3"</option>
             </select>
-            <input id="fScreenInfo" type="text" placeholder="მაგ: FHD IPS 144Hz">
+            <input id="fScreenInfo" type="text" placeholder="მაგ: IPS 144Hz">
           </div>
         </div>
         <div class="field">
-          <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-          <input id="fBattery" type="text" placeholder="მაგ: 72Wh / 89%">
+          <label>რეზოლუცია <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+          <select id="fResolution">
+            <option value="">— არ არის მითითებული —</option>
+            <optgroup label="HD">
+              <option>1280×800</option>
+              <option>1366×768</option>
+              <option>1600×900</option>
+            </optgroup>
+            <optgroup label="Full HD">
+              <option>1920×1080</option>
+              <option>1920×1200</option>
+            </optgroup>
+            <optgroup label="QHD / 2K">
+              <option>2560×1440</option>
+              <option>2560×1600</option>
+            </optgroup>
+            <optgroup label="Retina">
+              <option>2880×1800</option>
+              <option>3024×1964</option>
+            </optgroup>
+            <optgroup label="4K">
+              <option>3840×2160</option>
+            </optgroup>
+          </select>
         </div>
+      </div>
+      <div class="field">
+        <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+        <input id="fBattery" type="text" placeholder="მაგ: 72Wh / 89%">
       </div>
       <div class="field">
         <label>OS</label>

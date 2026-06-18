@@ -318,9 +318,10 @@ function openProduct(id) {
     ["GPU",      s.gpu],
     ["RAM",      s.ram],
     ["SSD/HDD",  s.storage],
-    ["ეკრანი",   s.screen],
-    ["ბატარეა",  s.battery],
-    ["OS",       s.os]
+    ["ეკრანი",      s.screen],
+    ["რეზოლუცია",  s.resolution],
+    ["ბატარეა",    s.battery],
+    ["OS",          s.os]
   ].filter(([, v]) => v);
   const specTable = specRows.length
     ? `<div class="spec-table">${specRows.map(([k, v]) =>
@@ -491,6 +492,7 @@ function resetForm() {
   $id("fStorage").selectedIndex = 0;
   $id("fScreenSize").selectedIndex = 0;
   $id("fScreenInfo").value = "";
+  $id("fResolution").selectedIndex = 0;
   $id("fBattery").value = "";
   $id("fOS").value      = "";
   $id("fCat").selectedIndex = 0;
@@ -576,8 +578,9 @@ async function saveProduct() {
     gpu    : [$id("fGPUBrand").value, $id("fGPUModel").value.trim()].filter(Boolean).join(" "),
     ram    : $id("fRAM").value,
     storage: $id("fStorage").value,
-    screen : [$id("fScreenSize").value, $id("fScreenInfo").value.trim()].filter(Boolean).join(" "),
-    battery: $id("fBattery").value.trim(),
+    screen     : [$id("fScreenSize").value, $id("fScreenInfo").value.trim()].filter(Boolean).join(" "),
+    resolution : $id("fResolution").value,
+    battery    : $id("fBattery").value.trim(),
     os     : $id("fOS").value
   };
 
@@ -637,8 +640,9 @@ function editProduct(id) {
   $id("fScreenSize").value = screenMatch || "";
   $id("fScreenInfo").value = screenMatch ? (s.screen||"").slice(screenMatch.length).trim() : (s.screen||"");
 
-  $id("fBattery").value = s.battery || "";
-  $id("fOS").value      = s.os      || "";
+  $id("fResolution").value = s.resolution || "";
+  $id("fBattery").value    = s.battery    || "";
+  $id("fOS").value         = s.os         || "";
   $id("fCat").value     = p.cat;
   formImgs = (p.images || []).slice();
   renderPreviews();
