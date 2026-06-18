@@ -58,17 +58,26 @@ async function dbList() {
 }
 
 async function dbSave(p) {
-  try {
-    const write = db.collection("products").doc(p.id).set(p);
-    const timeout = new Promise((_, rej) =>
-      setTimeout(() => rej(new Error("timeout — ქსელი ან Firestore არ პასუხობს")), 15000));
-    await Promise.race([write, timeout]);
-    return true;
-  } catch (e) {
-    console.error("dbSave failed:", e.code, e.message, e);
-    toast("შენახვა ვერ მოხერხდა: " + (e.message || e.code || ""));
-    return false;
+  const delays = [0, 1500, 4000]; // retry with backoff on transient throttling
+  for (let i = 0; i < delays.length; i++) {
+    if (delays[i]) await new Promise(r => setTimeout(r, delays[i]));
+    try {
+      await db.collection("products").doc(p.id).set(p);
+      return true;
+    } catch (e) {
+      console.error(`dbSave attempt ${i + 1} failed:`, e.code, e.message);
+      if (e.code === "resource-exhausted" && i < delays.length - 1) {
+        toast("Firebase დაკავებულია, ვცდილობ თავიდან…");
+        continue;
+      }
+      const msg = e.code === "resource-exhausted"
+        ? "Firebase-ის უფასო ლიმიტი ამოიწურა — სცადე ცოტა ხანში"
+        : (e.message || e.code || "უცნობი შეცდომა");
+      toast("შენახვა ვერ მოხერხდა: " + msg);
+      return false;
+    }
   }
+  return false;
 }
 
 // recompress a base64 data-URL image to fit smaller dimensions / quality
@@ -89,10 +98,10 @@ function recompressDataUrl(dataUrl, maxDim, quality) {
   });
 }
 
-// shrink product images until the whole doc fits under Firestore's ~1MB limit
-async function fitProductSize(p, limit = 950000) {
+// shrink product images so the whole doc stays small (keeps write bandwidth low)
+async function fitProductSize(p, limit = 320000) {
   const size = () => new Blob([JSON.stringify(p)]).size;
-  const steps = [[1000, 0.7], [900, 0.62], [800, 0.55], [700, 0.48], [600, 0.42], [500, 0.38]];
+  const steps = [[850, 0.65], [750, 0.58], [650, 0.5], [550, 0.44], [480, 0.4], [400, 0.36]];
   for (const [dim, q] of steps) {
     if (size() <= limit) break;
     p.images = await Promise.all(
@@ -724,7 +733,7 @@ function cropExisting(i) {
 
 function saveCrop() {
   if (!C.img) return;
-  const K = Math.min(3, 1200 / Math.max(C.cropW, C.cropH));
+  const K = Math.min(3, 900 / Math.max(C.cropW, C.cropH));
   const ow = Math.round(C.cropW * K), oh = Math.round(C.cropH * K);
   const oc = document.createElement("canvas"); oc.width = ow; oc.height = oh;
   const octx = oc.getContext("2d");
@@ -735,7 +744,7 @@ function saveCrop() {
   octx.scale(C.scale * K, C.scale * K);
   octx.drawImage(C.img, -C.img.naturalWidth/2, -C.img.naturalHeight/2);
   octx.restore();
-  const result = oc.toDataURL("image/jpeg", 0.82);
+  const result = oc.toDataURL("image/jpeg", 0.7);
   if (cropEditIdx >= 0) {
     formImgs[cropEditIdx] = result; cropEditIdx = -1;
     closeCropModal(); renderPreviews(); toast("ფოტო განახლდა");
@@ -781,7 +790,7 @@ function setCropRatio(ratio, key) {
   if (btn) btn.classList.add("active");
 }
 
-function compressImage(file, maxDim = 1000, quality = 0.78) {
+function compressImage(file, maxDim = 850, quality = 0.65) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = e => {
