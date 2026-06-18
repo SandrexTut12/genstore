@@ -156,30 +156,40 @@
       <div class="row2">
         <div class="field">
           <label>CPU</label>
-          <select id="fCPU">
-            <option value="">— არ არის მითითებული —</option>
-            <optgroup label="Intel">
-              <option>Intel Core i3</option>
-              <option>Intel Core i5</option>
-              <option>Intel Core i7</option>
-              <option>Intel Core i9</option>
-              <option>Intel Core Ultra 5</option>
-              <option>Intel Core Ultra 7</option>
-              <option>Intel Celeron</option>
-              <option>Intel Pentium</option>
-            </optgroup>
-            <optgroup label="AMD">
-              <option>AMD Ryzen 3</option>
-              <option>AMD Ryzen 5</option>
-              <option>AMD Ryzen 7</option>
-              <option>AMD Ryzen 9</option>
-              <option>AMD Athlon</option>
-            </optgroup>
-          </select>
+          <div class="split-field">
+            <select id="fCPUBrand" style="width:155px">
+              <option value="">— CPU —</option>
+              <optgroup label="Intel">
+                <option>Intel Core i3</option>
+                <option>Intel Core i5</option>
+                <option>Intel Core i7</option>
+                <option>Intel Core i9</option>
+                <option>Intel Core Ultra 5</option>
+                <option>Intel Core Ultra 7</option>
+                <option>Intel Celeron</option>
+                <option>Intel Pentium</option>
+              </optgroup>
+              <optgroup label="AMD">
+                <option>AMD Ryzen 3</option>
+                <option>AMD Ryzen 5</option>
+                <option>AMD Ryzen 7</option>
+                <option>AMD Ryzen 9</option>
+                <option>AMD Athlon</option>
+              </optgroup>
+            </select>
+            <input id="fCPUModel" type="text" placeholder="მაგ: 8550U">
+          </div>
         </div>
         <div class="field">
-          <label>GPU <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-          <input id="fGPU" type="text" placeholder="მაგ: NVIDIA RTX 3060 / Integrated">
+          <label>GPU</label>
+          <div class="split-field">
+            <select id="fGPUBrand" style="width:130px">
+              <option>Integrated</option>
+              <option>NVIDIA</option>
+              <option>AMD</option>
+            </select>
+            <input id="fGPUModel" type="text" placeholder="მაგ: RTX 3060">
+          </div>
         </div>
       </div>
       <div class="row2">
@@ -218,11 +228,23 @@
       <div class="row2">
         <div class="field">
           <label>ეკრანი <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-          <input id="fScreen" type="text" placeholder="მაგ: 15.6&quot; FHD IPS 144Hz">
+          <div class="split-field">
+            <select id="fScreenSize" style="width:90px">
+              <option value="">— ზომა —</option>
+              <option>11.6"</option>
+              <option>12"</option>
+              <option>13.3"</option>
+              <option>14"</option>
+              <option>15.6"</option>
+              <option>16"</option>
+              <option>17.3"</option>
+            </select>
+            <input id="fScreenInfo" type="text" placeholder="მაგ: FHD IPS 144Hz">
+          </div>
         </div>
         <div class="field">
           <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-          <input id="fBattery" type="text" placeholder="მაგ: 72Wh, 8 საათი / 89%">
+          <input id="fBattery" type="text" placeholder="მაგ: 72Wh / 89%">
         </div>
       </div>
       <div class="field">

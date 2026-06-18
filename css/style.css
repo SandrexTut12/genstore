@@ -434,6 +434,10 @@ footer {
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 
+.split-field { display: flex; gap: 8px; }
+.split-field select { flex: 0 0 auto; min-width: 0; }
+.split-field input  { flex: 1; min-width: 0; }
+
 .spec-divider {
   font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: var(--muted); border-bottom: 1px solid var(--line);

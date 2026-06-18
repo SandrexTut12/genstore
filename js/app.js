@@ -483,13 +483,16 @@ function resetForm() {
   $id("fPrice").value   = "";
   $id("fOld").value     = "";
   $id("fDesc").value    = "";
-  $id("fCPU").value     = "";
+  $id("fCPUBrand").selectedIndex = 0;
+  $id("fCPUModel").value  = "";
+  $id("fGPUBrand").value  = "Integrated";
+  $id("fGPUModel").value  = "";
   $id("fRAM").selectedIndex     = 0;
   $id("fStorage").selectedIndex = 0;
-  $id("fOS").value      = "";
-  $id("fGPU").value     = "";
-  $id("fScreen").value  = "";
+  $id("fScreenSize").selectedIndex = 0;
+  $id("fScreenInfo").value = "";
   $id("fBattery").value = "";
+  $id("fOS").value      = "";
   $id("fCat").selectedIndex = 0;
   renderPreviews();
 }
@@ -569,13 +572,13 @@ async function saveProduct() {
   }
 
   const specs = {
-    cpu    : $id("fCPU").value.trim(),
+    cpu    : [$id("fCPUBrand").value, $id("fCPUModel").value.trim()].filter(Boolean).join(" "),
+    gpu    : [$id("fGPUBrand").value, $id("fGPUModel").value.trim()].filter(Boolean).join(" "),
     ram    : $id("fRAM").value,
     storage: $id("fStorage").value,
-    os     : $id("fOS").value.trim(),
-    gpu    : $id("fGPU").value.trim(),
-    screen : $id("fScreen").value.trim(),
-    battery: $id("fBattery").value.trim()
+    screen : [$id("fScreenSize").value, $id("fScreenInfo").value.trim()].filter(Boolean).join(" "),
+    battery: $id("fBattery").value.trim(),
+    os     : $id("fOS").value
   };
 
   const p = {
@@ -616,13 +619,26 @@ function editProduct(id) {
   $id("fPrice").value   = p.price;
   $id("fOld").value     = p.oldPrice || "";
   $id("fDesc").value    = p.desc || "";
-  $id("fCPU").value     = s.cpu     || "";
+  const cpuOpts = ["Intel Core i3","Intel Core i5","Intel Core i7","Intel Core i9","Intel Core Ultra 5","Intel Core Ultra 7","Intel Celeron","Intel Pentium","AMD Ryzen 3","AMD Ryzen 5","AMD Ryzen 7","AMD Ryzen 9","AMD Athlon"];
+  const cpuMatch = cpuOpts.find(o => (s.cpu||"").startsWith(o));
+  $id("fCPUBrand").value = cpuMatch || "";
+  $id("fCPUModel").value = cpuMatch ? (s.cpu||"").slice(cpuMatch.length).trim() : (s.cpu||"");
+
+  const gpuBrands = ["Integrated","NVIDIA","AMD"];
+  const gpuMatch  = gpuBrands.find(b => (s.gpu||"").startsWith(b));
+  $id("fGPUBrand").value = gpuMatch || "Integrated";
+  $id("fGPUModel").value = gpuMatch ? (s.gpu||"").slice(gpuMatch.length).trim() : "";
+
   $id("fRAM").value     = s.ram     || "";
   $id("fStorage").value = s.storage || "";
-  $id("fOS").value      = s.os      || "";
-  $id("fGPU").value     = s.gpu     || "";
-  $id("fScreen").value  = s.screen  || "";
+
+  const screenSizes = ['11.6"','12"','13.3"','14"','15.6"','16"','17.3"'];
+  const screenMatch = screenSizes.find(sz => (s.screen||"").startsWith(sz));
+  $id("fScreenSize").value = screenMatch || "";
+  $id("fScreenInfo").value = screenMatch ? (s.screen||"").slice(screenMatch.length).trim() : (s.screen||"");
+
   $id("fBattery").value = s.battery || "";
+  $id("fOS").value      = s.os      || "";
   $id("fCat").value     = p.cat;
   formImgs = (p.images || []).slice();
   renderPreviews();
