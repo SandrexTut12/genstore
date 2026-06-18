@@ -918,17 +918,21 @@ function renderAdminList() {
     const imgEl = p.images && p.images[0]
       ? `<img src="${p.images[0]}" alt="${esc(p.title)}">`
       : `<div class="nophoto"></div>`;
+    const icEdit = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+    const icSold = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+    const icUnsold = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const icDel = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}">
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="t">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.title)}</div>
-      <div class="m">${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="m">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
-      <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">რედაქტ.</button>
-      <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">${p.sold ? "გამოფინე" : "გაიყიდა"}</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">წაშლა</button>
+      <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')" title="რედაქტირება">${icEdit}<span class="blabel">რედაქტ.</span></button>
+      <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')" title="${p.sold ? "ისევ გამოფინე" : "გაიყიდა"}">${p.sold ? icUnsold : icSold}<span class="blabel">${p.sold ? "გამოფინე" : "გაიყიდა"}</span></button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')" title="წაშლა">${icDel}<span class="blabel">წაშლა</span></button>
     </div>
   </div>
 </div>`;

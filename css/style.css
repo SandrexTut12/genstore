@@ -520,7 +520,8 @@ footer.footer-hidden { transform: translateY(100%); }
 .row-price { font-family: "Space Grotesk", sans-serif; font-weight: 700; color: var(--brand); }
 .row-sold-tag { font-size: 11px; font-weight: 700; color: var(--red); background: var(--red-soft); padding: 2px 6px; border-radius: 5px; vertical-align: middle; margin-right: 3px; }
 .prod-actions { display: flex; gap: 5px; }
-.prod-actions .btn { flex: 1; text-align: center; justify-content: center; padding: 5px 4px; font-size: 12px; white-space: nowrap; }
+.prod-actions .btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-align: center; padding: 6px 4px; font-size: 12px; white-space: nowrap; }
+.prod-actions .bic { flex-shrink: 0; }
 .prod-row.prod-sold { opacity: .6; }
 
 .pagination {
@@ -664,4 +665,9 @@ footer.footer-hidden { transform: translateY(100%); }
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 12px; font-size: 12px; }
   .foot-social { gap: 3px; }
   .foot-social-btn { padding: 5px 8px; font-size: 12px; gap: 4px; }
+
+  /* admin prod-row mobile — icon-only buttons */
+  .prod-actions .blabel { display: none; }
+  .prod-actions .btn { padding: 8px 4px; gap: 0; }
+  .prod-actions .bic { width: 18px; height: 18px; }
 }
