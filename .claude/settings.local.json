@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(python --version)",
+      "Bash(node --input-type=module)",
+      "Bash(ls \"C:\\\\Users\\\\tutar\\\\OneDrive\\\\Desktop\\\\Genstore\\\\\")"
+    ]
+  }
+}
