@@ -450,18 +450,17 @@ function route() {
 
 window.addEventListener("hashchange", route);
 
-// footer hide on scroll-down, show on scroll-up
+// footer: visible only at very top or very bottom, hidden in between
 (function() {
-  let lastY = 0;
   const footer = document.querySelector('footer');
   window.addEventListener('scroll', function() {
     const y = window.scrollY;
-    if (y > lastY && y > 60) {
-      footer.classList.add('footer-hidden');
-    } else {
+    const maxY = document.documentElement.scrollHeight - window.innerHeight;
+    if (y < 60 || y >= maxY - 10) {
       footer.classList.remove('footer-hidden');
+    } else {
+      footer.classList.add('footer-hidden');
     }
-    lastY = y;
   }, { passive: true });
 })();
 
@@ -922,15 +921,12 @@ function renderAdminList() {
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}">
   ${imgEl}
   <div class="info">
-    <div class="t">${esc(p.title)}</div>
-    <div class="m">${esc(p.cat)}${p.sold ? " · <span style='color:var(--red)'>გაიყიდა</span>" : ""}</div>
+    <div class="t">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.title)}</div>
+    <div class="m">${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
   </div>
-  <span class="aprice">${fmtPrice(p.price)}</span>
   <div class="actions">
     <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')">რედაქტ.</button>
-    <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">
-      ${p.sold ? "ისევ გამოფინე" : "გაიყიდა"}
-    </button>
+    <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')">${p.sold ? "გამოფინე" : "გაიყიდა"}</button>
     <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">წაშლა</button>
   </div>
 </div>`;
