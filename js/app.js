@@ -558,9 +558,9 @@ function processCropQueue() {
 }
 
 function showCropModal(src) {
-  C.rot = 0; C.flipH = false; C.ox = 0; C.oy = 0; C.ar = 4/3;
+  C.rot = 0; C.flipH = false; C.ox = 0; C.oy = 0; C.ar = 1;
   document.querySelectorAll(".crop-ratio-btn").forEach(b => b.classList.remove("active"));
-  const dflt = document.querySelector(".crop-ratio-btn[data-ratio='4:3']");
+  const dflt = document.querySelector(".crop-ratio-btn[data-ratio='1:1']");
   if (dflt) dflt.classList.add("active");
   $id("cropOverlay").classList.remove("hidden");
   _loadCropImg(src);
@@ -648,9 +648,9 @@ function initCropEvents() {
 
 function cropExisting(i) {
   cropEditIdx = i;
-  C.rot = 0; C.flipH = false; C.ox = 0; C.oy = 0; C.ar = 4/3;
+  C.rot = 0; C.flipH = false; C.ox = 0; C.oy = 0; C.ar = 1;
   document.querySelectorAll(".crop-ratio-btn").forEach(b => b.classList.remove("active"));
-  const dflt = document.querySelector(".crop-ratio-btn[data-ratio='4:3']");
+  const dflt = document.querySelector(".crop-ratio-btn[data-ratio='1:1']");
   if (dflt) dflt.classList.add("active");
   $id("cropOverlay").classList.remove("hidden");
   _loadCropImg(formImgs[i]);
@@ -740,7 +740,38 @@ function compressImage(file, maxDim = 1000, quality = 0.78) {
 function handleFiles(files) {
   const imgs = Array.from(files).filter(f => f.type.startsWith("image/"));
   if (!imgs.length) return;
-  openCropQueue(imgs);
+  autoProcessQueue(imgs);
+}
+
+async function autoProcessQueue(files) {
+  let added = 0;
+  for (const file of files) {
+    if (formImgs.length >= 10) break;
+    formImgs.push(await autoCropSquare(file));
+    added++;
+  }
+  renderPreviews();
+  if (added) toast(added + " ფოტო დაემატა");
+}
+
+async function autoCropSquare(file, size = 800) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(img.naturalWidth, img.naturalHeight);
+        const sx = (img.naturalWidth - s) / 2;
+        const sy = (img.naturalHeight - s) / 2;
+        const cv = document.createElement("canvas");
+        cv.width = cv.height = size;
+        cv.getContext("2d").drawImage(img, sx, sy, s, s, 0, 0, size, size);
+        resolve(cv.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 async function saveProduct() {
