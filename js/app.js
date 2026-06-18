@@ -905,7 +905,10 @@ async function deleteProduct(id) {
 
 function renderAdminList() {
   $id("prodCount").textContent = PRODUCTS.length;
-  const list = PRODUCTS.slice().sort((a, b) => (b.created || 0) - (a.created || 0));
+  const list = PRODUCTS.slice().sort((a, b) => {
+    if (!!a.sold !== !!b.sold) return a.sold ? 1 : -1;
+    return (b.created || 0) - (a.created || 0);
+  });
 
   if (list.length === 0) {
     $id("prodList").innerHTML = `<div style="color:var(--muted);font-size:14px">
