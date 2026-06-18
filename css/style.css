@@ -603,6 +603,7 @@ footer.footer-hidden { transform: translateY(100%); }
 .foot-social-btn.fb:hover { color: #1877F2; border-color: #1877F2; }
 .foot-social-btn.ig:hover { color: #E1306C; border-color: #E1306C; }
 .foot-social-btn.wa:hover { color: #25D366; border-color: #25D366; }
+.foot-social-btn.tt:hover { color: #FE2C55; border-color: #FE2C55; }
 
 /* ---- crop overlay ---- */
 #cropOverlay {
