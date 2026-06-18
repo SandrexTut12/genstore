@@ -507,6 +507,9 @@ function renderPreviews() {
         ? `<span class="pv-badge">&#9733; მთავარი</span>`
         : `<button class="pv-star" onclick="setMain(${i})" title="მთავარ ფოტოდ დაყენება">&#9733;</button>`
       }
+      <button class="pv-crop" onclick="cropExisting(${i})" title="კადრირება">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+      </button>
       <button class="rm" onclick="removeImg(${i})">&#215;</button>
     </div>`
   ).join("");
@@ -524,9 +527,10 @@ function removeImg(i) {
 }
 
 // ============ CROPPER ============
-let cropperInst = null;
-let cropQueue   = [];
-let cropResults = [];
+let cropperInst  = null;
+let cropQueue    = [];
+let cropResults  = [];
+let cropEditIdx  = -1; // -1 = queue mode, >=0 = edit existing photo
 
 function openCropQueue(files) {
   cropQueue   = Array.from(files);
@@ -569,16 +573,35 @@ function showCropModal(src) {
   img.src = src;
 }
 
+function cropExisting(i) {
+  cropEditIdx = i;
+  showCropModal(formImgs[i]);
+}
+
 function saveCrop() {
   if (!cropperInst) return;
   const canvas = cropperInst.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: "high" });
-  cropResults.push(canvas.toDataURL("image/jpeg", 0.82));
-  cropQueue.shift();
-  closeCropModal();
-  processCropQueue();
+  const result = canvas.toDataURL("image/jpeg", 0.82);
+  if (cropEditIdx >= 0) {
+    formImgs[cropEditIdx] = result;
+    cropEditIdx = -1;
+    closeCropModal();
+    renderPreviews();
+    toast("ფოტო განახლდა");
+  } else {
+    cropResults.push(result);
+    cropQueue.shift();
+    closeCropModal();
+    processCropQueue();
+  }
 }
 
 async function skipCrop() {
+  if (cropEditIdx >= 0) {
+    cropEditIdx = -1;
+    closeCropModal();
+    return;
+  }
   const file = cropQueue.shift();
   closeCropModal();
   const compressed = await compressImage(file);
