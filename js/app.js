@@ -556,7 +556,6 @@ function showCropModal(src) {
   $id("cropOverlay").classList.remove("hidden");
   const img = $id("cropImg");
   if (cropperInst) { cropperInst.destroy(); cropperInst = null; }
-  img.src = src;
   img.onload = () => {
     cropperInst = new Cropper(img, {
       aspectRatio: 4 / 3, viewMode: 1, dragMode: "move",
@@ -567,6 +566,7 @@ function showCropModal(src) {
     document.querySelectorAll(".crop-ratio-btn").forEach(b => b.classList.remove("active"));
     document.querySelector(".crop-ratio-btn[data-ratio='4:3']").classList.add("active");
   };
+  img.src = src;
 }
 
 function saveCrop() {
