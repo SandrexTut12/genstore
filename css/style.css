@@ -370,7 +370,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .spec-row:last-child { border-bottom: none; }
 .spec-key {
   font-family: "Space Grotesk", sans-serif;
-  font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .05em;
+  font-size: 14px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .06em;
   flex-shrink: 0; white-space: nowrap;
   width: 110px; min-width: 110px;
   border-right: 2px solid var(--line);
