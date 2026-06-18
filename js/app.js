@@ -28,75 +28,48 @@ const CATS = [
   "სხვა"
 ];
 
-// ============ STORAGE ============
-const SHARED = true;
-const hasCloud = (typeof window !== "undefined" && window.storage && typeof window.storage.list === "function");
+// ============ FIREBASE ============
+firebase.initializeApp({
+  apiKey:            "AIzaSyDtEb7AUpgwSwJ70IfDZi4iMosd8nO55Ww",
+  authDomain:        "genstore-87e1f.firebaseapp.com",
+  projectId:         "genstore-87e1f",
+  storageBucket:     "genstore-87e1f.firebasestorage.app",
+  messagingSenderId: "516453888895",
+  appId:             "1:516453888895:web:e85d78189f33b5757ce04a"
+});
+const db = firebase.firestore();
 
+// ============ STORAGE ============
 async function dbList() {
-  if (hasCloud) {
-    try {
-      const res  = await window.storage.list("gs_prod_", SHARED);
-      const keys = (res && res.keys) || [];
-      const out  = [];
-      for (const k of keys) {
-        try {
-          const r = await window.storage.get(k, SHARED);
-          if (r && r.value) out.push(JSON.parse(r.value));
-        } catch (e) {}
-      }
-      return out;
-    } catch (e) { return []; }
-  } else {
-    const out = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith("gs_prod_")) {
-        try { out.push(JSON.parse(localStorage.getItem(k))); } catch (e) {}
-      }
-    }
-    return out;
-  }
+  try {
+    const snap = await db.collection("products").get();
+    return snap.docs.map(d => d.data());
+  } catch (e) { return []; }
 }
 
 async function dbSave(p) {
-  const key = "gs_prod_" + p.id;
-  const val = JSON.stringify(p);
-  if (hasCloud) {
-    try { await window.storage.set(key, val, SHARED); }
-    catch (e) { toast("შენახვა ვერ მოხერხდა"); }
-  } else {
-    try { localStorage.setItem(key, val); }
-    catch (e) { toast("მეხსიერება სავსეა — შეამცირე ფოტოების რაოდენობა"); }
-  }
+  try {
+    await db.collection("products").doc(p.id).set(p);
+  } catch (e) { toast("შენახვა ვერ მოხერხდა"); }
 }
 
 async function dbRemove(id) {
-  const key = "gs_prod_" + id;
-  if (hasCloud) {
-    try { await window.storage.delete(key, SHARED); } catch (e) {}
-  } else {
-    localStorage.removeItem(key);
-  }
+  try {
+    await db.collection("products").doc(id).delete();
+  } catch (e) {}
 }
 
 async function getSettings() {
-  if (hasCloud) {
-    try {
-      const r = await window.storage.get("gs_settings", SHARED);
-      return r && r.value ? JSON.parse(r.value) : {};
-    } catch (e) { return {}; }
-  } else {
-    try { return JSON.parse(localStorage.getItem("gs_settings") || "{}"); }
-    catch (e) { return {}; }
-  }
+  try {
+    const doc = await db.collection("meta").doc("settings").get();
+    return doc.exists ? doc.data() : {};
+  } catch (e) { return {}; }
 }
 
 async function saveSettings(s) {
-  if (hasCloud) {
-    try { await window.storage.set("gs_settings", JSON.stringify(s), SHARED); } catch (e) {}
-  } else {
-    localStorage.setItem("gs_settings", JSON.stringify(s));
-  }
+  try {
+    await db.collection("meta").doc("settings").set(s);
+  } catch (e) {}
 }
 
 // ============ STATE ============
