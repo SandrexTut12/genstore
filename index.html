@@ -381,7 +381,7 @@
         <button class="btn btn-ghost btn-sm" onclick="cropRotate(-90)" title="მარცხნივ">↺</button>
         <button class="btn btn-ghost btn-sm" onclick="cropRotate(90)" title="მარჯვნივ">↻</button>
         <button class="btn btn-ghost btn-sm" onclick="cropFlip()" title="გადაბრუნება">⟺</button>
-        <input type="range" id="cropZoomSlider" min="35" max="400" value="100" step="1" oninput="setCropZoomSlider(this.value)">
+        <input type="range" id="cropZoomSlider" min="0" max="1" value="0.5" step="0.001" oninput="setCropZoomSlider(this.value)">
         <span id="cropZoomVal" class="crop-zoom-val">100%</span>
       </div>
       <div class="crop-actions">

@@ -577,8 +577,16 @@ function _loadCropImg(src) {
     _calcBox();
     const ia = img.naturalWidth / img.naturalHeight;
     C.scale = ia > C.ar ? C.cropH / img.naturalHeight : C.cropW / img.naturalWidth;
-    C.fitScale = C.scale;
-    C.minScale = C.scale * 0.35;
+    C.fitScale  = C.scale;
+    C.minScale  = C.scale * 0.35;
+    C.maxScale  = C.scale * 5;
+    const sl = $id("cropZoomSlider");
+    if (sl) {
+      sl.min   = C.minScale.toFixed(4);
+      sl.max   = C.maxScale.toFixed(4);
+      sl.step  = (C.fitScale * 0.01).toFixed(5);
+      sl.value = C.fitScale.toFixed(4);
+    }
     _syncSlider();
     _draw();
   };
@@ -688,16 +696,15 @@ function cropRotate(deg) { C.rot = (C.rot + deg + 360) % 360; _draw(); }
 function cropFlip()      { C.flipH = !C.flipH; _draw(); }
 
 function setCropZoomSlider(val) {
-  C.scale = Math.max(C.minScale, Math.min(C.maxScale, C.fitScale * (val / 100)));
+  C.scale = Math.max(C.minScale, Math.min(C.maxScale, +val));
   _draw();
-  const v = $id("cropZoomVal"); if (v) v.textContent = val + "%";
+  _syncSlider();
 }
 
 function _syncSlider() {
-  if (!C.fitScale) return;
-  const pct = Math.round(C.scale / C.fitScale * 100);
-  const sl = $id("cropZoomSlider"); if (sl) sl.value = Math.min(400, Math.max(35, pct));
-  const v  = $id("cropZoomVal");   if (v)  v.textContent = pct + "%";
+  const sl = $id("cropZoomSlider"); if (sl) sl.value = C.scale;
+  const pct = C.fitScale ? Math.round(C.scale / C.fitScale * 100) : 100;
+  const v = $id("cropZoomVal"); if (v) v.textContent = pct + "%";
 }
 
 function setCropRatio(ratio, key) {

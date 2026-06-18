@@ -585,7 +585,7 @@ footer {
 .crop-counter { font-size: 13px; color: var(--muted); font-weight: 400; }
 .crop-canvas-wrap {
   background: #0a0e18;
-  height: 58vh; min-height: 280px;
+  height: 44vh; min-height: 220px;
   position: relative; overflow: hidden;
 }
 .crop-bar {
