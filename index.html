@@ -4,11 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GenStore ონლაინ მაღაზია</title>
+  <meta name="description" content="GENSTORE — მეორადი და ახალი ტექნიკის ონლაინ მაღაზია. ლეპტოპები, ტელეფონები, ტაბლეტები საუკეთესო ფასად.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="GENSTORE">
+  <meta property="og:title" content="GENSTORE — ტექნიკის მაღაზია">
+  <meta property="og:description" content="მეორადი და ახალი ტექნიკა საუკეთესო ფასად — ლეპტოპები, ტელეფონები, ტაბლეტები.">
+  <meta property="og:image" content="https://sandrextut12.github.io/genstore/assets/favicon-16x16.png">
+  <meta property="og:url" content="https://sandrextut12.github.io/genstore/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0090CC">
   <link rel="icon" type="image/png" href="assets/favicon-16x16.png?v=20260618m">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260618p">
+  <link rel="stylesheet" href="css/style.css?v=20260618q">
 </head>
 <body>
 
@@ -44,6 +53,33 @@
 
   <div class="chips-wrap">
     <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="filterbar" id="filterbar">
+    <div class="fb-group fb-sort">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+      <select id="sortSelect" onchange="onSort(this.value)">
+        <option value="new">უახლესი</option>
+        <option value="price-asc">ფასი ↑ იაფი</option>
+        <option value="price-desc">ფასი ↓ ძვირი</option>
+        <option value="discount">ფასდაკლებები</option>
+      </select>
+    </div>
+
+    <div class="fb-group fb-price">
+      <span class="fb-price-label"><span id="priceLabel">—</span></span>
+      <div class="range-wrap" id="rangeWrap">
+        <div class="range-track"></div>
+        <div class="range-fill" id="rangeFill"></div>
+        <input type="range" id="priceMinRange" oninput="onPriceRange('min')">
+        <input type="range" id="priceMaxRange" oninput="onPriceRange('max')">
+      </div>
+    </div>
+
+    <button class="fb-clear" id="fbClear" onclick="clearFilters()" title="ფილტრის გასუფთავება">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span>გასუფთავება</span>
+    </button>
   </div>
 
   <main>
@@ -172,9 +208,13 @@
           <input id="fPrice" type="number" min="0" placeholder="0">
         </div>
         <div class="field">
-          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ძველი ფასი (&#8382;) &mdash; არასავალდებულო</label>
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ძველი ფასი (&#8382;) &mdash; ფასდაკლებისთვის</label>
           <input id="fOld" type="number" min="0" placeholder="">
         </div>
+      </div>
+      <div class="field">
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ფასდაკლების დასასრული <span style="font-weight:400;color:var(--muted)">— არასავალდებულო (ტაიმერისთვის)</span></label>
+        <input id="fSaleEnds" type="datetime-local">
       </div>
 
       <div class="spec-divider">სპეციფიკაციები</div>
@@ -358,6 +398,15 @@
         <div class="previews" id="previews"></div>
       </div>
 
+      <label class="draft-toggle">
+        <input id="fHidden" type="checkbox">
+        <span class="draft-box"></span>
+        <span class="draft-txt">
+          <b>დამალული (Draft)</b>
+          <small>მონიშნულია — საიტზე არ გამოჩნდება, მხოლოდ აქ დარჩება</small>
+        </span>
+      </label>
+
       <div class="form-actions">
         <button class="btn btn-primary" onclick="saveProduct()">შენახვა</button>
         <button class="btn btn-ghost" onclick="resetForm()">გასუფთავება</button>
@@ -414,6 +463,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260618i"></script>
+<script src="js/app.js?v=20260618q"></script>
 </body>
 </html>

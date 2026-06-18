@@ -644,6 +644,140 @@ footer.footer-hidden { transform: translateY(100%); }
 .crop-ratio-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 .crop-ratio-btn:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
 
+/* ---- filter bar ---- */
+.filterbar {
+  max-width: 1180px; margin: 0 auto 4px; padding: 0 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.fb-group { display: flex; align-items: center; gap: 8px; }
+.fb-sort svg { color: var(--muted); flex-shrink: 0; }
+.fb-sort select {
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit;
+}
+.fb-sort select:focus { outline: none; border-color: var(--brand); }
+.fb-price { flex: 1; min-width: 220px; max-width: 360px; }
+.fb-price-label { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; font-family: "Space Grotesk", sans-serif; }
+.range-wrap { position: relative; flex: 1; height: 30px; min-width: 130px; }
+.range-track {
+  position: absolute; top: 50%; left: 0; right: 0; height: 5px;
+  transform: translateY(-50%); background: var(--surface2); border-radius: 5px;
+}
+.range-fill {
+  position: absolute; top: 50%; height: 5px;
+  transform: translateY(-50%); background: var(--brand); border-radius: 5px;
+}
+.range-wrap input[type=range] {
+  position: absolute; top: 0; left: 0; width: 100%; height: 30px; margin: 0;
+  -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none;
+}
+.range-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; pointer-events: auto;
+  width: 18px; height: 18px; border-radius: 50%; background: var(--brand);
+  border: 2px solid var(--surface); box-shadow: 0 1px 5px rgba(0,0,0,.35); cursor: pointer;
+}
+.range-wrap input[type=range]::-moz-range-thumb {
+  pointer-events: auto; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--brand); border: 2px solid var(--surface); cursor: pointer;
+}
+.fb-clear {
+  display: none; align-items: center; gap: 5px;
+  background: var(--red-soft); color: var(--red); border: none;
+  padding: 7px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; transition: filter .15s;
+}
+.fb-clear.show { display: inline-flex; }
+.fb-clear:hover { filter: brightness(.95); }
+
+/* ---- discount badge + sale timer (cards) ---- */
+.badge-discount {
+  position: absolute; top: 10px; left: 10px; z-index: 3;
+  background: var(--red); color: #fff;
+  font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 13px;
+  padding: 4px 9px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.sale-timer {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--red); background: var(--red-soft);
+  font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;
+  padding: 4px 9px; border-radius: 7px; margin-top: 2px; align-self: flex-start;
+}
+.sale-timer.ended { color: var(--muted); background: var(--surface2); }
+
+/* ---- modal: share, discount, sale timer ---- */
+.modal-top-actions {
+  position: absolute; top: 16px; right: 16px; z-index: 10;
+  display: flex; gap: 8px;
+}
+.modal-share, .modal-top-actions .modal-close {
+  position: static; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surface2); display: flex; align-items: center; justify-content: center;
+  color: var(--muted); cursor: pointer; border: none; transition: .15s;
+}
+.modal-share:hover { background: var(--brand-soft); color: var(--brand); }
+.mprice .mdisc {
+  background: var(--red); color: #fff;
+  font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 14px;
+  padding: 3px 9px; border-radius: 8px;
+}
+.msale-timer {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--red); background: var(--red-soft);
+  font-size: 13px; font-weight: 700; font-family: "Space Grotesk", sans-serif;
+  padding: 7px 12px; border-radius: 9px; margin: 0 0 14px;
+}
+.msale-timer.ended { color: var(--muted); background: var(--surface2); }
+
+/* ---- admin: draft + discount tags ---- */
+.row-draft-tag { font-size: 11px; font-weight: 700; color: var(--amber); background: var(--amber-soft); padding: 2px 6px; border-radius: 5px; margin-right: 3px; }
+.row-disc-tag  { font-size: 11px; font-weight: 700; color: var(--red); background: var(--red-soft); padding: 2px 6px; border-radius: 5px; margin-right: 3px; }
+.prod-row.prod-hidden { opacity: .7; border-style: dashed; }
+
+/* ---- admin: draft toggle ---- */
+.draft-toggle {
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--canvas); margin-bottom: 18px;
+}
+.draft-toggle input { display: none; }
+.draft-box {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid var(--line); background: var(--surface);
+  position: relative; transition: .15s;
+}
+.draft-toggle input:checked + .draft-box { background: var(--amber); border-color: var(--amber); }
+.draft-toggle input:checked + .draft-box::after {
+  content: ""; position: absolute; left: 6px; top: 2px;
+  width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.draft-txt { display: flex; flex-direction: column; gap: 2px; }
+.draft-txt b { font-size: 14px; color: var(--ink); }
+.draft-txt small { font-size: 12px; color: var(--muted); }
+
+/* ---- reveal animation ---- */
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card.reveal { animation: cardReveal .4s ease both; }
+@media (prefers-reduced-motion: reduce) { .card.reveal { animation: none; } }
+
+/* ---- loading skeletons ---- */
+@keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+.card.skel { pointer-events: none; }
+.skel-box, .skel-line {
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
+  background-size: 800px 100%; animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+.skel-box { width: 100%; aspect-ratio: 1/1; border-radius: 0; }
+.skel-line { height: 12px; margin: 10px 0; }
+.skel-line.w40 { width: 40%; }
+.skel-line.w70 { width: 70%; }
+.skel-line.w90 { width: 90%; }
+
 /* ---- responsive ---- */
 @media (max-width: 720px) {
   .bar-inner { flex-wrap: wrap; gap: 10px; }
@@ -681,10 +815,11 @@ footer.footer-hidden { transform: translateY(100%); }
     max-height: none !important;
   }
   .thumbs img { width: 48px; height: 48px; }
-  .modal-close {
-    position: fixed; top: 12px; right: 12px; z-index: 10;
-    width: 32px; height: 32px; font-size: 18px;
-    background: rgba(15,31,61,.85);
+  .modal-top-actions { position: fixed; top: 12px; right: 12px; z-index: 12; }
+  .modal-top-actions .modal-close,
+  .modal-share {
+    width: 34px; height: 34px; font-size: 18px;
+    background: rgba(15,31,61,.85); color: #fff;
   }
   .modal-info { padding: 16px 16px 32px; flex: none; overflow: visible; border-left: none; }
   .modal-info h2 { font-size: 18px; }
@@ -692,6 +827,12 @@ footer.footer-hidden { transform: translateY(100%); }
   .modal-info .mprice .now { font-size: 24px; }
   .btn-cta { min-width: 0; font-size: 13px; padding: 11px 10px; gap: 5px; flex: 1; }
   .modal-info .cta { gap: 6px; }
+
+  /* filter bar mobile */
+  .filterbar { gap: 10px; padding: 0 14px; }
+  .fb-sort { flex: 1; }
+  .fb-sort select { flex: 1; }
+  .fb-price { max-width: none; flex-basis: 100%; order: 3; }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }

@@ -135,6 +135,10 @@ async function saveSettings(s) {
 let PRODUCTS    = [];
 let activeCat   = "ყველა";
 let searchQ     = "";
+let sortBy      = "new";
+let priceFloor  = 0, priceCeil = 0;   // overall bounds
+let priceMin    = 0, priceMax = 0;    // selected range
+let dataLoaded  = false;
 let authed      = false;
 let editingId   = null;
 let formImgs    = [];
@@ -147,6 +151,28 @@ const PAGE_SIZE = 12;
 // ============ HELPERS ============
 function $id(id) { return document.getElementById(id); }
 function fmtPrice(n) { return Number(n).toLocaleString("en-US") + " ₾"; }
+
+// discount % when an old (higher) price is set
+function discountPct(p) {
+  if (!p.oldPrice || p.oldPrice <= p.price) return 0;
+  return Math.round((p.oldPrice - p.price) / p.oldPrice * 100);
+}
+// is the sale countdown still running?
+function saleActive(p) {
+  return p.saleEnds && Number(p.saleEnds) > Date.now();
+}
+// human countdown like "2დ 5სთ 12წთ" or "00:14:32"
+function fmtCountdown(ms) {
+  if (ms <= 0) return "0";
+  const s = Math.floor(ms / 1000);
+  const d = Math.floor(s / 86400);
+  const h = Math.floor((s % 86400) / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (d > 0) return `${d}დ ${h}სთ ${m}წთ`;
+  const pad = n => String(n).padStart(2, "0");
+  return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+}
 function esc(s) {
   return String(s || "")
     .replace(/&/g, "&amp;")
@@ -190,7 +216,9 @@ function onSearch(val) {
 function getFiltered() {
   return PRODUCTS
     .filter(p => {
+      if (p.hidden) return false;                 // draft — not shown on storefront
       if (activeCat !== "ყველა" && p.cat !== activeCat) return false;
+      if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
       if (searchQ) {
         const s   = p.specs || {};
       const hay = (p.title + " " + (p.brand || "") + " " + p.cat + " " + (p.desc || "") + " " +
@@ -201,10 +229,80 @@ function getFiltered() {
       return true;
     })
     .sort((a, b) => {
+      // sold always sink to the bottom
       if (a.sold !== b.sold) return a.sold ? 1 : -1;
       if (a.sold && b.sold)  return (b.soldAt || 0) - (a.soldAt || 0);
-      return (b.created || 0) - (a.created || 0);
+      if (sortBy === "price-asc")  return a.price - b.price;
+      if (sortBy === "price-desc") return b.price - a.price;
+      if (sortBy === "discount")   return discountPct(b) - discountPct(a);
+      return (b.created || 0) - (a.created || 0);  // "new"
     });
+}
+
+// ---- filter bar (sort + price range) ----
+function updatePriceBounds() {
+  const prices = PRODUCTS.filter(p => !p.hidden).map(p => Number(p.price) || 0);
+  if (!prices.length) { priceCeil = 0; return; }
+  priceFloor = Math.min(...prices);
+  priceCeil  = Math.max(...prices);
+  // keep current selection if still valid, otherwise reset to full range
+  if (priceMin < priceFloor || priceMin > priceCeil || priceMax === 0) priceMin = priceFloor;
+  if (priceMax > priceCeil  || priceMax < priceFloor || priceMax === 0) priceMax = priceCeil;
+  const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
+  if (lo && hi) {
+    lo.min = hi.min = priceFloor;
+    lo.max = hi.max = priceCeil;
+    lo.value = priceMin;
+    hi.value = priceMax;
+  }
+  syncPriceUI();
+}
+
+function syncPriceUI() {
+  const label = $id("priceLabel");
+  if (label) label.textContent = `${fmtPrice(priceMin)} – ${fmtPrice(priceMax)}`;
+  const fill = $id("rangeFill");
+  if (fill && priceCeil > priceFloor) {
+    const span = priceCeil - priceFloor;
+    const l = (priceMin - priceFloor) / span * 100;
+    const r = (priceMax - priceFloor) / span * 100;
+    fill.style.left  = l + "%";
+    fill.style.right = (100 - r) + "%";
+  } else if (fill) {
+    fill.style.left = "0%"; fill.style.right = "0%";
+  }
+  const clear = $id("fbClear");
+  const dirty = sortBy !== "new" || priceMin !== priceFloor || priceMax !== priceCeil;
+  if (clear) clear.classList.toggle("show", dirty);
+}
+
+function onSort(val) {
+  sortBy = val;
+  storePage = 1;
+  syncPriceUI();
+  renderGrid();
+}
+
+function onPriceRange(which) {
+  const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
+  if (!lo || !hi) return;
+  let a = Number(lo.value), b = Number(hi.value);
+  if (a > b) { if (which === "min") a = b; else b = a; lo.value = a; hi.value = b; }
+  priceMin = a; priceMax = b;
+  storePage = 1;
+  syncPriceUI();
+  renderGrid();
+}
+
+function clearFilters() {
+  sortBy = "new";
+  const sel = $id("sortSelect"); if (sel) sel.value = "new";
+  priceMin = priceFloor; priceMax = priceCeil;
+  const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
+  if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
+  storePage = 1;
+  syncPriceUI();
+  renderGrid();
 }
 
 function renderGrid() {
@@ -231,12 +329,21 @@ function renderGrid() {
   if (storePage > totalPages) storePage = Math.max(1, totalPages);
   const pageList = list.slice((storePage - 1) * PAGE_SIZE, storePage * PAGE_SIZE);
 
-  grid.innerHTML = pageList.map(p => {
+  grid.innerHTML = pageList.map((p, idx) => {
     const img = p.images && p.images[0]
       ? `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`
       : `<div class="noimg">ფოტო არ არის</div>`;
     const old = p.oldPrice
       ? `<span class="old">${fmtPrice(p.oldPrice)}</span>`
+      : "";
+    const dpct = discountPct(p);
+    const discountBadge = (dpct > 0 && !p.sold)
+      ? `<span class="badge-discount">-${dpct}%</span>` : "";
+    const timer = (dpct > 0 && !p.sold && saleActive(p))
+      ? `<div class="sale-timer countdown" data-ends="${p.saleEnds}">
+           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+           <span class="ct">${fmtCountdown(Number(p.saleEnds) - Date.now())}</span>
+         </div>`
       : "";
     const s = p.specs || {};
     const SPEC_CLR = {
@@ -288,15 +395,18 @@ function renderGrid() {
     const soldOverlay = p.sold
       ? `<div class="sold-overlay"><span>გაიყიდა</span></div>`
       : "";
-    return `<div class="card${p.sold ? " sold" : ""}" onclick="openProduct('${p.id}')">
-  <div class="imgwrap">${img}${soldOverlay}</div>
+    return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
+  <div class="imgwrap">${img}${discountBadge}${soldOverlay}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specLine}
+    ${timer}
     <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
   </div>
 </div>`;
   }).join("");
+
+  startCountdowns();
 
   const pager = $id("store-pagination");
   if (totalPages > 1) {
@@ -325,10 +435,49 @@ function renderGrid() {
   }
 }
 
+// ---- countdown ticker (cards + modal) ----
+let countdownTimer = null;
+function startCountdowns() {
+  if (countdownTimer) return;
+  countdownTimer = setInterval(() => {
+    const els = document.querySelectorAll(".countdown[data-ends]");
+    if (!els.length) { clearInterval(countdownTimer); countdownTimer = null; return; }
+    let expired = false;
+    els.forEach(el => {
+      const ends = Number(el.getAttribute("data-ends"));
+      const left = ends - Date.now();
+      const ct = el.querySelector(".ct");
+      if (left <= 0) { expired = true; el.classList.add("ended"); if (ct) ct.textContent = "დასრულდა"; }
+      else if (ct) ct.textContent = fmtCountdown(left);
+    });
+    if (expired) { clearInterval(countdownTimer); countdownTimer = null; renderGrid(); }
+  }, 1000);
+}
+
+// ---- loading skeletons ----
+function showSkeletons(n = 8) {
+  const grid = $id("grid");
+  if (!grid) return;
+  grid.innerHTML = Array.from({ length: n }, () => `
+    <div class="card skel">
+      <div class="imgwrap skel-box"></div>
+      <div class="body">
+        <div class="skel-line w70"></div>
+        <div class="skel-line w90"></div>
+        <div class="skel-line w40"></div>
+      </div>
+    </div>`).join("");
+}
+
 // ============ PRODUCT MODAL ============
+// opening just sets the URL hash → route() renders (so links are shareable)
 function openProduct(id) {
+  location.hash = "#product/" + encodeURIComponent(id);
+}
+
+function renderProductModal(id) {
   const p = PRODUCTS.find(x => x.id === id);
-  if (!p) return;
+  if (!p) { closeModalDom(); return; }
 
   modalImgs = p.images || [];
   modalIdx  = 0;
@@ -402,6 +551,15 @@ function openProduct(id) {
       ).join("")}</div>`
     : "";
 
+  const mdpct = discountPct(p);
+  const mDiscBadge = (mdpct > 0 && !p.sold) ? `<span class="mdisc">-${mdpct}%</span>` : "";
+  const mTimer = (mdpct > 0 && !p.sold && saleActive(p))
+    ? `<div class="msale-timer countdown" data-ends="${p.saleEnds}">
+         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+         ფასდაკლება მთავრდება: <span class="ct">${fmtCountdown(Number(p.saleEnds) - Date.now())}</span>
+       </div>`
+    : "";
+
   $id("modalMount").innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-top">
@@ -416,12 +574,18 @@ function openProduct(id) {
         ${fbBanner}
       </div>
       <div class="modal-info">
-        <button class="modal-close" onclick="closeModal()">&#215;</button>
+        <div class="modal-top-actions">
+          <button class="modal-share" onclick="shareProduct('${p.id}')" title="გაზიარება">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+          </button>
+          <button class="modal-close" onclick="closeModal()">&#215;</button>
+        </div>
         <div class="mcat">${[p.brand, p.cat].filter(Boolean).map(esc).join(" · ")}</div>
         <h2>${esc(p.title)}</h2>
         <div class="mprice">
-          <span class="now">${fmtPrice(p.price)}</span>${old}
+          <span class="now">${fmtPrice(p.price)}</span>${old}${mDiscBadge}
         </div>
+        ${mTimer}
         ${specTable}
         ${p.desc ? `<div class="desc">${esc(p.desc)}</div>` : ""}
         ${p.sold ? `<div class="sold-badge-modal">გაიყიდა</div>` : `<div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>`}
@@ -431,6 +595,26 @@ function openProduct(id) {
 </div>`;
 
   document.body.style.overflow = "hidden";
+  startCountdowns();
+}
+
+// share current product — native share sheet or copy link
+async function shareProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const url = location.origin + location.pathname + "#product/" + encodeURIComponent(id);
+  const data = {
+    title: p ? p.title : "GENSTORE",
+    text:  p ? `${p.title} — ${fmtPrice(p.price)}` : "GENSTORE",
+    url
+  };
+  try {
+    if (navigator.share) { await navigator.share(data); return; }
+    await navigator.clipboard.writeText(url);
+    toast("ლინკი დაკოპირდა 📋");
+  } catch (e) {
+    try { await navigator.clipboard.writeText(url); toast("ლინკი დაკოპირდა 📋"); }
+    catch { toast("ლინკი: " + url); }
+  }
 }
 
 function galleryNav(dir) {
@@ -452,9 +636,17 @@ function updateGallery() {
   );
 }
 
-function closeModal() {
+function closeModalDom() {
   $id("modalMount").innerHTML = "";
   document.body.style.overflow = "";
+}
+
+function closeModal() {
+  if (location.hash.startsWith("#product/")) {
+    location.hash = "";   // → route() clears the modal
+  } else {
+    closeModalDom();
+  }
 }
 
 document.addEventListener("keydown", e => {
@@ -495,11 +687,13 @@ function goStore() { location.hash = ""; }
 function goAdmin() { location.hash = "#admin"; }
 
 function route() {
-  const isAdmin = location.hash === "#admin";
+  const h = location.hash;
+  const isAdmin = h === "#admin";
   $id("view-store").classList.toggle("hidden", isAdmin);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
 
   if (isAdmin) {
+    closeModalDom();
     if (authed || CONFIG.skipLogin) {
       authed = true;
       $id("admin-login").classList.add("hidden");
@@ -510,6 +704,15 @@ function route() {
       $id("admin-dash").classList.add("hidden");
       setTimeout(() => $id("pwInput").focus(), 50);
     }
+    return;
+  }
+
+  // product deep-link (shareable URL)
+  if (h.startsWith("#product/")) {
+    const id = decodeURIComponent(h.slice("#product/".length));
+    renderProductModal(id);
+  } else {
+    closeModalDom();
   }
 }
 
@@ -575,6 +778,8 @@ function resetForm() {
   $id("fOld").value     = "";
   $id("fDesc").value    = "";
   $id("fFbPost").value  = "";
+  $id("fSaleEnds").value = "";
+  $id("fHidden").checked = false;
   $id("fCPUBrand").selectedIndex = 0;
   $id("fCPUModel").value  = "";
   $id("fGPUBrand").value  = "Integrated";
@@ -880,6 +1085,8 @@ async function saveProduct() {
     specs,
     desc    : $id("fDesc").value.trim(),
     fbPost  : $id("fFbPost").value.trim(),
+    saleEnds: $id("fSaleEnds").value ? new Date($id("fSaleEnds").value).getTime() : null,
+    hidden  : $id("fHidden").checked,
     images  : formImgs.slice(),
     created : existing?.created || Date.now(),
     sold    : existing?.sold    || false,
@@ -909,6 +1116,7 @@ async function saveProduct() {
     PRODUCTS = await dbList();
     if (isNew) adminPage = 1;
     resetForm();
+    updatePriceBounds();
     renderAdminList();
     renderChips();
     renderGrid();
@@ -931,6 +1139,14 @@ function editProduct(id) {
   $id("fOld").value     = p.oldPrice || "";
   $id("fDesc").value    = p.desc || "";
   $id("fFbPost").value  = p.fbPost || "";
+  $id("fHidden").checked = !!p.hidden;
+  if (p.saleEnds) {
+    const d = new Date(Number(p.saleEnds));
+    const tzOff = d.getTimezoneOffset() * 60000;
+    $id("fSaleEnds").value = new Date(d.getTime() - tzOff).toISOString().slice(0, 16);
+  } else {
+    $id("fSaleEnds").value = "";
+  }
   const cpuOpts = ["Intel Core i3","Intel Core i5","Intel Core i7","Intel Core i9","Intel Core Ultra 5","Intel Core Ultra 7","Intel Celeron","Intel Pentium","AMD Ryzen 3","AMD Ryzen 5","AMD Ryzen 7","AMD Ryzen 9","AMD Athlon"];
   const cpuMatch = cpuOpts.find(o => (s.cpu||"").startsWith(o));
   $id("fCPUBrand").value = cpuMatch || "";
@@ -975,6 +1191,7 @@ async function toggleSold(id) {
   p.soldAt = p.sold ? Date.now() : null;
   await dbSave(p);
   PRODUCTS = await dbList();
+  updatePriceBounds();
   renderAdminList();
   renderGrid();
   toast(p.sold ? "გაიყიდა" : "ისევ გამოფინდა");
@@ -987,6 +1204,7 @@ async function deleteProduct(id) {
   await dbRemove(id);
   PRODUCTS = await dbList();
   if (editingId === id) resetForm();
+  updatePriceBounds();
   renderAdminList();
   renderChips();
   renderGrid();
@@ -1020,11 +1238,12 @@ function renderAdminList() {
     const icSold = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
     const icUnsold = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
     const icDel = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
-    return `<div class="prod-row${p.sold ? " prod-sold" : ""}">
+    const dpct = discountPct(p);
+    return `<div class="prod-row${p.sold ? " prod-sold" : ""}${p.hidden ? " prod-hidden" : ""}">
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="m">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="m">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
       <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
@@ -1131,8 +1350,11 @@ async function init() {
   const cached = getCached();
   if (cached) {
     PRODUCTS = cached;
+    updatePriceBounds();
     renderChips();
     renderGrid();
+  } else {
+    showSkeletons();
   }
 
   // fetch settings + products in parallel
@@ -1140,17 +1362,14 @@ async function init() {
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
 
-  if (JSON.stringify(fresh) !== JSON.stringify(PRODUCTS)) {
+  if (JSON.stringify(fresh) !== JSON.stringify(PRODUCTS) || !cached) {
     PRODUCTS = fresh;
     await migrate();
-    renderChips();
-    renderGrid();
-  } else if (!cached) {
-    PRODUCTS = fresh;
-    await migrate();
+    updatePriceBounds();
     renderChips();
     renderGrid();
   }
+  dataLoaded = true;
 
   bindForm();
   initCropEvents();
