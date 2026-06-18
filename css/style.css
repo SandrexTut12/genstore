@@ -150,7 +150,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
 
 .card {
-  background: var(--surface); border: 1px solid var(--line);
+  background: var(--surface); border: 2px solid var(--line);
   border-radius: var(--radius); overflow: hidden; cursor: pointer;
   transition: transform .18s, box-shadow .18s, border-color .18s;
   display: flex; flex-direction: column;
@@ -192,7 +192,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .spec-chip {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 11px; font-weight: 600;
-  color: #1a2a4a;
+  color: #0d1625;
   background: rgba(0,0,0,.05);
   border: 1px solid var(--cc, rgba(0,0,0,.2));
   border-radius: 6px; padding: 3px 7px;
