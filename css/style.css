@@ -361,21 +361,13 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .modal-info .mprice .old { font-size: 16px; color: var(--muted); text-decoration: line-through; }
 .spec-table {
   margin: 14px 0 6px;
-  border: 1px solid var(--line); border-radius: 10px;
-  padding: 10px 16px;
-  display: flex; flex-wrap: nowrap; align-items: center; overflow-x: auto; gap: 0; white-space: nowrap;
+  border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
 }
 .spec-row {
-  display: inline-flex; align-items: center; flex-shrink: 0;
-  padding: 4px 0; gap: 6px;
+  display: flex; align-items: baseline;
+  padding: 8px 14px; border-bottom: 1px solid var(--line); gap: 10px;
 }
-.spec-row:not(:last-child)::after {
-  content: "|";
-  color: var(--muted);
-  padding: 0 10px;
-  font-weight: 300;
-  opacity: 0.45;
-}
+.spec-row:last-child { border-bottom: none; }
 .spec-key {
   font-family: "Space Grotesk", sans-serif;
   font-size: 13px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: .07em;
