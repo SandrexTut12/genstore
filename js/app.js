@@ -787,6 +787,7 @@ async function saveProduct() {
     os     : $id("fOS").value
   };
 
+  const existing = editingId ? PRODUCTS.find(x => x.id === editingId) : null;
   const p = {
     id      : editingId || uid(),
     title,
@@ -798,9 +799,9 @@ async function saveProduct() {
     specs,
     desc    : $id("fDesc").value.trim(),
     images  : formImgs.slice(),
-    created : editingId
-      ? (PRODUCTS.find(x => x.id === editingId)?.created || Date.now())
-      : Date.now()
+    created : existing?.created || Date.now(),
+    sold    : existing?.sold    || false,
+    soldAt  : existing?.soldAt  || null,
   };
 
   const isNew = !editingId;
