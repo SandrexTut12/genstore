@@ -532,7 +532,7 @@ let cropResults = [];
 let cropEditIdx = -1;
 
 const C = {
-  img: null, scale: 1, minScale: 0.3, maxScale: 5,
+  img: null, scale: 1, fitScale: 1, minScale: 0.3, maxScale: 5,
   ox: 0, oy: 0, rot: 0, flipH: false, ar: 4/3,
   cropW: 0, cropH: 0,
   drag: false, lx: 0, ly: 0, pd: 0,
@@ -577,7 +577,9 @@ function _loadCropImg(src) {
     _calcBox();
     const ia = img.naturalWidth / img.naturalHeight;
     C.scale = ia > C.ar ? C.cropH / img.naturalHeight : C.cropW / img.naturalWidth;
+    C.fitScale = C.scale;
     C.minScale = C.scale * 0.35;
+    _syncSlider();
     _draw();
   };
   img.src = src;
@@ -630,9 +632,9 @@ function initCropEvents() {
   cv.addEventListener("mousedown", e => { C.drag=true; C.lx=e.clientX; C.ly=e.clientY; cv.style.cursor="grabbing"; });
   window.addEventListener("mousemove", e => { if (!C.drag) return; C.ox+=e.clientX-C.lx; C.oy+=e.clientY-C.ly; C.lx=e.clientX; C.ly=e.clientY; _draw(); });
   window.addEventListener("mouseup", () => { C.drag=false; cv.style.cursor="grab"; });
-  cv.addEventListener("wheel", e => { e.preventDefault(); const z=e.deltaY>0?0.91:1.1; C.scale=Math.max(C.minScale,Math.min(C.maxScale,C.scale*z)); _draw(); }, {passive:false});
+  cv.addEventListener("wheel", e => { e.preventDefault(); const z=e.deltaY>0?0.91:1.1; C.scale=Math.max(C.minScale,Math.min(C.maxScale,C.scale*z)); _draw(); _syncSlider(); }, {passive:false});
   cv.addEventListener("touchstart", e => { e.preventDefault(); if(e.touches.length===1){C.drag=true;C.lx=e.touches[0].clientX;C.ly=e.touches[0].clientY;}else if(e.touches.length===2){C.pd=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);} }, {passive:false});
-  cv.addEventListener("touchmove", e => { e.preventDefault(); if(e.touches.length===1&&C.drag){C.ox+=e.touches[0].clientX-C.lx;C.oy+=e.touches[0].clientY-C.ly;C.lx=e.touches[0].clientX;C.ly=e.touches[0].clientY;_draw();}else if(e.touches.length===2){const d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);C.scale=Math.max(C.minScale,Math.min(C.maxScale,C.scale*(d/C.pd)));C.pd=d;_draw();} }, {passive:false});
+  cv.addEventListener("touchmove", e => { e.preventDefault(); if(e.touches.length===1&&C.drag){C.ox+=e.touches[0].clientX-C.lx;C.oy+=e.touches[0].clientY-C.ly;C.lx=e.touches[0].clientX;C.ly=e.touches[0].clientY;_draw();}else if(e.touches.length===2){const d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);C.scale=Math.max(C.minScale,Math.min(C.maxScale,C.scale*(d/C.pd)));C.pd=d;_draw();_syncSlider();} }, {passive:false});
   cv.addEventListener("touchend", () => { C.drag=false; });
 }
 
@@ -684,7 +686,19 @@ function closeCropModal() {
 
 function cropRotate(deg) { C.rot = (C.rot + deg + 360) % 360; _draw(); }
 function cropFlip()      { C.flipH = !C.flipH; _draw(); }
-function cropZoom(d)     { C.scale = Math.max(C.minScale, Math.min(C.maxScale, C.scale * (1 + d))); _draw(); }
+
+function setCropZoomSlider(val) {
+  C.scale = Math.max(C.minScale, Math.min(C.maxScale, C.fitScale * (val / 100)));
+  _draw();
+  const v = $id("cropZoomVal"); if (v) v.textContent = val + "%";
+}
+
+function _syncSlider() {
+  if (!C.fitScale) return;
+  const pct = Math.round(C.scale / C.fitScale * 100);
+  const sl = $id("cropZoomSlider"); if (sl) sl.value = Math.min(400, Math.max(35, pct));
+  const v  = $id("cropZoomVal");   if (v)  v.textContent = pct + "%";
+}
 
 function setCropRatio(ratio, key) {
   C.ar = isNaN(ratio) ? (C.img ? C.img.naturalWidth / C.img.naturalHeight : 4/3) : ratio;
