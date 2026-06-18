@@ -450,6 +450,21 @@ function route() {
 
 window.addEventListener("hashchange", route);
 
+// footer hide on scroll-down, show on scroll-up
+(function() {
+  let lastY = 0;
+  const footer = document.querySelector('footer');
+  window.addEventListener('scroll', function() {
+    const y = window.scrollY;
+    if (y > lastY && y > 60) {
+      footer.classList.add('footer-hidden');
+    } else {
+      footer.classList.remove('footer-hidden');
+    }
+    lastY = y;
+  }, { passive: true });
+})();
+
 // ============ AUTH ============
 let storedUser = CONFIG.adminUser;
 let storedPass = CONFIG.adminPass;

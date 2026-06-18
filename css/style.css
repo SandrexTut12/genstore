@@ -239,7 +239,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   background: var(--surface); border-radius: 18px;
   max-width: 1120px; width: 100%;
   max-height: 92vh;
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow: 0 32px 80px rgba(0,0,0,.2);
   border: 1px solid var(--line);
   display: flex; flex-direction: column;
@@ -247,17 +247,17 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .modal-top {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
-  flex: 1;
+  flex: none;
   min-height: 560px;
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* gallery — truly fixed, image never shifts container */
+/* gallery — left column, fixed height so it doesn't collapse */
 .gallery {
   display: flex; flex-direction: column;
   background: #111827;
   overflow: hidden;
-  height: 100%;
+  height: 560px;
 }
 .gallery .main {
   flex: 1; min-height: 0;
@@ -338,12 +338,11 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .thumbs img:hover { opacity: 1; }
 .thumbs img.active { border-color: var(--brand); opacity: 1; }
 
-/* modal info — this side scrolls if content is long */
+/* modal info — flows naturally, whole modal scrolls */
 .modal-info {
   padding: 26px 26px 28px;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   min-width: 0;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -415,11 +414,13 @@ footer {
   border-top: 1px solid var(--line);
   background: rgba(238, 242, 248, 0.96);
   backdrop-filter: blur(14px);
+  transition: transform .3s ease;
 }
+footer.footer-hidden { transform: translateY(100%); }
 .foot {
-  max-width: 1180px; margin: 0 auto; padding: 14px 20px;
+  max-width: 1180px; margin: 0 auto; padding: 10px 20px;
   display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 14px;
+  flex-wrap: nowrap; gap: 8px; color: var(--muted); font-size: 13px;
 }
 .foot a { color: var(--muted); transition: color .15s; }
 .foot a:hover { color: var(--brand); }
@@ -427,7 +428,7 @@ footer {
 #view-store { padding-bottom: 60px; }
 
 /* ---- admin ---- */
-.page-admin { max-width: 980px; margin: 0 auto; padding: 32px 20px 70px; }
+.page-admin { max-width: 980px; margin: 0 auto; padding: 32px 20px 70px; overflow-x: hidden; }
 .page-admin h1 { font-size: 24px; margin-bottom: 4px; }
 .page-admin .sub { color: var(--muted); margin-bottom: 26px; font-size: 14px; }
 
@@ -517,7 +518,7 @@ footer {
 .prod-row .info .t { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prod-row .info .m { font-size: 13px; color: var(--muted); }
 .prod-row .aprice { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 16px; color: var(--brand); margin-right: 6px; white-space: nowrap; }
-.prod-row .actions { display: flex; gap: 8px; flex-shrink: 0; }
+.prod-row .actions { display: flex; gap: 6px; flex-shrink: 1; flex-wrap: wrap; }
 .prod-row.prod-sold { opacity: .6; }
 
 .pagination {
@@ -618,7 +619,7 @@ footer {
   .row2, .row3 { grid-template-columns: 1fr; }
   .logo .wm { font-size: 21px; }
 
-  /* modal mobile — full screen */
+  /* modal mobile — full screen, scrolls as one unit */
   .overlay { padding: 0; align-items: stretch; }
   .modal {
     border-radius: 0;
@@ -627,12 +628,13 @@ footer {
     width: 100%;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
   .modal-top {
     grid-template-columns: 1fr;
     min-height: auto;
-    flex: 1;
-    overflow-y: auto;
+    flex: none;
+    overflow: visible;
     display: flex;
     flex-direction: column;
   }
@@ -649,14 +651,15 @@ footer {
     width: 32px; height: 32px; font-size: 18px;
     background: rgba(15,31,61,.85);
   }
-  .modal-info { padding: 16px 16px 32px; flex: 1; }
+  .modal-info { padding: 16px 16px 32px; flex: none; overflow: visible; }
   .modal-info h2 { font-size: 18px; }
   .modal-info .mprice { margin: 10px 0; }
   .modal-info .mprice .now { font-size: 24px; }
   .btn-cta { min-width: 0; font-size: 13px; padding: 11px 10px; gap: 5px; flex: 1; }
   .modal-info .cta { gap: 6px; }
 
-  /* footer social mobile */
-  .foot { flex-direction: column; gap: 10px; text-align: center; }
-  .foot-social { justify-content: center; flex-wrap: wrap; }
+  /* footer mobile — one row */
+  .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 12px; font-size: 12px; }
+  .foot-social { gap: 3px; }
+  .foot-social-btn { padding: 5px 8px; font-size: 12px; gap: 4px; }
 }
