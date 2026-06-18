@@ -60,7 +60,44 @@ async function dbList() {
 async function dbSave(p) {
   try {
     await db.collection("products").doc(p.id).set(p);
-  } catch (e) { toast("შენახვა ვერ მოხერხდა"); }
+    return true;
+  } catch (e) {
+    console.error("dbSave failed:", e.code, e.message, e);
+    toast("შენახვა ვერ მოხერხდა: " + (e.message || e.code || ""));
+    return false;
+  }
+}
+
+// recompress a base64 data-URL image to fit smaller dimensions / quality
+function recompressDataUrl(dataUrl, maxDim, quality) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
+      else if (h >= w && h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      cv.getContext("2d").drawImage(img, 0, 0, w, h);
+      resolve(cv.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+// shrink product images until the whole doc fits under Firestore's ~1MB limit
+async function fitProductSize(p, limit = 950000) {
+  const size = () => new Blob([JSON.stringify(p)]).size;
+  const steps = [[1000, 0.7], [900, 0.62], [800, 0.55], [700, 0.48], [600, 0.42], [500, 0.38]];
+  for (const [dim, q] of steps) {
+    if (size() <= limit) break;
+    p.images = await Promise.all(
+      p.images.map(im => (typeof im === "string" && im.startsWith("data:"))
+        ? recompressDataUrl(im, dim, q) : im)
+    );
+  }
+  return size() <= limit;
 }
 
 async function dbRemove(id) {
@@ -820,7 +857,17 @@ async function saveProduct() {
   };
 
   const isNew = !editingId;
-  await dbSave(p);
+
+  // keep the document under Firestore's ~1MB per-doc limit
+  const fits = await fitProductSize(p);
+  if (!fits) {
+    toast("ფოტოები ძალიან დიდია — შეამცირე რაოდენობა");
+    return;
+  }
+
+  const ok = await dbSave(p);
+  if (!ok) return;
+  formImgs = p.images.slice();
   PRODUCTS = await dbList();
   if (isNew) adminPage = 1;
   resetForm();
