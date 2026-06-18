@@ -41,10 +41,19 @@ firebase.initializeApp({
 const db = firebase.firestore();
 
 // ============ STORAGE ============
+const CACHE_KEY = "gs_cache_v1";
+
+function getCached() {
+  try { const r = localStorage.getItem(CACHE_KEY); return r ? JSON.parse(r) : null; }
+  catch { return null; }
+}
+
 async function dbList() {
   try {
     const snap = await db.collection("products").get();
-    return snap.docs.map(d => d.data());
+    const data = snap.docs.map(d => d.data());
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
+    return data;
   } catch (e) { return []; }
 }
 
@@ -1026,14 +1035,31 @@ async function init() {
     ? "https://wa.me/995" + CONFIG.whatsapp.replace(/\D/g, "")
     : "#";
 
-  const s = await getSettings();
+  // show cached data instantly while Firebase loads
+  const cached = getCached();
+  if (cached) {
+    PRODUCTS = cached;
+    renderChips();
+    renderGrid();
+  }
+
+  // fetch settings + products in parallel
+  const [s, fresh] = await Promise.all([getSettings(), dbList()]);
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
 
-  PRODUCTS = await dbList();
-  await migrate();
-  renderChips();
-  renderGrid();
+  if (JSON.stringify(fresh) !== JSON.stringify(PRODUCTS)) {
+    PRODUCTS = fresh;
+    await migrate();
+    renderChips();
+    renderGrid();
+  } else if (!cached) {
+    PRODUCTS = fresh;
+    await migrate();
+    renderChips();
+    renderGrid();
+  }
+
   bindForm();
   initCropEvents();
   route();
