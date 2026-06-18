@@ -252,10 +252,10 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   overflow: visible;
 }
 
-/* left column wrapper — gallery + optional FB banner */
+/* left column wrapper — gallery + optional FB banner (theme-aware) */
 .gallery-side {
   display: flex; flex-direction: column;
-  background: #111827;
+  background: var(--surface2);
   min-height: 560px;
 }
 /* gallery — fills the left column, FB banner sits below */
@@ -275,7 +275,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 }
 .fb-cta-txt {
   display: flex; align-items: center; gap: 10px;
-  color: #E8F4FF; font-size: 14px; font-weight: 600;
+  color: var(--ink); font-size: 14px; font-weight: 600;
 }
 .fb-cta-txt svg { flex-shrink: 0; }
 .fb-cta-btn {
