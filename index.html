@@ -156,8 +156,33 @@
       <div class="row2">
         <div class="field">
           <label>CPU</label>
-          <input id="fCPU" type="text" placeholder="მაგ: Intel Core i5-1235U">
+          <select id="fCPU">
+            <option value="">— არ არის მითითებული —</option>
+            <optgroup label="Intel">
+              <option>Intel Core i3</option>
+              <option>Intel Core i5</option>
+              <option>Intel Core i7</option>
+              <option>Intel Core i9</option>
+              <option>Intel Core Ultra 5</option>
+              <option>Intel Core Ultra 7</option>
+              <option>Intel Celeron</option>
+              <option>Intel Pentium</option>
+            </optgroup>
+            <optgroup label="AMD">
+              <option>AMD Ryzen 3</option>
+              <option>AMD Ryzen 5</option>
+              <option>AMD Ryzen 7</option>
+              <option>AMD Ryzen 9</option>
+              <option>AMD Athlon</option>
+            </optgroup>
+          </select>
         </div>
+        <div class="field">
+          <label>GPU <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+          <input id="fGPU" type="text" placeholder="მაგ: NVIDIA RTX 3060 / Integrated">
+        </div>
+      </div>
+      <div class="row2">
         <div class="field">
           <label>RAM</label>
           <select id="fRAM">
@@ -169,8 +194,6 @@
             <option>32GB</option>
           </select>
         </div>
-      </div>
-      <div class="row2">
         <div class="field">
           <label>SSD / HDD</label>
           <select id="fStorage">
@@ -191,40 +214,36 @@
             </optgroup>
           </select>
         </div>
-        <div class="field">
-          <label>OS</label>
-          <select id="fOS">
-            <option value="">— არ არის მითითებული —</option>
-            <optgroup label="Windows">
-              <option>Windows 11 Home</option>
-              <option>Windows 11 Pro</option>
-              <option>Windows 10 Home</option>
-              <option>Windows 10 Pro</option>
-              <option>Windows 8.1</option>
-              <option>Windows 7</option>
-            </optgroup>
-            <optgroup label="სხვა">
-              <option>macOS</option>
-              <option>Linux</option>
-              <option>Chrome OS</option>
-              <option>No OS</option>
-            </optgroup>
-          </select>
-        </div>
       </div>
       <div class="row2">
-        <div class="field">
-          <label>GPU <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-          <input id="fGPU" type="text" placeholder="მაგ: NVIDIA RTX 3060 / Integrated">
-        </div>
         <div class="field">
           <label>ეკრანი <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
           <input id="fScreen" type="text" placeholder="მაგ: 15.6&quot; FHD IPS 144Hz">
         </div>
+        <div class="field">
+          <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
+          <input id="fBattery" type="text" placeholder="მაგ: 72Wh, 8 საათი / 89%">
+        </div>
       </div>
       <div class="field">
-        <label>ბატარეა <span style="font-weight:400;color:var(--muted)">— არასავალდებულო</span></label>
-        <input id="fBattery" type="text" placeholder="მაგ: 72Wh, 8 საათი / 89%">
+        <label>OS</label>
+        <select id="fOS">
+          <option value="">— არ არის მითითებული —</option>
+          <optgroup label="Windows">
+            <option>Windows 11 Home</option>
+            <option>Windows 11 Pro</option>
+            <option>Windows 10 Home</option>
+            <option>Windows 10 Pro</option>
+            <option>Windows 8.1</option>
+            <option>Windows 7</option>
+          </optgroup>
+          <optgroup label="სხვა">
+            <option>macOS</option>
+            <option>Linux</option>
+            <option>Chrome OS</option>
+            <option>No OS</option>
+          </optgroup>
+        </select>
       </div>
 
       <div class="field">

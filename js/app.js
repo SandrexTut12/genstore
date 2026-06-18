@@ -315,12 +315,12 @@ function openProduct(id) {
   const s = p.specs || {};
   const specRows = [
     ["CPU",      s.cpu],
+    ["GPU",      s.gpu],
     ["RAM",      s.ram],
     ["SSD/HDD",  s.storage],
-    ["OS",       s.os],
-    ["GPU",      s.gpu],
     ["ეკრანი",   s.screen],
-    ["ბატარეა",  s.battery]
+    ["ბატარეა",  s.battery],
+    ["OS",       s.os]
   ].filter(([, v]) => v);
   const specTable = specRows.length
     ? `<div class="spec-table">${specRows.map(([k, v]) =>
