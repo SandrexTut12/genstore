@@ -183,7 +183,7 @@ function renderGrid() {
     const s = p.specs || {};
     const SPEC_CLR = {
       cpu:"#60AAFF", gpu:"#A78BFA", ram:"#00BAFF",
-      storage:"#FFB830", screen:"#2DD4BF", os:"#94A3B8"
+      storage:"#FFB830", screen:"#2DD4BF", resolution:"#F472B6", os:"#94A3B8"
     };
     function mkIcon(key, val) {
       if (key === "battery") {
@@ -203,19 +203,21 @@ function renderGrid() {
         gpu:     `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="2"/><rect x="5" y="10" width="4" height="4" rx="1"/><rect x="13" y="10" width="4" height="4" rx="1"/><path d="M6 6V4M10 6V4M14 6V4M18 6V4"/></svg>`,
         ram:     `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="1" y="7" width="22" height="10" rx="1"/><path d="M6 7V5M10 7V5M14 7V5M18 7V5M6 17v2M10 17v2M14 17v2M18 17v2"/></svg>`,
         storage: `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><ellipse cx="12" cy="6" rx="10" ry="3"/><path d="M2 6v6c0 1.66 4.48 3 10 3s10-1.34 10-3V6"/><path d="M2 12v6c0 1.66 4.48 3 10 3s10-1.34 10-3v-6"/></svg>`,
-        screen:  `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
-        os:      `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>`
+        screen:      `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+        resolution:  `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M7 8h10M7 12h6"/></svg>`,
+        os:          `<svg class="si" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>`
       };
       return icons[key] || "";
     }
     const specDefs = [
-      { key:"cpu",     val: s.cpu },
-      { key:"gpu",     val: s.gpu },
-      { key:"ram",     val: s.ram },
-      { key:"storage", val: s.storage },
-      { key:"screen",  val: s.screen },
-      { key:"battery", val: s.battery },
-      { key:"os",      val: s.os }
+      { key:"cpu",        val: s.cpu },
+      { key:"gpu",        val: s.gpu },
+      { key:"ram",        val: s.ram },
+      { key:"storage",    val: s.storage },
+      { key:"screen",     val: s.screen },
+      { key:"resolution", val: s.resolution },
+      { key:"battery",    val: s.battery },
+      { key:"os",         val: s.os }
     ].filter(x => x.val);
     const specLine = specDefs.length
       ? `<div class="spec-chips">${specDefs.map(x => {
