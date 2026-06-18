@@ -3,7 +3,10 @@
     "allow": [
       "PowerShell(python --version)",
       "Bash(node --input-type=module)",
-      "Bash(ls \"C:\\\\Users\\\\tutar\\\\OneDrive\\\\Desktop\\\\Genstore\\\\\")"
+      "Bash(ls \"C:\\\\Users\\\\tutar\\\\OneDrive\\\\Desktop\\\\Genstore\\\\\")",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }

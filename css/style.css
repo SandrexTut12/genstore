@@ -585,10 +585,9 @@ footer {
 .crop-counter { font-size: 13px; color: var(--muted); font-weight: 400; }
 .crop-canvas-wrap {
   background: #0a0e18;
-  max-height: 58vh; min-height: 280px;
-  overflow: hidden; position: relative;
+  height: 58vh; min-height: 280px;
+  position: relative; overflow: hidden;
 }
-.crop-canvas-wrap img { display: block; max-width: 100%; }
 .crop-bar {
   display: flex; align-items: center; flex-wrap: wrap;
   gap: 8px; padding: 12px 16px;
