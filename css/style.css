@@ -661,27 +661,39 @@ footer.footer-hidden { transform: translateY(100%); }
 
 /* ---- collapsible filter panel ---- */
 .filter-panel {
-  max-width: 1180px; margin: 0 auto; padding: 0 20px;
-  display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease;
+  margin: 0; padding: 0;
+  display: grid; grid-template-rows: 0fr; transition: grid-template-rows .28s ease;
+  border-bottom: 1px solid transparent; transition: grid-template-rows .28s ease, border-color .28s;
 }
-.filter-panel.open { grid-template-rows: 1fr; }
+.filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
 .filter-panel > div { overflow: hidden; }
-.fp-inner { padding: 10px 0 14px; }
+.fp-inner {
+  max-width: 1180px; margin: 0 auto; padding: 14px 20px 16px;
+  background: var(--surface); border-radius: 0 0 16px 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.07);
+}
 .fp-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
 
-.fp-sel-wrap { display: flex; flex-direction: column; gap: 4px; }
-.fp-sel-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.fp-sel-wrap { display: flex; flex-direction: column; gap: 5px; }
+.fp-sel-label {
+  font-size: 10px; font-weight: 700; color: var(--brand);
+  text-transform: uppercase; letter-spacing: .08em; white-space: nowrap;
+  padding-left: 2px;
+}
 .fp-select {
-  background: var(--surface); color: var(--ink);
-  border: 1px solid var(--line); border-radius: 10px;
-  padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
-  font-family: inherit; appearance: none; -webkit-appearance: none; min-width: 110px;
+  background: var(--bg); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 8px 32px 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; appearance: none; -webkit-appearance: none; min-width: 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  transition: border-color .15s;
 }
 .fp-select:focus { outline: none; border-color: var(--brand); }
-.fp-select.active { border-color: var(--brand); color: var(--brand); }
+.fp-select.active, .fp-select:not([value=""]):has(option:checked:not([value=""])) { border-color: var(--brand); }
 
-.fp-price-wrap { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 180px; }
-.fb-price-label { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; font-family: "Space Grotesk", sans-serif; }
+.fp-price-wrap { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 180px; }
+.fb-price-label { font-size: 10px; font-weight: 700; color: var(--brand); white-space: nowrap; text-transform: uppercase; letter-spacing: .08em; padding-left: 2px; }
 .range-wrap { position: relative; flex: 1; height: 30px; min-width: 130px; }
 .range-track {
   position: absolute; top: 50%; left: 0; right: 0; height: 5px;
@@ -705,13 +717,13 @@ footer.footer-hidden { transform: translateY(100%); }
   background: var(--brand); border: 2px solid var(--surface); cursor: pointer;
 }
 .fb-clear {
-  display: none; align-items: center; gap: 5px;
-  background: var(--red-soft); color: var(--red); border: none;
-  padding: 7px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
-  font-family: inherit; transition: filter .15s;
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: var(--red-soft); color: var(--red); border: 1.5px solid transparent;
+  cursor: pointer; transition: border-color .15s, background .15s; margin-bottom: 1px;
 }
 .fb-clear.show { display: inline-flex; }
-.fb-clear:hover { filter: brightness(.95); }
+.fb-clear:hover { border-color: var(--red); }
 
 /* ---- discount badge + sale timer (cards) ---- */
 .badge-discount {
