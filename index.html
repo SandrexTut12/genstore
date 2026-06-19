@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260619k">
+  <link rel="stylesheet" href="css/style.css?v=20260619l">
 </head>
 <body>
 
@@ -51,8 +51,7 @@
     </div>
   </header>
 
-  <div class="chips-wrap">
-    <div class="chips" id="chips"></div>
+  <div class="catbar">
     <button class="fb-toggle" id="fbToggle" onclick="toggleFilters()">
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
       <span>ფილტრი</span>
@@ -62,10 +61,15 @@
 
   <div class="filter-panel" id="filterPanel">
     <div class="fp-inner">
-      <div class="fp-row">
 
-        <div class="fp-sel-wrap">
-          <label class="fp-sel-label">დახარისხება</label>
+      <!-- row 1: categories + sort -->
+      <div class="fp-row fp-row-top">
+        <div class="fp-section">
+          <span class="fp-sel-label">კატეგორია</span>
+          <div class="chips fp-chips" id="chips"></div>
+        </div>
+        <div class="fp-sel-wrap fp-sort-wrap">
+          <span class="fp-sel-label">დახარისხება</span>
           <select id="sortSelect" class="fp-select" onchange="onSort(this.value)">
             <option value="new">უახლესი</option>
             <option value="price-asc">ფასი ↑ იაფი</option>
@@ -73,37 +77,15 @@
             <option value="discount">ფასდაკლება</option>
           </select>
         </div>
+      </div>
 
-        <div class="fp-sel-wrap">
-          <label class="fp-sel-label">CPU</label>
-          <select id="fpCpu" class="fp-select" onchange="onSpecSelect('cpu',this.value)">
-            <option value="">ყველა</option>
-          </select>
-        </div>
+      <!-- row 2: spec chip groups -->
+      <div class="fp-row fp-row-specs" id="fpSpecsRow"></div>
 
-        <div class="fp-sel-wrap">
-          <label class="fp-sel-label">RAM</label>
-          <select id="fpRam" class="fp-select" onchange="onSpecSelect('ram',this.value)">
-            <option value="">ყველა</option>
-          </select>
-        </div>
-
-        <div class="fp-sel-wrap">
-          <label class="fp-sel-label">SSD</label>
-          <select id="fpStorage" class="fp-select" onchange="onSpecSelect('storage',this.value)">
-            <option value="">ყველა</option>
-          </select>
-        </div>
-
-        <div class="fp-sel-wrap">
-          <label class="fp-sel-label">ეკრანი</label>
-          <select id="fpScreen" class="fp-select" onchange="onSpecSelect('screen',this.value)">
-            <option value="">ყველა</option>
-          </select>
-        </div>
-
+      <!-- row 3: price + clear -->
+      <div class="fp-row fp-row-price">
         <div class="fp-price-wrap">
-          <label class="fp-sel-label">ფასი: <span id="priceLabel">—</span></label>
+          <span class="fp-sel-label">ფასი: <span id="priceLabel">—</span></span>
           <div class="range-wrap" id="rangeWrap">
             <div class="range-track"></div>
             <div class="range-fill" id="rangeFill"></div>
@@ -111,12 +93,12 @@
             <input type="range" id="priceMaxRange" oninput="onPriceRange('max')">
           </div>
         </div>
-
         <button class="fb-clear" id="fbClear" onclick="clearFilters()" title="გასუფთავება">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          <span>გასუფთავება</span>
         </button>
-
       </div>
+
     </div>
   </div>
 
@@ -501,6 +483,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260619j"></script>
+<script src="js/app.js?v=20260619l"></script>
 </body>
 </html>

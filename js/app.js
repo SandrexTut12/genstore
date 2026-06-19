@@ -136,7 +136,7 @@ let PRODUCTS    = [];
 let activeCat   = "ყველა";
 let searchQ     = "";
 let sortBy      = "new";
-let specFilter  = null;   // { key: "cpu"|"ram"|"storage", val: "i5" }
+let specFilters = { cpu: new Set(), ram: new Set(), storage: new Set(), screen: new Set() };
 let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
@@ -220,9 +220,10 @@ function getFiltered() {
       if (p.hidden) return false;                 // draft — not shown on storefront
       if (activeCat !== "ყველა" && p.cat !== activeCat) return false;
       if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
-      if (specFilter) {
-        const sv = (p.specs || {})[specFilter.key] || "";
-        if (!sv.toLowerCase().includes(specFilter.val.toLowerCase())) return false;
+      for (const [key, vals] of Object.entries(specFilters)) {
+        if (!vals.size) continue;
+        const sv = ((p.specs || {})[key] || "").toLowerCase();
+        if (![...vals].some(v => sv.includes(v.toLowerCase()))) return false;
       }
       if (searchQ) {
         const s   = p.specs || {};
@@ -283,7 +284,8 @@ function syncPriceUI() {
     fill.style.left = "0%"; fill.style.right = "0%";
   }
   const clear = $id("fbClear");
-  const dirty = priceMin !== priceFloor || priceMax !== priceCeil || specFilter !== null;
+  const specDirty = Object.values(specFilters).some(s => s.size > 0);
+  const dirty = priceMin !== priceFloor || priceMax !== priceCeil || specDirty || activeCat !== "ყველა";
   if (clear) clear.classList.toggle("show", dirty);
 }
 
@@ -310,41 +312,47 @@ function toggleFilters() {
   const btn   = $id("fbToggle");
   const open  = panel.classList.toggle("open");
   btn.classList.toggle("active", open);
-  if (open) populateSpecSelects();
+  if (open) renderSpecChips();
 }
 
-function populateSpecSelects() {
+function renderSpecChips() {
+  const box = $id("fpSpecsRow");
+  if (!box) return;
   const visible = PRODUCTS.filter(p => !p.hidden);
   const groups = [
-    { key: "cpu",     id: "fpCpu" },
-    { key: "ram",     id: "fpRam" },
-    { key: "storage", id: "fpStorage" },
-    { key: "screen",  id: "fpScreen" },
+    { key: "cpu",     label: "CPU" },
+    { key: "ram",     label: "RAM" },
+    { key: "storage", label: "SSD" },
+    { key: "screen",  label: "ეკრანი" },
   ];
-  for (const g of groups) {
-    const sel = $id(g.id);
-    if (!sel) continue;
-    const cur = specFilter && specFilter.key === g.key ? specFilter.val : "";
+  box.innerHTML = groups.map(g => {
     const vals = [...new Set(visible.map(p => (p.specs||{})[g.key]).filter(Boolean))].sort();
-    sel.innerHTML = `<option value="">ყველა</option>` +
-      vals.map(v => `<option value="${esc(v)}"${v===cur?" selected":""}>${esc(v)}</option>`).join("");
-  }
+    if (!vals.length) return "";
+    const chips = vals.map(v => {
+      const on = specFilters[g.key].has(v);
+      return `<button class="fp-chip${on?" active":""}" onclick="toggleSpecChip('${g.key}','${v.replace(/'/g,"\\'")}')">${esc(v)}</button>`;
+    }).join("");
+    return `<div class="fp-spec-group"><span class="fp-spec-label">${g.label}</span>${chips}</div>`;
+  }).join("");
 }
 
-function onSpecSelect(key, val) {
-  specFilter = val ? { key, val } : null;
+function toggleSpecChip(key, val) {
+  const s = specFilters[key];
+  s.has(val) ? s.delete(val) : s.add(val);
   storePage = 1;
+  renderSpecChips();
   syncPriceUI();
   renderGrid();
 }
 
 function clearFilters() {
-  specFilter = null;
+  activeCat = "ყველა";
+  renderChips();
   priceMin = priceFloor; priceMax = priceCeil;
   const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
   if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
-  ["fpCpu","fpRam","fpStorage","fpScreen"].forEach(id => { const s=$id(id); if(s) s.value=""; });
-  populateSpecSelects();
+  Object.values(specFilters).forEach(s => s.clear());
+  renderSpecChips();
   storePage = 1;
   syncPriceUI();
   renderGrid();
