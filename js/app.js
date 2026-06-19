@@ -15,18 +15,35 @@ const CONFIG = {
 
 // ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
 const SPEC_OPTS = {
+  brand: [
+    "Apple","Samsung","Dell","HP","Lenovo","Asus","Acer","MSI",
+    "Sony","LG","Huawei","Xiaomi","Microsoft","Toshiba","Razer",
+    "Google","Nokia","OnePlus","Nintendo","Alienware","Gigabyte","Panasonic","Fujitsu"
+  ],
   cpu: [
     "Intel Core i3","Intel Core i5","Intel Core i7","Intel Core i9",
     "Intel Core Ultra 5","Intel Core Ultra 7","Intel Celeron","Intel Pentium",
     "AMD Ryzen 3","AMD Ryzen 5","AMD Ryzen 7","AMD Ryzen 9","AMD Athlon","Snapdragon"
   ],
+  gpu: ["Integrated","NVIDIA","AMD"],
   ram: ["4GB","8GB","12GB","16GB","32GB","64GB"],
   storage: [
     "128GB M.2 SSD","256GB M.2 SSD","512GB M.2 SSD","1TB M.2 SSD",
     "128GB SATA SSD","256GB SATA SSD","512GB SATA SSD","1TB SATA SSD",
     "128GB HDD","256GB HDD","512GB HDD","1TB HDD"
   ],
-  screen: ["11.6\"","13.3\"","13.5\"","14\"","15.6\"","16\"","17.3\""]
+  screen: ["11.6\"","13.3\"","13.5\"","14\"","15.6\"","16\"","17.3\""],
+  resolution: [
+    "1280×800","1366×768","1600×900",
+    "1920×1080","1920×1200",
+    "2560×1440","2560×1600","3440×1440",
+    "2880×1800","3000×2000","3024×1964",
+    "3840×2160"
+  ],
+  os: [
+    "Windows 11 Home","Windows 11 Pro","Windows 10 Home","Windows 10 Pro",
+    "Windows 8.1","Windows 7","macOS","Linux","Chrome OS","No OS"
+  ]
 };
 
 // ============ CONSTANTS ============
@@ -152,7 +169,7 @@ let PRODUCTS    = [];
 let activeCat   = "ყველა";
 let searchQ     = "";
 let sortBy      = "new";
-let specFilters = { cpu: new Set(), ram: new Set(), storage: new Set(), screen: new Set() };
+let specFilters = { brand: new Set(), cpu: new Set(), gpu: new Set(), ram: new Set(), storage: new Set(), screen: new Set(), resolution: new Set(), os: new Set() };
 let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
@@ -238,7 +255,9 @@ function getFiltered() {
       if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
       for (const [key, vals] of Object.entries(specFilters)) {
         if (!vals.size) continue;
-        const sv = ((p.specs || {})[key] || "").toLowerCase();
+        const sv = key === "brand"
+          ? (p.brand || "").toLowerCase()
+          : ((p.specs || {})[key] || "").toLowerCase();
         if (![...vals].some(v => sv.includes(v.toLowerCase()))) return false;
       }
       if (searchQ) {

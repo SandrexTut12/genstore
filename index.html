@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260619n">
+  <link rel="stylesheet" href="css/style.css?v=20260620a">
 </head>
 <body>
 
@@ -49,38 +49,36 @@
         <span class="label-hide">დაგვიკავშირდით</span>
       </a>
     </div>
-    <div class="bar-filter">
+  </header>
+
+  <!-- Always-visible row: filter toggle + categories + clear + sort -->
+  <div class="cat-bar">
+    <div class="cat-bar-inner">
       <button class="fb-toggle" id="fbToggle" onclick="toggleFilters()">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
         <span>ფილტრი</span>
         <svg class="fb-toggle-arrow" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+      <div class="chips" id="chips"></div>
+      <button class="fb-clear" id="fbClear" onclick="clearFilters()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        გასუფთავება
+      </button>
+      <select id="sortSelect" class="fp-select" onchange="onSort(this.value)">
+        <option value="new">უახლესი</option>
+        <option value="price-asc">ფასი ↑ იაფი</option>
+        <option value="price-desc">ფასი ↓ ძვირი</option>
+        <option value="discount">ფასდაკლება</option>
+      </select>
     </div>
-  </header>
+  </div>
 
+  <!-- Collapsible spec filter panel -->
   <div class="filter-panel" id="filterPanel">
     <div><!-- overflow wrapper -->
     <div class="fp-inner">
-
-      <!-- row 1: categories + sort -->
-      <div class="fp-row-top">
-        <div class="fp-cats-wrap">
-          <span class="fp-lbl">კატეგორია</span>
-          <div class="chips" id="chips"></div>
-        </div>
-        <div class="fp-sort-wrap">
-          <span class="fp-lbl">დახარისხება</span>
-          <select id="sortSelect" class="fp-select" onchange="onSort(this.value)">
-            <option value="new">უახლესი</option>
-            <option value="price-asc">ფასი ↑ იაფი</option>
-            <option value="price-desc">ფასი ↓ ძვირი</option>
-            <option value="discount">ფასდაკლება</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- row 2: spec dropdowns -->
       <div class="fp-dd-row">
+
         <div class="fp-dd" id="fpDd-cpu">
           <button class="fp-dd-btn" onclick="toggleFpDd('cpu')">
             CPU<span class="fp-dd-cnt" id="fpCnt-cpu"></span>
@@ -88,6 +86,7 @@
           </button>
           <div class="fp-dd-list" id="fpList-cpu"></div>
         </div>
+
         <div class="fp-dd" id="fpDd-ram">
           <button class="fp-dd-btn" onclick="toggleFpDd('ram')">
             RAM<span class="fp-dd-cnt" id="fpCnt-ram"></span>
@@ -95,6 +94,7 @@
           </button>
           <div class="fp-dd-list" id="fpList-ram"></div>
         </div>
+
         <div class="fp-dd" id="fpDd-storage">
           <button class="fp-dd-btn" onclick="toggleFpDd('storage')">
             SSD<span class="fp-dd-cnt" id="fpCnt-storage"></span>
@@ -102,12 +102,45 @@
           </button>
           <div class="fp-dd-list" id="fpList-storage"></div>
         </div>
+
         <div class="fp-dd" id="fpDd-screen">
           <button class="fp-dd-btn" onclick="toggleFpDd('screen')">
             ეკრანი<span class="fp-dd-cnt" id="fpCnt-screen"></span>
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="fp-dd-list" id="fpList-screen"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-gpu">
+          <button class="fp-dd-btn" onclick="toggleFpDd('gpu')">
+            GPU<span class="fp-dd-cnt" id="fpCnt-gpu"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-gpu"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-brand">
+          <button class="fp-dd-btn" onclick="toggleFpDd('brand')">
+            ბრენდი<span class="fp-dd-cnt" id="fpCnt-brand"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-brand"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-os">
+          <button class="fp-dd-btn" onclick="toggleFpDd('os')">
+            OS<span class="fp-dd-cnt" id="fpCnt-os"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-os"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-resolution">
+          <button class="fp-dd-btn" onclick="toggleFpDd('resolution')">
+            რეზ.<span class="fp-dd-cnt" id="fpCnt-resolution"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-resolution"></div>
         </div>
 
         <!-- price inline -->
@@ -121,12 +154,7 @@
           </div>
         </div>
 
-        <button class="fb-clear" id="fbClear" onclick="clearFilters()">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          გასუფთავება
-        </button>
       </div>
-
     </div>
     </div>
   </div>
@@ -512,6 +540,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260619m"></script>
+<script src="js/app.js?v=20260620a"></script>
 </body>
 </html>
