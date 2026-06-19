@@ -232,7 +232,12 @@ function getFiltered() {
       // sold always sink to the bottom
       const as = !!a.sold, bs = !!b.sold;
       if (as !== bs) return as ? 1 : -1;
-      if (as && bs)  return (b.soldAt || 0) - (a.soldAt || 0);
+      if (as && bs) {
+        if (sortBy === "price-asc")  return a.price - b.price;
+        if (sortBy === "price-desc") return b.price - a.price;
+        if (sortBy === "discount")   return discountPct(b) - discountPct(a);
+        return (b.soldAt || 0) - (a.soldAt || 0);
+      }
       if (sortBy === "price-asc")  return a.price - b.price;
       if (sortBy === "price-desc") return b.price - a.price;
       if (sortBy === "discount")   return discountPct(b) - discountPct(a);
