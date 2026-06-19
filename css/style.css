@@ -222,6 +222,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .pg-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
 .pg-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 .pg-arrow { font-size: 16px; }
+.pg-btn:disabled { opacity: .3; cursor: default; pointer-events: none; }
 .pg-dots { color: var(--muted); padding: 0 4px; line-height: 40px; }
 
 /* ---- empty ---- */

@@ -413,29 +413,27 @@ function renderGrid() {
   startCountdowns();
 
   const pager = $id("store-pagination");
-  if (totalPages > 1) {
+  if (totalPages <= 1) {
+    pager.innerHTML = `<button class="pg-btn active">1</button>`;
+    pager.style.display = "flex";
+  } else {
     const maxVisible = 5;
     let start = Math.max(1, storePage - Math.floor(maxVisible / 2));
     let end   = Math.min(totalPages, start + maxVisible - 1);
     if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
 
     let btns = "";
-    if (storePage > 1)
-      btns += `<button class="pg-btn pg-arrow" onclick="setStorePage(${storePage - 1})">&#8592;</button>`;
+    btns += `<button class="pg-btn pg-arrow"${storePage === 1 ? " disabled" : ` onclick="setStorePage(${storePage - 1})"`}>&#8592;</button>`;
     if (start > 1)
       btns += `<button class="pg-btn" onclick="setStorePage(1)">1</button>${start > 2 ? '<span class="pg-dots">…</span>' : ""}`;
     for (let i = start; i <= end; i++)
       btns += `<button class="pg-btn${i === storePage ? " active" : ""}" onclick="setStorePage(${i})">${i}</button>`;
     if (end < totalPages)
       btns += `${end < totalPages - 1 ? '<span class="pg-dots">…</span>' : ""}<button class="pg-btn" onclick="setStorePage(${totalPages})">${totalPages}</button>`;
-    if (storePage < totalPages)
-      btns += `<button class="pg-btn pg-arrow" onclick="setStorePage(${storePage + 1})">&#8594;</button>`;
+    btns += `<button class="pg-btn pg-arrow"${storePage === totalPages ? " disabled" : ` onclick="setStorePage(${storePage + 1})"`}>&#8594;</button>`;
 
     pager.innerHTML = btns;
     pager.style.display = "flex";
-  } else {
-    pager.innerHTML = "";
-    pager.style.display = "none";
   }
 }
 
