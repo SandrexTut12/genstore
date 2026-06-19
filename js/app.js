@@ -470,9 +470,23 @@ function showSkeletons(n = 8) {
 }
 
 // ============ PRODUCT MODAL ============
-// opening just sets the URL hash → route() renders (so links are shareable)
+// real Firestore id is the part after the last dash of a slug ("mac-air-ID" → "ID")
+function idFromSlug(seg) {
+  const raw = decodeURIComponent(seg || "");
+  return raw.includes("-") ? raw.slice(raw.lastIndexOf("-") + 1) : raw;
+}
+function onPagesHost() { return location.hostname.endsWith("github.io"); }
+
+// opening updates the URL → on Cloudflare a pretty /p/<slug>-<id>, on GitHub Pages a hash
 function openProduct(id) {
-  location.hash = "#product/" + encodeURIComponent(id);
+  if (onPagesHost()) {
+    location.hash = "#product/" + encodeURIComponent(id);   // → hashchange → route()
+    return;
+  }
+  const p = PRODUCTS.find(x => x.id === id);
+  const slug = p ? slugify(p.title) : "";
+  history.pushState({ pid: id }, "", "/p/" + (slug ? slug + "-" + id : id));
+  renderProductModal(id);
 }
 
 function renderProductModal(id) {
@@ -661,7 +675,10 @@ function closeModalDom() {
 
 function closeModal() {
   if (location.hash.startsWith("#product/")) {
-    location.hash = "";   // → route() clears the modal
+    location.hash = "";              // → hashchange → route() clears it
+  } else if (location.pathname.startsWith("/p/")) {
+    history.pushState({}, "", "/");  // back to clean root
+    closeModalDom();
   } else {
     closeModalDom();
   }
@@ -725,16 +742,19 @@ function route() {
     return;
   }
 
-  // product deep-link (shareable URL)
+  // product deep-link — hash (GitHub Pages) or pretty path (Cloudflare)
+  const pm = location.pathname.match(/^\/p\/([^\/]+)\/?$/);
   if (h.startsWith("#product/")) {
-    const id = decodeURIComponent(h.slice("#product/".length));
-    renderProductModal(id);
+    renderProductModal(decodeURIComponent(h.slice("#product/".length)));
+  } else if (pm) {
+    renderProductModal(idFromSlug(pm[1]));
   } else {
     closeModalDom();
   }
 }
 
 window.addEventListener("hashchange", route);
+window.addEventListener("popstate", route);
 
 // footer: visible only at very top or very bottom, hidden in between
 (function() {

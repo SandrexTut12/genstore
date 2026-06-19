@@ -34,7 +34,21 @@ async function fetchFields(id) {
   return (await r.json()).fields || null;
 }
 
-async function productPage(id, origin, selfPath) {
+const CRAWLER_RE = /facebookexternalhit|facebot|twitterbot|discordbot|telegram|whatsapp|slackbot|linkedinbot|embedly|pinterest|redditbot|vkshare|skypeuripreview|bot\b|crawler|spider|preview/i;
+
+async function productPage(id, origin, selfPath, request, env) {
+  const ua = request.headers.get("user-agent") || "";
+  // real visitors get the actual app so the pretty /p/<slug> URL stays in the bar;
+  // crawlers get lightweight OG tags below.
+  if (!CRAWLER_RE.test(ua)) {
+    const res = await env.ASSETS.fetch(new Request(origin + "/index.html", request));
+    let html = await res.text();
+    if (!/<base\s/i.test(html)) html = html.replace(/<head>/i, '<head><base href="/">');
+    return new Response(html, {
+      headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" }
+    });
+  }
+
   const appUrl = origin + "/#product/" + encodeURIComponent(id);
   const selfUrl = origin + (selfPath || ("/p/" + encodeURIComponent(id)));
   let p = null;
@@ -126,7 +140,7 @@ export default {
     const origin = url.origin;
 
     let m = url.pathname.match(/^\/p\/([^\/]+)\/?$/);
-    if (m) return productPage(extractId(m[1]), origin, url.pathname);
+    if (m) return productPage(extractId(m[1]), origin, url.pathname, request, env);
 
     m = url.pathname.match(/^\/og-image\/([^\/]+)\/?$/);
     if (m) return productImage(extractId(m[1]), origin);
