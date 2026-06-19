@@ -140,8 +140,7 @@ header.bar {
   max-width: 1180px; margin: 0 auto; padding: 8px 20px;
   display: flex; align-items: center; gap: 10px;
 }
-.cat-bar-inner .chips { flex: 1; overflow-x: auto; flex-wrap: nowrap; }
-.cat-bar-inner .fp-select { flex-shrink: 0; }
+.cat-bar-inner .fp-select { flex-shrink: 0; margin-left: auto; }
 
 /* ---- chips (category, inside filter panel) ---- */
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }

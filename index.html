@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260620a">
+  <link rel="stylesheet" href="css/style.css?v=20260620b">
 </head>
 <body>
 
@@ -59,7 +59,6 @@
         <span>ფილტრი</span>
         <svg class="fb-toggle-arrow" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
-      <div class="chips" id="chips"></div>
       <button class="fb-clear" id="fbClear" onclick="clearFilters()">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         გასუფთავება
@@ -79,12 +78,36 @@
     <div class="fp-inner">
       <div class="fp-dd-row">
 
+        <div class="fp-dd" id="fpDd-cat">
+          <button class="fp-dd-btn" onclick="toggleFpDd('cat')">
+            კატეგორია<span class="fp-dd-cnt" id="fpCnt-cat"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-cat"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-brand">
+          <button class="fp-dd-btn" onclick="toggleFpDd('brand')">
+            ბრენდი<span class="fp-dd-cnt" id="fpCnt-brand"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-brand"></div>
+        </div>
+
         <div class="fp-dd" id="fpDd-cpu">
           <button class="fp-dd-btn" onclick="toggleFpDd('cpu')">
             CPU<span class="fp-dd-cnt" id="fpCnt-cpu"></span>
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="fp-dd-list" id="fpList-cpu"></div>
+        </div>
+
+        <div class="fp-dd" id="fpDd-gpu">
+          <button class="fp-dd-btn" onclick="toggleFpDd('gpu')">
+            GPU<span class="fp-dd-cnt" id="fpCnt-gpu"></span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list" id="fpList-gpu"></div>
         </div>
 
         <div class="fp-dd" id="fpDd-ram">
@@ -111,20 +134,12 @@
           <div class="fp-dd-list" id="fpList-screen"></div>
         </div>
 
-        <div class="fp-dd" id="fpDd-gpu">
-          <button class="fp-dd-btn" onclick="toggleFpDd('gpu')">
-            GPU<span class="fp-dd-cnt" id="fpCnt-gpu"></span>
+        <div class="fp-dd" id="fpDd-resolution">
+          <button class="fp-dd-btn" onclick="toggleFpDd('resolution')">
+            რეზოლუცია<span class="fp-dd-cnt" id="fpCnt-resolution"></span>
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="fp-dd-list" id="fpList-gpu"></div>
-        </div>
-
-        <div class="fp-dd" id="fpDd-brand">
-          <button class="fp-dd-btn" onclick="toggleFpDd('brand')">
-            ბრენდი<span class="fp-dd-cnt" id="fpCnt-brand"></span>
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div class="fp-dd-list" id="fpList-brand"></div>
+          <div class="fp-dd-list" id="fpList-resolution"></div>
         </div>
 
         <div class="fp-dd" id="fpDd-os">
@@ -133,14 +148,6 @@
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </button>
           <div class="fp-dd-list" id="fpList-os"></div>
-        </div>
-
-        <div class="fp-dd" id="fpDd-resolution">
-          <button class="fp-dd-btn" onclick="toggleFpDd('resolution')">
-            რეზ.<span class="fp-dd-cnt" id="fpCnt-resolution"></span>
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div class="fp-dd-list" id="fpList-resolution"></div>
         </div>
 
         <!-- price inline -->
@@ -540,6 +547,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260620a"></script>
+<script src="js/app.js?v=20260620b"></script>
 </body>
 </html>

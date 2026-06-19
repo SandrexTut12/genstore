@@ -15,6 +15,7 @@ const CONFIG = {
 
 // ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
 const SPEC_OPTS = {
+  cat: ["ლეპტოპი","ტელეფონი","ტაბლეტი","კონსოლი","აქსესუარი","სხვა"],
   brand: [
     "Apple","Samsung","Dell","HP","Lenovo","Asus","Acer","MSI",
     "Sony","LG","Huawei","Xiaomi","Microsoft","Toshiba","Razer",
@@ -169,7 +170,7 @@ let PRODUCTS    = [];
 let activeCat   = "ყველა";
 let searchQ     = "";
 let sortBy      = "new";
-let specFilters = { brand: new Set(), cpu: new Set(), gpu: new Set(), ram: new Set(), storage: new Set(), screen: new Set(), resolution: new Set(), os: new Set() };
+let specFilters = { cat: new Set(), brand: new Set(), cpu: new Set(), gpu: new Set(), ram: new Set(), storage: new Set(), screen: new Set(), resolution: new Set(), os: new Set() };
 let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
@@ -227,8 +228,10 @@ function toast(msg) {
 
 // ============ STOREFRONT ============
 function renderChips() {
+  const el = $id("chips");
+  if (!el) return;
   const cats = ["ყველა", ...Array.from(new Set(PRODUCTS.map(p => p.cat)))];
-  $id("chips").innerHTML = cats.map(c => {
+  el.innerHTML = cats.map(c => {
     const active = c === activeCat ? " active" : "";
     return `<button class="chip${active}" onclick="setCat(this)">${esc(c)}</button>`;
   }).join("");
@@ -251,11 +254,12 @@ function getFiltered() {
   return PRODUCTS
     .filter(p => {
       if (p.hidden) return false;                 // draft — not shown on storefront
-      if (activeCat !== "ყველა" && p.cat !== activeCat) return false;
       if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
       for (const [key, vals] of Object.entries(specFilters)) {
         if (!vals.size) continue;
-        const sv = key === "brand"
+        const sv = key === "cat"
+          ? (p.cat || "").toLowerCase()
+          : key === "brand"
           ? (p.brand || "").toLowerCase()
           : ((p.specs || {})[key] || "").toLowerCase();
         if (![...vals].some(v => sv.includes(v.toLowerCase()))) return false;
@@ -320,7 +324,7 @@ function syncPriceUI() {
   }
   const clear = $id("fbClear");
   const specDirty = Object.values(specFilters).some(s => s.size > 0);
-  const dirty = priceMin !== priceFloor || priceMax !== priceCeil || specDirty || activeCat !== "ყველა";
+  const dirty = priceMin !== priceFloor || priceMax !== priceCeil || specDirty;
   if (clear) clear.classList.toggle("show", dirty);
 }
 
