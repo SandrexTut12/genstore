@@ -34,8 +34,9 @@ async function fetchFields(id) {
   return (await r.json()).fields || null;
 }
 
-async function productPage(id, origin) {
+async function productPage(id, origin, selfPath) {
   const appUrl = origin + "/#product/" + encodeURIComponent(id);
+  const selfUrl = origin + (selfPath || ("/p/" + encodeURIComponent(id)));
   let p = null;
   try {
     const f = await fetchFields(id);
@@ -71,12 +72,12 @@ async function productPage(id, origin) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${ogImg}">
-<meta property="og:url" content="${origin}/p/${encodeURIComponent(id)}">
+<meta property="og:url" content="${selfUrl}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${ogImg}">
-<link rel="canonical" href="${origin}/p/${encodeURIComponent(id)}">
+<link rel="canonical" href="${selfUrl}">
 <script>
   // redirect real visitors into the app; crawlers (no JS) stay & read OG tags above
   if (!/bot|facebookexternalhit|facebot|twitterbot|discordbot|telegrambot|whatsapp|slackbot|linkedinbot|embedly|preview|crawler|spider/i.test(navigator.userAgent)) {
@@ -112,16 +113,23 @@ async function productImage(id, origin) {
   return Response.redirect(origin + "/assets/favicon-16x16.png", 302);
 }
 
+// the real Firestore id is the part after the last dash (slug has dashes,
+// the uid() id never does). "macbook-air-mqj916c2c9tpd" → "mqj916c2c9tpd"
+function extractId(seg) {
+  const raw = decodeURIComponent(seg).replace(/\.(jpe?g|png|webp)$/i, "");
+  return raw.includes("-") ? raw.slice(raw.lastIndexOf("-") + 1) : raw;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = url.origin;
 
     let m = url.pathname.match(/^\/p\/([^\/]+)\/?$/);
-    if (m) return productPage(decodeURIComponent(m[1]), origin);
+    if (m) return productPage(extractId(m[1]), origin, url.pathname);
 
     m = url.pathname.match(/^\/og-image\/([^\/]+)\/?$/);
-    if (m) return productImage(decodeURIComponent(m[1]), origin);
+    if (m) return productImage(extractId(m[1]), origin);
 
     // everything else → static files
     return env.ASSETS.fetch(request);

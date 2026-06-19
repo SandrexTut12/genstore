@@ -598,15 +598,28 @@ function renderProductModal(id) {
   startCountdowns();
 }
 
+// pretty url slug from a title (real id stays appended at the end)
+function slugify(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
 // share current product — native share sheet or copy link
 async function shareProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   // GitHub Pages can't render per-product previews → use the hash link there.
-  // On Cloudflare (custom domain / *.pages.dev) use /p/<id> for rich previews.
+  // On Cloudflare use /p/<slug>-<id> (pretty slug + real id at the end).
   const onPages = location.hostname.endsWith("github.io");
-  const url = onPages
-    ? location.origin + location.pathname + "#product/" + encodeURIComponent(id)
-    : location.origin + "/p/" + encodeURIComponent(id);
+  let url;
+  if (onPages) {
+    url = location.origin + location.pathname + "#product/" + encodeURIComponent(id);
+  } else {
+    const slug = p ? slugify(p.title) : "";
+    url = location.origin + "/p/" + (slug ? slug + "-" + id : id);
+  }
   const data = {
     title: p ? p.title : "GENSTORE",
     text:  p ? `${p.title} — ${fmtPrice(p.price)}` : "GENSTORE",
