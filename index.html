@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260619c">
+  <link rel="stylesheet" href="css/style.css?v=20260619d">
 </head>
 <body>
 
@@ -56,16 +56,6 @@
   </div>
 
   <div class="filterbar" id="filterbar">
-    <div class="fb-group fb-sort">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-      <select id="sortSelect" onchange="onSort(this.value)">
-        <option value="new">უახლესი</option>
-        <option value="price-asc">ფასი ↑ იაფი</option>
-        <option value="price-desc">ფასი ↓ ძვირი</option>
-        <option value="discount">ფასდაკლებები</option>
-      </select>
-    </div>
-
     <div class="fb-group fb-price">
       <span class="fb-price-label"><span id="priceLabel">—</span></span>
       <div class="range-wrap" id="rangeWrap">
@@ -74,6 +64,16 @@
         <input type="range" id="priceMinRange" oninput="onPriceRange('min')">
         <input type="range" id="priceMaxRange" oninput="onPriceRange('max')">
       </div>
+    </div>
+
+    <div class="fb-group fb-sort">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+      <select id="sortSelect" onchange="onSort(this.value)">
+        <option value="new">უახლესი</option>
+        <option value="price-asc">ფასი ↑ იაფი</option>
+        <option value="price-desc">ფასი ↓ ძვირი</option>
+        <option value="discount">ფასდაკლებები</option>
+      </select>
     </div>
 
     <button class="fb-clear" id="fbClear" onclick="clearFilters()" title="ფილტრის გასუფთავება">
