@@ -133,9 +133,11 @@ header.bar {
 
 /* ---- category bar (always visible, below header) ---- */
 .cat-bar {
-  background: var(--canvas);
+  background: rgba(238, 242, 248, 0.97);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
+html[data-theme="dark"] .cat-bar { background: rgba(7,20,40,0.95); }
 .cat-bar-inner {
   max-width: 1180px; margin: 0 auto; padding: 8px 20px;
   display: flex; align-items: center; gap: 10px;
@@ -677,6 +679,7 @@ footer.footer-hidden { transform: translateY(100%); }
   display: flex; flex-direction: column; gap: 12px;
   background: var(--surface); border-radius: 0 0 16px 16px;
   box-shadow: 0 6px 24px rgba(0,0,0,.07);
+  border: 1px solid var(--line); border-top: none;
 }
 
 .fp-lbl { font-size: 10px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .08em; }
