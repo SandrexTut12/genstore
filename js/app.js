@@ -272,7 +272,7 @@ function syncPriceUI() {
     fill.style.left = "0%"; fill.style.right = "0%";
   }
   const clear = $id("fbClear");
-  const dirty = sortBy !== "new" || priceMin !== priceFloor || priceMax !== priceCeil;
+  const dirty = priceMin !== priceFloor || priceMax !== priceCeil;
   if (clear) clear.classList.toggle("show", dirty);
 }
 
@@ -295,8 +295,6 @@ function onPriceRange(which) {
 }
 
 function clearFilters() {
-  sortBy = "new";
-  const sel = $id("sortSelect"); if (sel) sel.value = "new";
   priceMin = priceFloor; priceMax = priceCeil;
   const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
   if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
