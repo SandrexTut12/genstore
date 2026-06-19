@@ -470,22 +470,41 @@ function showSkeletons(n = 8) {
 }
 
 // ============ PRODUCT MODAL ============
-// real Firestore id is the part after the last dash of a slug ("mac-air-ID" → "ID")
-function idFromSlug(seg) {
+// ---- pretty slugs from title + specs (no random id). MUST stay identical to worker.js ----
+function slugParts(p) {
+  const s = p.specs || {};
+  return [p.title, s.cpu, s.ram, s.storage].filter(Boolean).join(" ");
+}
+// build id<->slug maps over ALL products; identical names get -2, -3 … by created order
+function slugMaps() {
+  const sorted = PRODUCTS.slice().sort((a, b) =>
+    ((a.created || 0) - (b.created || 0)) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  const counts = {}, byId = {}, bySlug = {};
+  for (const p of sorted) {
+    let base = slugify(slugParts(p)) || p.id;
+    counts[base] = (counts[base] || 0) + 1;
+    const slug = counts[base] === 1 ? base : base + "-" + counts[base];
+    byId[p.id] = slug; bySlug[slug] = p.id;
+  }
+  return { byId, bySlug };
+}
+function slugForId(id) { return slugMaps().byId[id] || id; }
+function idForSlug(seg) {
   const raw = decodeURIComponent(seg || "");
+  const hit = slugMaps().bySlug[raw];
+  if (hit) return hit;
+  // fallback for older links that had the id appended at the end
   return raw.includes("-") ? raw.slice(raw.lastIndexOf("-") + 1) : raw;
 }
 function onPagesHost() { return location.hostname.endsWith("github.io"); }
 
-// opening updates the URL → on Cloudflare a pretty /p/<slug>-<id>, on GitHub Pages a hash
+// opening updates the URL → on Cloudflare a pretty /p/<slug>, on GitHub Pages a hash
 function openProduct(id) {
   if (onPagesHost()) {
     location.hash = "#product/" + encodeURIComponent(id);   // → hashchange → route()
     return;
   }
-  const p = PRODUCTS.find(x => x.id === id);
-  const slug = p ? slugify(p.title) : "";
-  history.pushState({ pid: id }, "", "/p/" + (slug ? slug + "-" + id : id));
+  history.pushState({ pid: id }, "", "/p/" + slugForId(id));
   renderProductModal(id);
 }
 
@@ -631,8 +650,7 @@ async function shareProduct(id) {
   if (onPages) {
     url = location.origin + location.pathname + "#product/" + encodeURIComponent(id);
   } else {
-    const slug = p ? slugify(p.title) : "";
-    url = location.origin + "/p/" + (slug ? slug + "-" + id : id);
+    url = location.origin + "/p/" + slugForId(id);
   }
   const data = {
     title: p ? p.title : "GENSTORE",
@@ -747,7 +765,7 @@ function route() {
   if (h.startsWith("#product/")) {
     renderProductModal(decodeURIComponent(h.slice("#product/".length)));
   } else if (pm) {
-    renderProductModal(idFromSlug(pm[1]));
+    renderProductModal(idForSlug(pm[1]));
   } else {
     closeModalDom();
   }
