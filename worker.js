@@ -41,9 +41,11 @@ async function productPage(id, origin, selfPath, request, env) {
   // real visitors get the actual app so the pretty /p/<slug> URL stays in the bar;
   // crawlers get lightweight OG tags below.
   if (!CRAWLER_RE.test(ua)) {
-    const res = await env.ASSETS.fetch(new Request(origin + "/index.html", request));
+    const res = await env.ASSETS.fetch(new URL("/", request.url).toString());
     let html = await res.text();
-    if (!/<base\s/i.test(html)) html = html.replace(/<head>/i, '<head><base href="/">');
+    if (html && !/<base\s/i.test(html)) {
+      html = html.replace(/<head>/i, '<head><base href="/">');
+    }
     return new Response(html, {
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" }
     });
