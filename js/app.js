@@ -136,6 +136,7 @@ let PRODUCTS    = [];
 let activeCat   = "ყველა";
 let searchQ     = "";
 let sortBy      = "new";
+let specFilter  = null;   // { key: "cpu"|"ram"|"storage", val: "i5" }
 let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
@@ -219,11 +220,15 @@ function getFiltered() {
       if (p.hidden) return false;                 // draft — not shown on storefront
       if (activeCat !== "ყველა" && p.cat !== activeCat) return false;
       if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
+      if (specFilter) {
+        const sv = (p.specs || {})[specFilter.key] || "";
+        if (!sv.toLowerCase().includes(specFilter.val.toLowerCase())) return false;
+      }
       if (searchQ) {
         const s   = p.specs || {};
-      const hay = (p.title + " " + (p.brand || "") + " " + p.cat + " " + (p.desc || "") + " " +
-                   (s.cpu || "") + " " + (s.gpu || "") + " " + (s.ram || "") + " " +
-                   (s.storage || "") + " " + (s.os || "")).toLowerCase();
+        const hay = (p.title + " " + (p.brand || "") + " " + p.cat + " " + (p.desc || "") + " " +
+                     (s.cpu || "") + " " + (s.gpu || "") + " " + (s.ram || "") + " " +
+                     (s.storage || "") + " " + (s.os || "")).toLowerCase();
         if (!hay.includes(searchQ)) return false;
       }
       return true;
@@ -278,7 +283,7 @@ function syncPriceUI() {
     fill.style.left = "0%"; fill.style.right = "0%";
   }
   const clear = $id("fbClear");
-  const dirty = priceMin !== priceFloor || priceMax !== priceCeil;
+  const dirty = priceMin !== priceFloor || priceMax !== priceCeil || specFilter !== null;
   if (clear) clear.classList.toggle("show", dirty);
 }
 
@@ -300,10 +305,52 @@ function onPriceRange(which) {
   renderGrid();
 }
 
+function toggleFilters() {
+  const panel = $id("filterPanel");
+  const btn   = $id("fbToggle");
+  const open  = panel.classList.toggle("open");
+  btn.classList.toggle("active", open);
+  if (open) renderSpecChips();
+}
+
+function renderSpecChips() {
+  const box = $id("fpSpecs");
+  if (!box) return;
+  const visible = PRODUCTS.filter(p => !p.hidden);
+  const groups = [
+    { key: "cpu",     label: "CPU" },
+    { key: "ram",     label: "RAM" },
+    { key: "storage", label: "SSD" },
+  ];
+  let html = "";
+  for (const g of groups) {
+    const vals = [...new Set(visible.map(p => (p.specs||{})[g.key]).filter(Boolean))].sort();
+    if (!vals.length) continue;
+    html += `<div class="fp-spec-group"><span class="fp-spec-label">${g.label}</span>`;
+    for (const v of vals) {
+      const active = specFilter && specFilter.key === g.key && specFilter.val === v;
+      html += `<button class="spec-chip fp-chip${active ? " active" : ""}" onclick="toggleSpecFilter('${g.key}','${v.replace(/'/g,"\\'")}')">` +
+              `${v}</button>`;
+    }
+    html += `</div>`;
+  }
+  box.innerHTML = html || "<span style='color:var(--muted);font-size:13px'>სპეციფიკაციები არ მოიძებნა</span>";
+}
+
+function toggleSpecFilter(key, val) {
+  specFilter = (specFilter && specFilter.key === key && specFilter.val === val) ? null : { key, val };
+  storePage = 1;
+  renderSpecChips();
+  syncPriceUI();
+  renderGrid();
+}
+
 function clearFilters() {
+  specFilter = null;
   priceMin = priceFloor; priceMax = priceCeil;
   const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
   if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
+  renderSpecChips();
   storePage = 1;
   syncPriceUI();
   renderGrid();
