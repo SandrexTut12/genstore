@@ -310,37 +310,30 @@ function toggleFilters() {
   const btn   = $id("fbToggle");
   const open  = panel.classList.toggle("open");
   btn.classList.toggle("active", open);
-  if (open) renderSpecChips();
+  if (open) populateSpecSelects();
 }
 
-function renderSpecChips() {
-  const box = $id("fpSpecs");
-  if (!box) return;
+function populateSpecSelects() {
   const visible = PRODUCTS.filter(p => !p.hidden);
   const groups = [
-    { key: "cpu",     label: "CPU" },
-    { key: "ram",     label: "RAM" },
-    { key: "storage", label: "SSD" },
+    { key: "cpu",     id: "fpCpu" },
+    { key: "ram",     id: "fpRam" },
+    { key: "storage", id: "fpStorage" },
+    { key: "screen",  id: "fpScreen" },
   ];
-  let html = "";
   for (const g of groups) {
+    const sel = $id(g.id);
+    if (!sel) continue;
+    const cur = specFilter && specFilter.key === g.key ? specFilter.val : "";
     const vals = [...new Set(visible.map(p => (p.specs||{})[g.key]).filter(Boolean))].sort();
-    if (!vals.length) continue;
-    html += `<div class="fp-spec-group"><span class="fp-spec-label">${g.label}</span>`;
-    for (const v of vals) {
-      const active = specFilter && specFilter.key === g.key && specFilter.val === v;
-      html += `<button class="spec-chip fp-chip${active ? " active" : ""}" onclick="toggleSpecFilter('${g.key}','${v.replace(/'/g,"\\'")}')">` +
-              `${v}</button>`;
-    }
-    html += `</div>`;
+    sel.innerHTML = `<option value="">ყველა</option>` +
+      vals.map(v => `<option value="${esc(v)}"${v===cur?" selected":""}>${esc(v)}</option>`).join("");
   }
-  box.innerHTML = html || "<span style='color:var(--muted);font-size:13px'>სპეციფიკაციები არ მოიძებნა</span>";
 }
 
-function toggleSpecFilter(key, val) {
-  specFilter = (specFilter && specFilter.key === key && specFilter.val === val) ? null : { key, val };
+function onSpecSelect(key, val) {
+  specFilter = val ? { key, val } : null;
   storePage = 1;
-  renderSpecChips();
   syncPriceUI();
   renderGrid();
 }
@@ -350,7 +343,8 @@ function clearFilters() {
   priceMin = priceFloor; priceMax = priceCeil;
   const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
   if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
-  renderSpecChips();
+  ["fpCpu","fpRam","fpStorage","fpScreen"].forEach(id => { const s=$id(id); if(s) s.value=""; });
+  populateSpecSelects();
   storePage = 1;
   syncPriceUI();
   renderGrid();

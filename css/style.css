@@ -132,9 +132,12 @@ header.bar {
 .btn-sm { padding: 6px 11px; font-size: 13px; white-space: nowrap; }
 
 /* ---- chips ---- */
-.chips-wrap { background: rgba(197, 211, 232, 0.4); border-bottom: 1px solid var(--line); }
+.chips-wrap {
+  background: rgba(197, 211, 232, 0.4); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; padding: 0 20px; gap: 8px;
+}
 .chips {
-  max-width: 1180px; margin: 0 auto; padding: 10px 20px;
+  flex: 1; padding: 10px 0;
   display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
 }
 .chips::-webkit-scrollbar { display: none; }
@@ -645,16 +648,12 @@ footer.footer-hidden { transform: translateY(100%); }
 .crop-ratio-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 .crop-ratio-btn:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
 
-/* ---- filter bar ---- */
-.filterbar {
-  max-width: 1180px; margin: 8px auto 0; padding: 0 20px;
-  display: flex; align-items: center; gap: 12px;
-}
+/* ---- filter toggle & panel ---- */
 .fb-toggle {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
   padding: 7px 12px; font-size: 13px; font-weight: 600; color: var(--ink);
-  cursor: pointer; font-family: inherit; transition: border-color .15s, background .15s;
+  cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s;
 }
 .fb-toggle:hover, .fb-toggle.active { border-color: var(--brand); color: var(--brand); }
 .fb-toggle.active .fb-toggle-arrow { transform: rotate(180deg); }
@@ -666,25 +665,22 @@ footer.footer-hidden { transform: translateY(100%); }
   display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease;
 }
 .filter-panel.open { grid-template-rows: 1fr; }
-.filter-panel > * { overflow: hidden; }
-.fp-inner { padding: 10px 0 12px; display: flex; flex-direction: column; gap: 12px; }
-.fp-row { display: flex; align-items: center; gap: 12px; }
-.fp-specs { display: flex; flex-direction: column; gap: 8px; }
-.fp-spec-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.fp-spec-label { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 32px; text-transform: uppercase; letter-spacing: .05em; }
-.fp-chip { font-size: 12px; padding: 4px 10px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: 600; transition: all .15s; }
-.fp-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
-.fb-group { display: flex; align-items: center; gap: 8px; }
-.fb-sort { margin-left: auto; }
-.fb-sort svg { color: var(--muted); flex-shrink: 0; }
-.fb-sort select {
+.filter-panel > div { overflow: hidden; }
+.fp-inner { padding: 10px 0 14px; }
+.fp-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+
+.fp-sel-wrap { display: flex; flex-direction: column; gap: 4px; }
+.fp-sel-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.fp-select {
   background: var(--surface); color: var(--ink);
   border: 1px solid var(--line); border-radius: 10px;
-  padding: 8px 14px 8px 10px; font-size: 13px; font-weight: 600; cursor: pointer;
-  font-family: inherit; appearance: none; -webkit-appearance: none;
+  padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; appearance: none; -webkit-appearance: none; min-width: 110px;
 }
-.fb-sort select:focus { outline: none; border-color: var(--brand); }
-.fb-price { flex: 1; min-width: 220px; max-width: 360px; }
+.fp-select:focus { outline: none; border-color: var(--brand); }
+.fp-select.active { border-color: var(--brand); color: var(--brand); }
+
+.fp-price-wrap { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 180px; }
 .fb-price-label { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; font-family: "Space Grotesk", sans-serif; }
 .range-wrap { position: relative; flex: 1; height: 30px; min-width: 130px; }
 .range-track {
