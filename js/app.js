@@ -601,7 +601,12 @@ function renderProductModal(id) {
 // share current product — native share sheet or copy link
 async function shareProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
-  const url = location.origin + location.pathname + "#product/" + encodeURIComponent(id);
+  // GitHub Pages can't render per-product previews → use the hash link there.
+  // On Cloudflare (custom domain / *.pages.dev) use /p/<id> for rich previews.
+  const onPages = location.hostname.endsWith("github.io");
+  const url = onPages
+    ? location.origin + location.pathname + "#product/" + encodeURIComponent(id)
+    : location.origin + "/p/" + encodeURIComponent(id);
   const data = {
     title: p ? p.title : "GENSTORE",
     text:  p ? `${p.title} — ${fmtPrice(p.price)}` : "GENSTORE",
