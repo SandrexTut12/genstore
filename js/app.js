@@ -312,6 +312,12 @@ function updatePriceBounds() {
 function syncPriceUI() {
   const label = $id("priceLabel");
   if (label) label.textContent = `${fmtPrice(priceMin)} – ${fmtPrice(priceMax)}`;
+  const priceCnt = $id("fpCntPrice");
+  if (priceCnt && priceCeil > 0) {
+    const atDefault = priceMin === priceFloor && priceMax === priceCeil;
+    priceCnt.textContent = atDefault ? "" : `: ${fmtPrice(priceMin)}–${fmtPrice(priceMax)}`;
+    priceCnt.style.color = atDefault ? "" : "var(--brand)";
+  }
   const fill = $id("rangeFill");
   if (fill && priceCeil > priceFloor) {
     const span = priceCeil - priceFloor;
@@ -331,6 +337,22 @@ function syncPriceUI() {
 function onSort(val) {
   sortBy = val;
   storePage = 1;
+  syncPriceUI();
+  renderGrid();
+}
+
+function selectSort(val) {
+  sortBy = val;
+  storePage = 1;
+  document.querySelectorAll("[id^='sortOpt-']").forEach(b => {
+    b.classList.toggle("active", b.id === "sortOpt-" + val);
+  });
+  const cnt = $id("fpCnt-sort");
+  if (cnt) {
+    const lbls = { new: "", "price-asc": "ფასი ↑", "price-desc": "ფასი ↓", discount: "ფასდ." };
+    cnt.textContent = val !== "new" ? " (" + (lbls[val] || val) + ")" : "";
+    cnt.style.color = val !== "new" ? "var(--brand)" : "";
+  }
   syncPriceUI();
   renderGrid();
 }
@@ -360,6 +382,15 @@ function renderFpDropdowns() {
     renderFpDdList(key);
     updateFpDdBtn(key);
   }
+  document.querySelectorAll("[id^='sortOpt-']").forEach(b => {
+    b.classList.toggle("active", b.id === "sortOpt-" + sortBy);
+  });
+  const sortCnt = $id("fpCnt-sort");
+  if (sortCnt) {
+    const lbls = { new: "", "price-asc": "ფასი ↑", "price-desc": "ფასი ↓", discount: "ფასდ." };
+    sortCnt.textContent = sortBy !== "new" ? " (" + (lbls[sortBy] || sortBy) + ")" : "";
+    sortCnt.style.color = sortBy !== "new" ? "var(--brand)" : "";
+  }
 }
 
 function renderFpDdList(key) {
@@ -384,7 +415,16 @@ function toggleFpDd(key) {
   if (!dd) return;
   const wasOpen = dd.classList.contains("open");
   closeAllFpDd();
-  if (!wasOpen) { dd.classList.add("open"); renderFpDdList(key); }
+  if (!wasOpen) {
+    dd.classList.add("open");
+    if (key === "sort") {
+      document.querySelectorAll("[id^='sortOpt-']").forEach(b => {
+        b.classList.toggle("active", b.id === "sortOpt-" + sortBy);
+      });
+    } else if (key !== "price") {
+      renderFpDdList(key);
+    }
+  }
 }
 
 function closeAllFpDd() {

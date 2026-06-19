@@ -141,7 +141,7 @@ html[data-theme="dark"] .cat-bar { background: rgba(12,32,80,0.6); }
   max-width: 1180px; margin: 0 auto; padding: 8px 20px;
   display: flex; align-items: center; gap: 10px;
 }
-.cat-bar-inner .fp-select { flex-shrink: 0; margin-left: auto; }
+.cat-bar-inner .fb-toggle { margin-left: auto; }
 
 /* ---- chips (category, inside filter panel) ---- */
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -727,10 +727,10 @@ footer.footer-hidden { transform: translateY(100%); }
 .fp-chip:hover { border-color: var(--brand); color: var(--brand); }
 .fp-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 
-/* price inline */
-.fp-price-inline {
-  display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; max-width: 280px;
-}
+/* price + sort dropdowns */
+.fp-dd-list.fp-price-dd { flex-direction: column; gap: 10px; min-width: 240px; padding: 14px 16px; }
+.fp-price-lbl { font-size: 12px; font-weight: 700; color: var(--brand); text-align: center; }
+.fp-dd-list.fp-sort-dd { min-width: 160px; }
 .range-wrap { position: relative; height: 36px; min-width: 130px; }
 .range-track {
   position: absolute; top: 50%; left: 0; right: 0; height: 4px;
