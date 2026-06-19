@@ -230,8 +230,9 @@ function getFiltered() {
     })
     .sort((a, b) => {
       // sold always sink to the bottom
-      if (a.sold !== b.sold) return a.sold ? 1 : -1;
-      if (a.sold && b.sold)  return (b.soldAt || 0) - (a.soldAt || 0);
+      const as = !!a.sold, bs = !!b.sold;
+      if (as !== bs) return as ? 1 : -1;
+      if (as && bs)  return (b.soldAt || 0) - (a.soldAt || 0);
       if (sortBy === "price-asc")  return a.price - b.price;
       if (sortBy === "price-desc") return b.price - a.price;
       if (sortBy === "discount")   return discountPct(b) - discountPct(a);
