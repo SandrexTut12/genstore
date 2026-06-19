@@ -341,18 +341,16 @@ function onSort(val) {
   renderGrid();
 }
 
+const SORT_LBLS = { new: "უახლესი", "price-asc": "ფასი ↑ იაფი", "price-desc": "ფასი ↓ ძვირი", discount: "ფასდაკლება" };
+
 function selectSort(val) {
   sortBy = val;
   storePage = 1;
   document.querySelectorAll("[id^='sortOpt-']").forEach(b => {
     b.classList.toggle("active", b.id === "sortOpt-" + val);
   });
-  const cnt = $id("fpCnt-sort");
-  if (cnt) {
-    const lbls = { new: "", "price-asc": "ფასი ↑", "price-desc": "ფასი ↓", discount: "ფასდ." };
-    cnt.textContent = val !== "new" ? " (" + (lbls[val] || val) + ")" : "";
-    cnt.style.color = val !== "new" ? "var(--brand)" : "";
-  }
+  const lbl = $id("fpSortLbl");
+  if (lbl) lbl.textContent = SORT_LBLS[val] || val;
   syncPriceUI();
   renderGrid();
 }
@@ -385,12 +383,8 @@ function renderFpDropdowns() {
   document.querySelectorAll("[id^='sortOpt-']").forEach(b => {
     b.classList.toggle("active", b.id === "sortOpt-" + sortBy);
   });
-  const sortCnt = $id("fpCnt-sort");
-  if (sortCnt) {
-    const lbls = { new: "", "price-asc": "ფასი ↑", "price-desc": "ფასი ↓", discount: "ფასდ." };
-    sortCnt.textContent = sortBy !== "new" ? " (" + (lbls[sortBy] || sortBy) + ")" : "";
-    sortCnt.style.color = sortBy !== "new" ? "var(--brand)" : "";
-  }
+  const lbl = $id("fpSortLbl");
+  if (lbl) lbl.textContent = SORT_LBLS[sortBy] || sortBy;
 }
 
 function renderFpDdList(key) {

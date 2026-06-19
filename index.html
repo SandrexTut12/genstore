@@ -144,20 +144,6 @@
           <div class="fp-dd-list" id="fpList-os"></div>
         </div>
 
-        <!-- sort dropdown -->
-        <div class="fp-dd" id="fpDd-sort">
-          <button class="fp-dd-btn" onclick="toggleFpDd('sort')">
-            დახარისხება<span class="fp-dd-cnt" id="fpCnt-sort"></span>
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div class="fp-dd-list fp-sort-dd" id="fpList-sort">
-            <button class="fp-chip active" id="sortOpt-new" onclick="selectSort('new')">უახლესი</button>
-            <button class="fp-chip" id="sortOpt-price-asc" onclick="selectSort('price-asc')">ფასი ↑ იაფი</button>
-            <button class="fp-chip" id="sortOpt-price-desc" onclick="selectSort('price-desc')">ფასი ↓ ძვირი</button>
-            <button class="fp-chip" id="sortOpt-discount" onclick="selectSort('discount')">ფასდაკლება</button>
-          </div>
-        </div>
-
         <!-- price dropdown -->
         <div class="fp-dd" id="fpDd-price">
           <button class="fp-dd-btn" onclick="toggleFpDd('price')">
@@ -172,6 +158,20 @@
               <input type="range" id="priceMinRange" oninput="onPriceRange('min')">
               <input type="range" id="priceMaxRange" oninput="onPriceRange('max')">
             </div>
+          </div>
+        </div>
+
+        <!-- sort dropdown -->
+        <div class="fp-dd" id="fpDd-sort">
+          <button class="fp-dd-btn" onclick="toggleFpDd('sort')">
+            <span id="fpSortLbl">უახლესი</span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="fp-dd-list fp-sort-dd" id="fpList-sort">
+            <button class="fp-chip active" id="sortOpt-new" onclick="selectSort('new')">უახლესი</button>
+            <button class="fp-chip" id="sortOpt-price-asc" onclick="selectSort('price-asc')">ფასი ↑ იაფი</button>
+            <button class="fp-chip" id="sortOpt-price-desc" onclick="selectSort('price-desc')">ფასი ↓ ძვირი</button>
+            <button class="fp-chip" id="sortOpt-discount" onclick="selectSort('discount')">ფასდაკლება</button>
           </div>
         </div>
 
