@@ -536,7 +536,7 @@ function renderGrid() {
         }).join("")}</div>`
       : "";
     const soldOverlay = p.sold
-      ? `<div class="sold-overlay"><span>გაიყიდა</span></div>`
+      ? `<div class="sold-overlay"><span>გაყიდულია</span></div>`
       : "";
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
   <div class="imgwrap">${img}${discountBadge}${soldOverlay}</div>
@@ -764,7 +764,7 @@ function renderProductModal(id) {
         ${mTimer}
         ${specTable}
         ${p.desc ? `<div class="desc">${esc(p.desc)}</div>` : ""}
-        ${p.sold ? `<div class="sold-badge-modal">გაიყიდა</div>` : `<div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>`}
+        ${p.sold ? `<div class="sold-badge-modal">გაყიდულია</div>` : `<div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>`}
       </div>
     </div>
   </div>
@@ -1392,7 +1392,7 @@ async function toggleSold(id) {
   updatePriceBounds();
   renderAdminList();
   renderGrid();
-  toast(p.sold ? "გაიყიდა" : "ისევ გამოფინდა");
+  toast(p.sold ? "გაყიდულია" : "ისევ გამოფინდა");
 }
 
 async function deleteProduct(id) {
@@ -1441,12 +1441,12 @@ function renderAdminList() {
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="m">${p.sold ? '<span class="row-sold-tag">გაიყიდა</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
       <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
       <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')" title="რედაქტირება">${icEdit}<span class="blabel">რედაქტ.</span></button>
-      <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')" title="${p.sold ? "ისევ გამოფინე" : "გაიყიდა"}">${p.sold ? icUnsold : icSold}<span class="blabel">${p.sold ? "გამოფინე" : "გაიყიდა"}</span></button>
+      <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')" title="${p.sold ? "ისევ გამოფინე" : "გაყიდულია"}">${p.sold ? icUnsold : icSold}<span class="blabel">${p.sold ? "გამოფინე" : "გაყიდულია"}</span></button>
       <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')" title="წაშლა">${icDel}<span class="blabel">წაშლა</span></button>
     </div>
   </div>
