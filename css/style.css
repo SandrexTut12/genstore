@@ -39,7 +39,7 @@ html[data-theme="dark"] {
 }
 html[data-theme="dark"] header.bar           { background: rgba(7,20,40,0.9); }
 html[data-theme="dark"] .card                { border-color: var(--line); }
-html[data-theme="dark"] .catbar              { background: rgba(12,32,80,0.6); }
+html[data-theme="dark"] .bar-filter          { border-color: rgba(255,255,255,.08); }
 html[data-theme="dark"] .sold-overlay        { background: rgba(7,20,40,.55); }
 html[data-theme="dark"] .overlay             { background: rgba(4,10,24,0.85); }
 html[data-theme="dark"] .modal               { box-shadow: 0 32px 80px rgba(0,0,0,.8); }
@@ -131,11 +131,11 @@ header.bar {
 .btn-danger:hover { background: var(--red-soft); }
 .btn-sm { padding: 6px 11px; font-size: 13px; white-space: nowrap; }
 
-/* ---- catbar (filter toggle only) ---- */
-.catbar {
-  background: rgba(197, 211, 232, 0.4); border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; padding: 8px 20px;
+/* ---- filter row inside header ---- */
+.bar-filter {
+  max-width: 1180px; margin: 0 auto; padding: 0 20px 10px;
 }
+.bar-filter .fb-toggle { margin: 0; }
 
 /* ---- chips (category, inside filter panel) ---- */
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -665,8 +665,8 @@ footer.footer-hidden { transform: translateY(100%); }
   border-bottom: 1px solid transparent;
 }
 .filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
-.filter-panel > div > div { /* fp-inner is grandchild — outer div clips */ }
 .filter-panel > div { overflow: hidden; }
+.filter-panel.open > div { overflow: visible; }
 .fp-inner {
   max-width: 1180px; margin: 0 auto; padding: 14px 20px 16px;
   display: flex; flex-direction: column; gap: 12px;
@@ -727,27 +727,32 @@ footer.footer-hidden { transform: translateY(100%); }
   display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; max-width: 280px;
 }
 .fb-price-label { font-size: 10px; font-weight: 700; color: var(--brand); white-space: nowrap; text-transform: uppercase; letter-spacing: .08em; }
-.range-wrap { position: relative; flex: 1; height: 30px; min-width: 130px; }
+.range-wrap { position: relative; flex: 1; height: 36px; min-width: 130px; }
 .range-track {
-  position: absolute; top: 50%; left: 0; right: 0; height: 5px;
-  transform: translateY(-50%); background: var(--surface2); border-radius: 5px;
+  position: absolute; top: 50%; left: 0; right: 0; height: 4px;
+  transform: translateY(-50%); background: var(--surface2); border-radius: 4px;
 }
 .range-fill {
-  position: absolute; top: 50%; height: 5px;
-  transform: translateY(-50%); background: var(--brand); border-radius: 5px;
+  position: absolute; top: 50%; height: 4px;
+  transform: translateY(-50%); background: var(--brand); border-radius: 4px;
 }
 .range-wrap input[type=range] {
-  position: absolute; top: 0; left: 0; width: 100%; height: 30px; margin: 0;
+  position: absolute; top: 0; left: 0; width: 100%; height: 36px; margin: 0;
   -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none;
 }
 .range-wrap input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; pointer-events: auto;
-  width: 18px; height: 18px; border-radius: 50%; background: var(--brand);
-  border: 2px solid var(--surface); box-shadow: 0 1px 5px rgba(0,0,0,.35); cursor: pointer;
+  width: 20px; height: 20px; border-radius: 50%; background: var(--brand);
+  border: 3px solid var(--surface); box-shadow: 0 2px 6px rgba(0,0,0,.3); cursor: pointer;
+  margin-top: -8px;
+}
+.range-wrap input[type=range]::-webkit-slider-runnable-track {
+  height: 4px;
 }
 .range-wrap input[type=range]::-moz-range-thumb {
-  pointer-events: auto; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--brand); border: 2px solid var(--surface); cursor: pointer;
+  pointer-events: auto; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--brand); border: 3px solid var(--surface);
+  box-shadow: 0 2px 6px rgba(0,0,0,.3); cursor: pointer;
 }
 .fb-clear {
   display: none; align-items: center; gap: 6px; flex-shrink: 0;

@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20260619m">
+  <link rel="stylesheet" href="css/style.css?v=20260619n">
 </head>
 <body>
 
@@ -49,15 +49,14 @@
         <span class="label-hide">დაგვიკავშირდით</span>
       </a>
     </div>
+    <div class="bar-filter">
+      <button class="fb-toggle" id="fbToggle" onclick="toggleFilters()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+        <span>ფილტრი</span>
+        <svg class="fb-toggle-arrow" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
   </header>
-
-  <div class="catbar">
-    <button class="fb-toggle" id="fbToggle" onclick="toggleFilters()">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-      <span>ფილტრი</span>
-      <svg class="fb-toggle-arrow" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-  </div>
 
   <div class="filter-panel" id="filterPanel">
     <div><!-- overflow wrapper -->
