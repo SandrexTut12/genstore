@@ -134,14 +134,11 @@ header.bar {
 /* ---- catbar (filter toggle only) ---- */
 .catbar {
   background: rgba(197, 211, 232, 0.4); border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: flex-end;
-  padding: 8px 20px;
+  display: flex; align-items: center; padding: 8px 20px;
 }
 
-/* ---- chips (used inside filter panel) ---- */
-.chips {
-  display: flex; gap: 6px; flex-wrap: wrap;
-}
+/* ---- chips (category, inside filter panel) ---- */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chips::-webkit-scrollbar { display: none; }
 .chip {
   padding: 7px 15px; border-radius: 999px; border: 1px solid var(--line);
@@ -664,24 +661,23 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ---- collapsible filter panel ---- */
 .filter-panel {
   display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .28s ease;
-  border-bottom: 1px solid transparent;
   transition: grid-template-rows .28s ease, border-color .28s;
+  border-bottom: 1px solid transparent;
 }
 .filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
+.filter-panel > div > div { /* fp-inner is grandchild — outer div clips */ }
 .filter-panel > div { overflow: hidden; }
 .fp-inner {
-  max-width: 1180px; margin: 0 auto; padding: 16px 20px 18px;
-  display: flex; flex-direction: column; gap: 14px;
+  max-width: 1180px; margin: 0 auto; padding: 14px 20px 16px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 
-.fp-row-top { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-.fp-section { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+/* row 1: cats + sort */
+.fp-row-top { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.fp-cats-wrap { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
 .fp-sort-wrap { display: flex; flex-direction: column; gap: 6px; }
-.fp-sel-label {
-  font-size: 10px; font-weight: 700; color: var(--brand);
-  text-transform: uppercase; letter-spacing: .08em;
-}
+.fp-lbl { font-size: 10px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .08em; }
+
 .fp-select {
   background: var(--bg); color: var(--ink);
   border: 1.5px solid var(--line); border-radius: 10px;
@@ -692,21 +688,44 @@ footer.footer-hidden { transform: translateY(100%); }
 }
 .fp-select:focus { outline: none; border-color: var(--brand); }
 
-/* spec chip rows */
-.fp-row-specs { display: flex; flex-direction: column; gap: 8px; }
-.fp-spec-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.fp-spec-label { font-size: 10px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .08em; min-width: 40px; }
+/* row 2: spec dropdowns + price */
+.fp-dd-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* each dropdown widget */
+.fp-dd { position: relative; }
+.fp-dd-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 7px 11px; font-size: 13px; font-weight: 600; color: var(--ink);
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: border-color .15s, color .15s;
+}
+.fp-dd-btn:hover, .fp-dd.open .fp-dd-btn { border-color: var(--brand); color: var(--brand); }
+.fp-dd-btn svg { transition: transform .2s; }
+.fp-dd.open .fp-dd-btn svg { transform: rotate(180deg); }
+.fp-dd-cnt { font-weight: 700; }
+
+.fp-dd-list {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 200;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 10px; min-width: 200px; max-width: 320px;
+  display: none; flex-wrap: wrap; gap: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+.fp-dd.open .fp-dd-list { display: flex; }
+
 .fp-chip {
   padding: 5px 12px; border-radius: 999px; border: 1.5px solid var(--line);
   background: var(--bg); color: var(--ink); font-size: 12px; font-weight: 600;
-  cursor: pointer; font-family: inherit; transition: all .15s;
+  cursor: pointer; font-family: inherit; white-space: nowrap; transition: all .15s;
 }
 .fp-chip:hover { border-color: var(--brand); color: var(--brand); }
 .fp-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
 
-/* price row */
-.fp-row-price { display: flex; align-items: center; gap: 12px; }
-.fp-price-wrap { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
+/* price inline */
+.fp-price-inline {
+  display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; max-width: 280px;
+}
 .fb-price-label { font-size: 10px; font-weight: 700; color: var(--brand); white-space: nowrap; text-transform: uppercase; letter-spacing: .08em; }
 .range-wrap { position: relative; flex: 1; height: 30px; min-width: 130px; }
 .range-track {

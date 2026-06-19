@@ -13,6 +13,22 @@ const CONFIG = {
   skipLogin : true   // true = პაროლი არ სჭირდება, false = პაროლი სავალდებულოა
 };
 
+// ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
+const SPEC_OPTS = {
+  cpu: [
+    "Intel Core i3","Intel Core i5","Intel Core i7","Intel Core i9",
+    "Intel Core Ultra 5","Intel Core Ultra 7","Intel Celeron","Intel Pentium",
+    "AMD Ryzen 3","AMD Ryzen 5","AMD Ryzen 7","AMD Ryzen 9","AMD Athlon","Snapdragon"
+  ],
+  ram: ["4GB","8GB","12GB","16GB","32GB","64GB"],
+  storage: [
+    "128GB M.2 SSD","256GB M.2 SSD","512GB M.2 SSD","1TB M.2 SSD",
+    "128GB SATA SSD","256GB SATA SSD","512GB SATA SSD","1TB SATA SSD",
+    "128GB HDD","256GB HDD","512GB HDD","1TB HDD"
+  ],
+  screen: ["11.6\"","13.3\"","13.5\"","14\"","15.6\"","16\"","17.3\""]
+};
+
 // ============ CONSTANTS ============
 const COND = {
   new    : { label: "ახალი",           cls: "new"     },
@@ -312,35 +328,52 @@ function toggleFilters() {
   const btn   = $id("fbToggle");
   const open  = panel.classList.toggle("open");
   btn.classList.toggle("active", open);
-  if (open) renderSpecChips();
+  if (open) renderFpDropdowns();
+  else closeAllFpDd();
 }
 
-function renderSpecChips() {
-  const box = $id("fpSpecsRow");
+function renderFpDropdowns() {
+  for (const key of Object.keys(SPEC_OPTS)) {
+    renderFpDdList(key);
+    updateFpDdBtn(key);
+  }
+}
+
+function renderFpDdList(key) {
+  const box = $id("fpList-" + key);
   if (!box) return;
-  const visible = PRODUCTS.filter(p => !p.hidden);
-  const groups = [
-    { key: "cpu",     label: "CPU" },
-    { key: "ram",     label: "RAM" },
-    { key: "storage", label: "SSD" },
-    { key: "screen",  label: "ეკრანი" },
-  ];
-  box.innerHTML = groups.map(g => {
-    const vals = [...new Set(visible.map(p => (p.specs||{})[g.key]).filter(Boolean))].sort();
-    if (!vals.length) return "";
-    const chips = vals.map(v => {
-      const on = specFilters[g.key].has(v);
-      return `<button class="fp-chip${on?" active":""}" onclick="toggleSpecChip('${g.key}','${v.replace(/'/g,"\\'")}')">${esc(v)}</button>`;
-    }).join("");
-    return `<div class="fp-spec-group"><span class="fp-spec-label">${g.label}</span>${chips}</div>`;
+  box.innerHTML = SPEC_OPTS[key].map(v => {
+    const on = specFilters[key].has(v);
+    return `<button class="fp-chip${on?" active":""}" onclick="toggleSpecChip('${key}','${v.replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">${esc(v)}</button>`;
   }).join("");
+}
+
+function updateFpDdBtn(key) {
+  const cnt = $id("fpCnt-" + key);
+  if (!cnt) return;
+  const n = specFilters[key].size;
+  cnt.textContent = n ? " (" + n + ")" : "";
+  cnt.style.color = n ? "var(--brand)" : "";
+}
+
+function toggleFpDd(key) {
+  const dd = $id("fpDd-" + key);
+  if (!dd) return;
+  const wasOpen = dd.classList.contains("open");
+  closeAllFpDd();
+  if (!wasOpen) { dd.classList.add("open"); renderFpDdList(key); }
+}
+
+function closeAllFpDd() {
+  document.querySelectorAll(".fp-dd.open").forEach(el => el.classList.remove("open"));
 }
 
 function toggleSpecChip(key, val) {
   const s = specFilters[key];
   s.has(val) ? s.delete(val) : s.add(val);
   storePage = 1;
-  renderSpecChips();
+  renderFpDdList(key);
+  updateFpDdBtn(key);
   syncPriceUI();
   renderGrid();
 }
@@ -351,8 +384,8 @@ function clearFilters() {
   priceMin = priceFloor; priceMax = priceCeil;
   const lo = $id("priceMinRange"), hi = $id("priceMaxRange");
   if (lo && hi) { lo.value = priceFloor; hi.value = priceCeil; }
-  Object.values(specFilters).forEach(s => s.clear());
-  renderSpecChips();
+  Object.keys(specFilters).forEach(k => { specFilters[k].clear(); updateFpDdBtn(k); });
+  renderFpDropdowns();
   storePage = 1;
   syncPriceUI();
   renderGrid();
