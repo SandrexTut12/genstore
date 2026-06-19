@@ -77,8 +77,12 @@ async function productPage(id, origin) {
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${ogImg}">
 <link rel="canonical" href="${origin}/p/${encodeURIComponent(id)}">
-<meta http-equiv="refresh" content="0; url=${esc(appUrl)}">
-<script>location.replace(${JSON.stringify(appUrl)});</script>
+<script>
+  // redirect real visitors into the app; crawlers (no JS) stay & read OG tags above
+  if (!/bot|facebookexternalhit|facebot|twitterbot|discordbot|telegrambot|whatsapp|slackbot|linkedinbot|embedly|preview|crawler|spider/i.test(navigator.userAgent)) {
+    location.replace(${JSON.stringify(appUrl)});
+  }
+</script>
 </head><body style="font-family:sans-serif;background:#071428;color:#E8F4FF;display:flex;align-items:center;justify-content:center;height:100vh;margin:0">
 <a href="${esc(appUrl)}" style="color:#00BAFF">გადადი GENSTORE-ზე →</a>
 </body></html>`;
