@@ -948,8 +948,8 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 .svc-part-tag.install { background: var(--green-soft); color: var(--green); }
 .svc-order-meta { font-size: 13px; color: var(--muted); }
 .svc-order-note { font-size: 13px; color: var(--ink); font-style: italic; }
-.svc-order-photos { display: flex; gap: 8px; }
-.svc-order-photo { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid var(--line); }
+.svc-order-photos { display: flex; gap: 6px; }
+.svc-order-photo { width: 56px; height: 42px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--line); flex-shrink: 0; }
 .svc-order-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
 .svc-status-sel { padding: 6px 28px 6px 10px; font-size: 12px; min-width: 0; }
 .svc-order-price-row { display: flex; gap: 8px; align-items: center; }
