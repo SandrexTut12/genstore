@@ -772,14 +772,14 @@ function renderGrid() {
     ].filter(x => x.val);
     const specBtn = specDefs.length ? (() => {
       _specMap[p.id] = { title: p.title, defs: specDefs };
-      return `<button class="spec-btn" onmouseenter="showSpecTT(event,'${p.id}')" onmouseleave="schedHideSpecTT()" onclick="clickSpecTT(event,'${p.id}')"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>სპეც</button>`;
+      return `<button class="spec-btn" onmouseenter="showSpecTT(event,'${p.id}')" onmouseleave="schedHideSpecTT()" onclick="clickSpecTT(event,'${p.id}')"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>სპეციფიკაცია</button>`;
     })() : "";
+    const soldOverlay = p.sold ? `<div class="sold-overlay"><span>გაყიდულია</span></div>` : "";
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
-  <div class="imgwrap">${img}${discountBadge}</div>
+  <div class="imgwrap">${img}${discountBadge}${soldOverlay}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
-    ${p.sold ? '<span class="sold-text">გაყიდულია</span>' : ''}
     <div class="price-row">
       <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
       ${timer}
