@@ -155,13 +155,21 @@ async function onSvcPhoto(e, idx) {
   reader.readAsDataURL(file);
 }
 
+function toggleInstallPrice() {
+  const checked = $id("svcInstall")?.checked;
+  const field = $id("svcInstallPriceField");
+  if (field) field.classList.toggle("hidden", !checked);
+  if (!checked) { const inp = $id("svcInstallPrice"); if (inp) inp.value = ""; }
+}
+
 async function submitServiceOrder(e) {
   e.preventDefault();
-  const laptop  = ($id("svcLaptop")  || {}).value?.trim();
-  const detail  = ($id("svcDetail")  || {}).value?.trim();
-  const contact = ($id("svcContact") || {}).value?.trim();
-  const note    = ($id("svcNote")    || {}).value?.trim();
-  const install = ($id("svcInstall") || {}).checked;
+  const laptop       = ($id("svcLaptop")       || {}).value?.trim();
+  const detail       = ($id("svcDetail")       || {}).value?.trim();
+  const contact      = ($id("svcContact")      || {}).value?.trim();
+  const note         = ($id("svcNote")         || {}).value?.trim();
+  const install      = ($id("svcInstall")      || {}).checked;
+  const installPrice = ($id("svcInstallPrice") || {}).value?.trim();
   if (!laptop)  { toast("მიუთითეთ ლეპტოპის მოდელი"); return; }
   if (!detail)  { toast("მიუთითეთ საჭირო დეტალი"); return; }
   if (!contact) { toast("მიუთითეთ საკონტაქტო ნომერი"); return; }
@@ -169,6 +177,7 @@ async function submitServiceOrder(e) {
   const order = {
     id: "svc_" + Date.now(),
     laptop, detail, install: !!install,
+    installPrice: (install && installPrice) ? Number(installPrice) : 0,
     contact, note: note || "",
     photos: svcPhotos.filter(Boolean),
     status: "new", created: Date.now()
@@ -177,6 +186,7 @@ async function submitServiceOrder(e) {
   if (!ok) return;
 
   $id("svcForm").reset();
+  const ipf = $id("svcInstallPriceField"); if (ipf) ipf.classList.add("hidden");
   svcPhotos = [null, null];
   [0, 1].forEach(i => {
     const inner = $id("svcPhotoInner" + i);
@@ -220,7 +230,7 @@ async function renderSvcAdminList() {
           <div class="svc-order-laptop">${esc(o.laptop)}</div>
           <div class="svc-order-parts">
             <span class="svc-part-tag">${esc(o.detail || (o.parts || []).join(", "))}</span>
-            ${o.install ? '<span class="svc-part-tag install">+ მონტაჟი</span>' : ""}
+            ${o.install ? `<span class="svc-part-tag install">+ მონტაჟი${o.installPrice ? " — " + o.installPrice + "₾" : ""}</span>` : ""}
           </div>
         </div>
         <span class="svc-status ${o.status}">${esc(SVC_STATUS[o.status] || o.status)}</span>
@@ -266,8 +276,10 @@ async function sendSvcPrice(id, waNum) {
   if (priceEl && price) { o.price = Number(price); o.status = "priced"; await dbSvcSave(o); }
 
   const detail = o.detail || (o.parts || []).join(", ");
-  const installNote = o.install ? " + მონტაჟი" : "";
-  const msg = `გამარჯობა! თქვენი შეკვეთა — ${o.laptop} (${detail}${installNote}).\n\nდეტალის ფასი: ${price}₾${installNote}.\n\nდაგვიდასტურეთ და შევუკვეთავთ. მადლობა!`;
+  const installLine = o.install
+    ? `\nმონტაჟი: ${o.installPrice ? o.installPrice + "₾" : "ფასი შეგვეთანხმება"}`
+    : "";
+  const msg = `გამარჯობა! თქვენი შეკვეთა — ${o.laptop} (${detail}).\n\nდეტალის ფასი: ${price}₾${installLine}\n\nდაგვიდასტურეთ და შევუკვეთავთ. მადლობა!`;
   window.open("https://wa.me/" + waNum + "?text=" + encodeURIComponent(msg), "_blank");
   renderSvcAdminList();
 }
