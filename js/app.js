@@ -1082,13 +1082,20 @@ function openSearchOverlay() {
   const ov = $id("searchOverlay");
   if (!ov) return;
   ov.classList.remove("hidden");
-  setTimeout(() => { const inp = $id("searchOverlayInput"); if (inp) inp.focus(); }, 80);
+  setTimeout(() => {
+    const inp = $id("searchOverlayInput");
+    if (inp) { inp.value = searchQ; inp.focus(); inp.select(); }
+  }, 80);
 }
 function closeSearchOverlay() {
   const ov = $id("searchOverlay");
   if (ov) ov.classList.add("hidden");
+}
+function clearSearch() {
+  searchQ = "";
   const inp = $id("searchOverlayInput");
-  if (inp) { inp.value = ""; onSearch(""); }
+  if (inp) inp.value = "";
+  onSearch("");
 }
 function onSearchOverlayBg(e) { if (e.target === e.currentTarget) closeSearchOverlay(); }
 
