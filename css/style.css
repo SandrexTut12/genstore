@@ -109,6 +109,8 @@ header.bar {
 
 .search { flex: 1; max-width: 440px; position: relative; }
 .bar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
+.bar-right > * { height: 38px; }
+.bar-right .btn { padding-top: 0; padding-bottom: 0; }
 .search input {
   width: 100%; padding: 10px 14px 10px 38px;
   border: 1px solid var(--line); border-radius: 10px;
@@ -878,11 +880,11 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ============ SERVICE PAGE ============ */
 .btn-svc-nav {
   display: flex; align-items: center; gap: 6px;
-  background: transparent; border: 1.5px solid var(--line); border-radius: 10px;
-  padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--ink);
-  cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s, background .15s; flex-shrink: 0;
+  background: var(--brand-soft); border: 1.5px solid transparent; border-radius: 10px;
+  padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--brand);
+  cursor: pointer; font-family: inherit; transition: background .15s, color .15s; flex-shrink: 0;
 }
-.btn-svc-nav:hover { border-color: var(--brand); color: var(--brand); }
+.btn-svc-nav:hover { background: var(--brand); color: #fff; }
 
 .svc-main { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
 .svc-wrap { display: flex; flex-direction: column; gap: 28px; }
