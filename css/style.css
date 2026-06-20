@@ -768,6 +768,15 @@ footer.footer-hidden { transform: translateY(100%); }
 .fb-clear.show { display: inline-flex; }
 .fb-clear:hover { border-color: var(--red); }
 
+/* ---- mobile grid toggle ---- */
+.grid-toggle {
+  display: none; align-items: center; justify-content: center; flex-shrink: 0;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
+  width: 36px; height: 36px; cursor: pointer; color: var(--ink);
+  transition: border-color .15s, color .15s;
+}
+.grid-toggle:hover, .grid-toggle.active { border-color: var(--brand); color: var(--brand); }
+
 /* ---- discount badge + sale timer (cards) ---- */
 .badge-discount {
   position: absolute; top: 10px; left: 10px; z-index: 3;
@@ -863,6 +872,17 @@ footer.footer-hidden { transform: translateY(100%); }
   #topContact { margin-left: auto; }
   .row2, .row3 { grid-template-columns: 1fr; }
   .logo .wm { font-size: 21px; }
+  .grid-toggle { display: flex; }
+
+  /* 2-column grid mode on mobile */
+  .grid.grid-2col { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid.grid-2col .card .body { padding: 9px 9px 11px; gap: 3px; }
+  .grid.grid-2col .card .cat { font-size: 11px; }
+  .grid.grid-2col .card .name { font-size: 13px; }
+  .grid.grid-2col .spec-chips { display: none; }
+  .grid.grid-2col .sale-timer { font-size: 11px; }
+  .grid.grid-2col .card .price { font-size: 18px; }
+  .grid.grid-2col .card .old { font-size: 12px; }
 
   /* modal mobile — full screen, scrolls as one unit */
   .overlay { padding: 0; align-items: stretch; }

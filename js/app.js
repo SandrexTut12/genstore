@@ -182,6 +182,30 @@ let modalIdx    = 0;
 let adminPage   = 1;
 let storePage   = 1;
 const PAGE_SIZE = 12;
+let mobileGrid  = Number(localStorage.getItem("gs_mgrid") || 1);
+
+const IC_GRID1 = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="18" height="5" rx="1"/><rect x="3" y="10" width="18" height="5" rx="1"/><rect x="3" y="17" width="18" height="5" rx="1"/></svg>`;
+const IC_GRID2 = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="3" width="9" height="18" rx="1"/><rect x="13" y="3" width="9" height="18" rx="1"/></svg>`;
+
+function getPageSize() {
+  return (window.innerWidth <= 720 && mobileGrid === 2) ? 24 : PAGE_SIZE;
+}
+
+function syncGridToggleBtn() {
+  const btn  = $id("gridToggle");
+  const grid = $id("grid");
+  const is2  = mobileGrid === 2;
+  if (btn) { btn.innerHTML = is2 ? IC_GRID2 : IC_GRID1; btn.classList.toggle("active", is2); }
+  if (grid) grid.classList.toggle("grid-2col", is2);
+}
+
+function toggleMobileGrid() {
+  mobileGrid = mobileGrid === 1 ? 2 : 1;
+  localStorage.setItem("gs_mgrid", mobileGrid);
+  storePage = 1;
+  syncGridToggleBtn();
+  renderGrid();
+}
 
 // ============ HELPERS ============
 function $id(id) { return document.getElementById(id); }
@@ -468,9 +492,10 @@ function renderGrid() {
     return;
   }
 
-  const totalPages = Math.ceil(list.length / PAGE_SIZE);
+  const ps = getPageSize();
+  const totalPages = Math.ceil(list.length / ps);
   if (storePage > totalPages) storePage = Math.max(1, totalPages);
-  const pageList = list.slice((storePage - 1) * PAGE_SIZE, storePage * PAGE_SIZE);
+  const pageList = list.slice((storePage - 1) * ps, storePage * ps);
 
   grid.innerHTML = pageList.map((p, idx) => {
     const img = p.images && p.images[0]
@@ -1534,6 +1559,7 @@ function initTheme() {
 
 async function init() {
   initTheme();
+  syncGridToggleBtn();
   $id("year").textContent = new Date().getFullYear();
 
   const fb = getFb();

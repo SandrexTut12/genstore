@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#071428}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260620f">
+  <link rel="stylesheet" href="css/style.css?v=20260620g">
 </head>
 <body>
 
@@ -58,9 +58,10 @@
     </div>
   </header>
 
-  <!-- Always-visible row: clear (left, when dirty) + filter toggle (right) -->
+  <!-- Always-visible row: grid toggle (mobile) + clear (when dirty) + filter toggle (right) -->
   <div class="cat-bar">
     <div class="cat-bar-inner">
+      <button class="grid-toggle" id="gridToggle" onclick="toggleMobileGrid()"></button>
       <button class="fb-clear" id="fbClear" onclick="clearFilters()">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         გასუფთავება
@@ -568,6 +569,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260620e"></script>
+<script src="js/app.js?v=20260620f"></script>
 </body>
 </html>
