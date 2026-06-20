@@ -984,7 +984,14 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 .svc-photo-modal-img { max-width: min(90vw, 600px); max-height: 80vh; border-radius: 12px; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,.5); }
 .svc-order-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
 .svc-status-sel { padding: 6px 28px 6px 10px; font-size: 12px; min-width: 0; }
-.svc-order-price-row { display: flex; gap: 8px; align-items: center; }
+.svc-order-price-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.svc-order-url-row { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.svc-url-input {
+  flex: 1; padding: 7px 10px; border: 1.5px solid var(--brand); border-radius: 10px;
+  font-size: 12px; font-family: inherit; background: var(--surface); color: var(--ink);
+  outline: none; min-width: 0;
+}
+.svc-url-input:focus { box-shadow: 0 0 0 3px var(--brand-soft); }
 .svc-price-input {
   width: 110px; padding: 7px 10px; border: 1.5px solid var(--line); border-radius: 10px;
   font-size: 13px; font-weight: 600; font-family: inherit; background: var(--surface);
