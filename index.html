@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#071428}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260620s">
+  <link rel="stylesheet" href="css/style.css?v=20260620t">
 </head>
 <body>
 
@@ -44,7 +44,10 @@
         <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
         </svg>
-        <input type="text" placeholder="ძებნა..." oninput="onSearch(this.value)">
+        <input type="text" id="searchInput" placeholder="ძებნა..." oninput="onSearch(this.value)">
+        <button class="search-clear hidden" id="searchClear" onclick="clearSearch()" title="გასუფთავება">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
       </div>
 
       <div class="bar-right">
@@ -382,7 +385,7 @@
   <!-- Login -->
   <div id="admin-login" class="login-wrap">
     <div class="login-box">
-      <div class="wm">GEN<b>STORE</b></div>
+      <div class="wm" onclick="goStore()" style="cursor:pointer">GEN<b>STORE</b></div>
       <p>ადმინ პანელი</p>
       <input id="userInput" type="text" placeholder="მომხმარებელი"
         onkeydown="if(event.key==='Enter')doLogin()">
@@ -729,6 +732,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260620m"></script>
+<script src="js/app.js?v=20260620n"></script>
 </body>
 </html>

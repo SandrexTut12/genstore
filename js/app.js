@@ -443,6 +443,8 @@ function setCat(btn) {
 function onSearch(val) {
   searchQ = val.toLowerCase().trim();
   storePage = 1;
+  const cl = $id("searchClear");
+  if (cl) cl.classList.toggle("hidden", !searchQ);
   renderGrid();
 }
 
@@ -1093,8 +1095,7 @@ function closeSearchOverlay() {
 }
 function clearSearch() {
   searchQ = "";
-  const inp = $id("searchOverlayInput");
-  if (inp) inp.value = "";
+  [$id("searchInput"), $id("searchOverlayInput")].forEach(el => { if (el) el.value = ""; });
   onSearch("");
 }
 function onSearchOverlayBg(e) { if (e.target === e.currentTarget) closeSearchOverlay(); }
