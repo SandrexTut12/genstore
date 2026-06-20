@@ -1084,7 +1084,7 @@ function closeModal() {
 }
 
 // ── Spec tooltip ──────────────────────────────────────────
-const _SPEC_LBLS = {cpu:"CPU",gpu:"GPU",ram:"RAM",storage:"SSD/HDD",screen:"ეკრანი",resolution:"რეზო",battery:"ბატარეა",os:"OS"};
+const _SPEC_LBLS = {cpu:"CPU",gpu:"GPU",ram:"RAM",storage:"SSD/HDD",screen:"ეკრანი",resolution:"რეზოლუცია",battery:"ბატარეა",os:"OS"};
 const _SPEC_CLR2 = {cpu:"#60AAFF",gpu:"#A78BFA",ram:"#00BAFF",storage:"#FFB830",screen:"#2DD4BF",resolution:"#F472B6",battery:"#00E5A0",os:"#94A3B8"};
 
 function buildSpecTT(id) {

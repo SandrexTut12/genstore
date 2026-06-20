@@ -40,8 +40,7 @@ html[data-theme="dark"] {
 html[data-theme="dark"] header.bar           { background: rgba(7,20,40,0.9); }
 html[data-theme="dark"] .card                { border-color: var(--line); }
 html[data-theme="dark"] .cat-bar             { border-color: rgba(255,255,255,.08); }
-html[data-theme="dark"] .sold-overlay          { background: rgba(7,20,40,.72); }
-html[data-theme="dark"] .sold-overlay span     { color: #b0c4e0; }
+html[data-theme="dark"] .sold-overlay          { background: rgba(7,20,40,.55); }
 html[data-theme="dark"] .spec-tooltip          { box-shadow: 0 8px 32px rgba(0,0,0,.5); }
 html[data-theme="dark"] .overlay             { background: rgba(4,10,24,0.85); }
 html[data-theme="dark"] .modal               { box-shadow: 0 32px 80px rgba(0,0,0,.8); }
@@ -194,23 +193,24 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .card.sold:hover { opacity: 1; }
 .sold-overlay {
   position: absolute; inset: 0;
-  background: rgba(230,237,250,.68);
+  background: rgba(240,244,252,.7);
   display: flex; align-items: center; justify-content: center;
 }
 .sold-overlay span {
+  background: var(--red); color: #fff;
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 800; font-size: 15px; letter-spacing: .07em;
-  color: var(--red);
+  font-weight: 700; font-size: 14px;
+  padding: 6px 18px; border-radius: 999px; letter-spacing: .04em;
 }
 
 /* ── Spec button on card ─────────────────────────── */
 .spec-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 11px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: 100%; padding: 6px 11px; border-radius: 8px;
   border: 1.5px solid var(--brand); background: var(--brand-soft);
-  color: var(--brand); font-size: 11px; font-weight: 700;
+  color: var(--brand); font-size: 11px; font-weight: 800;
   cursor: pointer; font-family: inherit; margin: 4px 0;
-  letter-spacing: .02em;
+  letter-spacing: .03em;
   transition: background .15s, color .15s, box-shadow .15s;
 }
 .spec-btn:hover {
@@ -265,8 +265,8 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .price-row { margin-top: auto; padding-top: 6px; display: flex; align-items: center; gap: 8px; }
 .price-row .sale-timer { margin-top: 0; margin-left: auto; flex-shrink: 0; }
 .card .price { display: flex; align-items: baseline; gap: 8px; }
-.card .price .now { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 19px; color: var(--brand); }
-.card .price .old { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+.card .price .now { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 19px; color: var(--brand); white-space: nowrap; }
+.card .price .old { font-size: 13px; color: var(--muted); text-decoration: line-through; white-space: nowrap; }
 
 /* ---- store pagination ---- */
 .store-pagination {
@@ -1126,16 +1126,17 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .row2, .row3 { grid-template-columns: 1fr; }
   .grid-toggle { display: flex; }
 
-  /* 2-column grid mode on mobile */
+  /* ── 2-column grid — mobile only ── */
   .grid.grid-2col { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .grid.grid-2col .card .body { padding: 9px 9px 11px; gap: 3px; }
-  .grid.grid-2col .card .cat { font-size: 11px; }
-  .grid.grid-2col .card .name { font-size: 13px; }
+  .grid.grid-2col .card .cat  { font-size: 11px; }
+  .grid.grid-2col .card .name { font-size: 13px; line-height: 1.25; }
   .grid.grid-2col .spec-chips { display: none; }
-  .grid.grid-2col .sale-timer { font-size: 10px; padding: 3px 6px; }
-  .grid.grid-2col .card .price .now { font-size: 15px; }
+  .grid.grid-2col .spec-btn   { font-size: 10px; padding: 4px 8px; margin: 2px 0; }
+  .grid.grid-2col .price-row  { gap: 4px; flex-wrap: nowrap; padding-top: 4px; }
+  .grid.grid-2col .card .price .now { font-size: 14px; }
   .grid.grid-2col .card .price .old { font-size: 11px; }
-  .grid.grid-2col .price-row { flex-wrap: nowrap; gap: 4px; }
+  .grid.grid-2col .sale-timer { font-size: 10px; padding: 3px 5px; }
 
   /* modal mobile — full screen, scrolls as one unit */
   .overlay { padding: 0; align-items: stretch; }
