@@ -397,6 +397,9 @@ let storePage   = 1;
 const PAGE_SIZE = 12;
 let mobileGrid  = Number(localStorage.getItem("gs_mgrid") || 1);
 
+const _specMap = {};
+let _ttPinned = false, _ttHideTimer = null, _ttActiveId = null;
+
 const IC_GRID1 = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="3" y="3" width="18" height="5" rx="1"/><rect x="3" y="10" width="18" height="5" rx="1"/><rect x="3" y="17" width="18" height="5" rx="1"/></svg>`;
 const IC_GRID2 = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="2" y="3" width="9" height="18" rx="1"/><rect x="13" y="3" width="9" height="18" rx="1"/></svg>`;
 
@@ -767,45 +770,17 @@ function renderGrid() {
       { key:"battery",    val: s.battery },
       { key:"os",         val: s.os }
     ].filter(x => x.val);
-    const specLine = specDefs.length ? (() => {
-      const PRIO = ["cpu","ram","storage","resolution"];
-      const top = specDefs.filter(x => PRIO.includes(x.key));
-      const estW = v => 4 + [...v].reduce((s,c) => s + (c.charCodeAt(0) > 127 ? 2 : 1), 0);
-      const ROW_W = 38;
-      const pool = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => estW(b.val) - estW(a.val));
-      const packed = [];
-      while (pool.length) {
-        const chip = pool.shift();
-        packed.push(chip);
-        let avail = ROW_W - estW(chip.val);
-        while (avail > 0 && pool.length) {
-          let pi = -1, bestDiff = Infinity;
-          for (let i = 0; i < pool.length; i++) {
-            const w = estW(pool[i].val);
-            if (w <= avail) { const d = avail - w; if (d < bestDiff) { bestDiff = d; pi = i; } }
-          }
-          if (pi < 0) break;
-          const next = pool.splice(pi, 1)[0];
-          packed.push(next);
-          avail -= estW(next.val);
-        }
-      }
-      return `<div class="spec-chips">${[...top, ...packed].map(x => {
-        const m = x.key==="battery" && x.val.match(/(\d+)\s*%/);
-        const pct = m ? parseInt(m[1]) : null;
-        const clr = x.key==="battery" ? (pct>60?"#00E5A0":pct>30?"#FFB830":"#FF5C78") : (SPEC_CLR[x.key]||"currentColor");
-        return `<span class="spec-chip" style="--cc:${clr}">${mkIcon(x.key,x.val)}${esc(x.val)}</span>`;
-      }).join("")}</div>`;
+    const specBtn = specDefs.length ? (() => {
+      _specMap[p.id] = { title: p.title, defs: specDefs };
+      return `<button class="spec-btn" onmouseenter="showSpecTT(event,'${p.id}')" onmouseleave="schedHideSpecTT()" onclick="clickSpecTT(event,'${p.id}')"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>სპეც</button>`;
     })() : "";
-    const soldOverlay = p.sold
-      ? `<div class="sold-overlay"><span>გაყიდულია</span></div>`
-      : "";
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
-  <div class="imgwrap">${img}${discountBadge}${soldOverlay}</div>
+  <div class="imgwrap">${img}${discountBadge}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
-    ${specLine}
+    ${specBtn}
     ${timer}
+    ${p.sold ? '<span class="sold-text">გაყიდულია</span>' : ''}
     <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
   </div>
 </div>`;
@@ -1106,8 +1081,72 @@ function closeModal() {
   }
 }
 
+// ── Spec tooltip ──────────────────────────────────────────
+const _SPEC_LBLS = {cpu:"CPU",gpu:"GPU",ram:"RAM",storage:"SSD/HDD",screen:"ეკრანი",resolution:"რეზო",battery:"ბატარეა",os:"OS"};
+const _SPEC_CLR2 = {cpu:"#60AAFF",gpu:"#A78BFA",ram:"#00BAFF",storage:"#FFB830",screen:"#2DD4BF",resolution:"#F472B6",battery:"#00E5A0",os:"#94A3B8"};
+
+function buildSpecTT(id) {
+  const d = _specMap[id];
+  if (!d) return "";
+  const rows = d.defs.map(x => {
+    const bm = x.key==="battery" && x.val.match(/(\d+)\s*%/);
+    const clr = x.key==="battery" ? (bm&&parseInt(bm[1])>60?"#00E5A0":bm&&parseInt(bm[1])>30?"#FFB830":"#FF5C78") : (_SPEC_CLR2[x.key]||"var(--brand)");
+    return `<div class="stt-row"><span class="stt-dot" style="background:${clr}"></span><span class="stt-lbl">${_SPEC_LBLS[x.key]||x.key}</span><span class="stt-val">${esc(x.val)}</span></div>`;
+  }).join("");
+  return `<div class="stt-head">${esc(d.title)}</div><div class="stt-body">${rows}</div>`;
+}
+
+function posSpecTT(btn, tt) {
+  const r = btn.getBoundingClientRect();
+  const TW = 248;
+  let left = r.left + r.width / 2 - TW / 2;
+  if (left < 6) left = 6;
+  if (left + TW > window.innerWidth - 6) left = window.innerWidth - TW - 6;
+  const th = tt.offsetHeight || 180;
+  let top = r.top - th - 10;
+  if (top < 6) top = r.bottom + 8;
+  tt.style.cssText = `top:${top}px;left:${left}px;width:${TW}px`;
+}
+
+function showSpecTT(e, id) {
+  clearTimeout(_ttHideTimer);
+  _ttActiveId = id;
+  const tt = $id("specTooltip");
+  tt.innerHTML = buildSpecTT(id);
+  tt.classList.remove("hidden");
+  posSpecTT(e.currentTarget, tt);
+  e.stopPropagation();
+}
+
+function schedHideSpecTT() {
+  _ttHideTimer = setTimeout(() => { if (!_ttPinned) hideSpecTT(); }, 140);
+}
+
+function cancelHideSpecTT() {
+  clearTimeout(_ttHideTimer);
+}
+
+function clickSpecTT(e, id) {
+  const tt = $id("specTooltip");
+  const open = !tt.classList.contains("hidden") && _ttActiveId === id;
+  if (open && _ttPinned) { hideSpecTT(); }
+  else { _ttPinned = true; showSpecTT(e, id); }
+  e.stopPropagation();
+}
+
+function hideSpecTT() {
+  const tt = $id("specTooltip");
+  if (tt) tt.classList.add("hidden");
+  _ttPinned = false; _ttActiveId = null;
+}
+
+document.addEventListener("click", e => {
+  if (!e.target.closest("#specTooltip") && !e.target.closest(".spec-btn")) hideSpecTT();
+});
+// ──────────────────────────────────────────────────────────
+
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape")     { closeLightbox(); closeModal(); closeSearchOverlay(); }
+  if (e.key === "Escape")     { closeLightbox(); closeModal(); closeSearchOverlay(); hideSpecTT(); }
   if (e.key === "ArrowRight") { lbNav(1);  galleryNav(1); }
   if (e.key === "ArrowLeft")  { lbNav(-1); galleryNav(-1); }
 });
