@@ -726,10 +726,7 @@ function renderGrid() {
     const discountBadge = (dpct > 0 && !p.sold)
       ? `<span class="badge-discount">-${dpct}%</span>` : "";
     const timer = (dpct > 0 && !p.sold && saleActive(p))
-      ? `<div class="sale-timer countdown" data-ends="${p.saleEnds}">
-           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-           <span class="ct">${fmtCountdown(Number(p.saleEnds) - Date.now())}</span>
-         </div>`
+      ? `<div class="img-timer countdown" data-ends="${p.saleEnds}"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="ct">${fmtCountdown(Number(p.saleEnds) - Date.now())}</span></div>`
       : "";
     const s = p.specs || {};
     const SPEC_CLR = {
@@ -776,13 +773,12 @@ function renderGrid() {
     })() : "";
     const soldOverlay = p.sold ? `<div class="sold-overlay"><span>გაყიდულია</span></div>` : "";
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
-  <div class="imgwrap">${img}${discountBadge}${soldOverlay}</div>
+  <div class="imgwrap">${img}${discountBadge}${soldOverlay}${timer}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
     <div class="price-row">
       <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
-      ${timer}
     </div>
   </div>
 </div>`;
@@ -1101,7 +1097,7 @@ function buildSpecTT(id) {
 
 function posSpecTT(btn, tt) {
   const r = btn.getBoundingClientRect();
-  const TW = 248;
+  const TW = 272;
   let left = r.left + r.width / 2 - TW / 2;
   if (left < 6) left = 6;
   if (left + TW > window.innerWidth - 6) left = window.innerWidth - TW - 6;
