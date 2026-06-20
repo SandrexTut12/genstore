@@ -770,19 +770,25 @@ function renderGrid() {
     const specLine = specDefs.length ? (() => {
       const PRIO = ["cpu","ram","storage"];
       const top = specDefs.filter(x => PRIO.includes(x.key));
-      const pool = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => b.val.length - a.val.length);
-      const estW = v => 4 + v.length;
+      const estW = v => 4 + [...v].reduce((s,c) => s + (c.charCodeAt(0) > 127 ? 1.5 : 1), 0);
       const ROW_W = 34;
+      const pool = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => estW(b.val) - estW(a.val));
       const packed = [];
       while (pool.length) {
         const chip = pool.shift();
         packed.push(chip);
-        const avail = ROW_W - estW(chip.val);
-        let pi = -1;
-        for (let i = pool.length - 1; i >= 0; i--) {
-          if (estW(pool[i].val) <= avail) { pi = i; break; }
+        let avail = ROW_W - estW(chip.val);
+        while (avail > 0 && pool.length) {
+          let pi = -1, bestDiff = Infinity;
+          for (let i = 0; i < pool.length; i++) {
+            const w = estW(pool[i].val);
+            if (w <= avail) { const d = avail - w; if (d < bestDiff) { bestDiff = d; pi = i; } }
+          }
+          if (pi < 0) break;
+          const next = pool.splice(pi, 1)[0];
+          packed.push(next);
+          avail -= estW(next.val);
         }
-        if (pi >= 0) packed.push(...pool.splice(pi, 1));
       }
       return `<div class="spec-chips">${[...top, ...packed].map(x => {
         const m = x.key==="battery" && x.val.match(/(\d+)\s*%/);
