@@ -155,12 +155,6 @@ async function onSvcPhoto(e, idx) {
   reader.readAsDataURL(file);
 }
 
-function toggleInstallPrice() {
-  const checked = $id("svcInstall")?.checked;
-  const field = $id("svcInstallPriceField");
-  if (field) field.classList.toggle("hidden", !checked);
-  if (!checked) { const inp = $id("svcInstallPrice"); if (inp) inp.value = ""; }
-}
 
 async function submitServiceOrder(e) {
   e.preventDefault();
@@ -168,16 +162,14 @@ async function submitServiceOrder(e) {
   const detail       = ($id("svcDetail")       || {}).value?.trim();
   const contact      = ($id("svcContact")      || {}).value?.trim();
   const note         = ($id("svcNote")         || {}).value?.trim();
-  const install      = ($id("svcInstall")      || {}).checked;
-  const installPrice = ($id("svcInstallPrice") || {}).value?.trim();
+  const install = ($id("svcInstall") || {}).checked;
   if (!laptop)  { toast("მიუთითეთ ლეპტოპის მოდელი"); return; }
   if (!detail)  { toast("მიუთითეთ საჭირო დეტალი"); return; }
   if (!contact) { toast("მიუთითეთ საკონტაქტო ნომერი"); return; }
 
   const order = {
     id: "svc_" + Date.now(),
-    laptop, detail, install: !!install,
-    installPrice: (install && installPrice) ? Number(installPrice) : 0,
+    laptop, detail, install: !!install, installPrice: 0,
     contact, note: note || "",
     photos: svcPhotos.filter(Boolean),
     status: "new", created: Date.now()
@@ -186,7 +178,6 @@ async function submitServiceOrder(e) {
   if (!ok) return;
 
   $id("svcForm").reset();
-  const ipf = $id("svcInstallPriceField"); if (ipf) ipf.classList.add("hidden");
   svcPhotos = [null, null];
   [0, 1].forEach(i => {
     const inner = $id("svcPhotoInner" + i);
