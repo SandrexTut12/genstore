@@ -62,15 +62,22 @@ html[data-theme="dark"] .gallery-next        { background: rgba(7,20,40,.75); co
 html[data-theme="dark"] .previews .pv .rm    { background: rgba(4,10,24,.85); }
 html[data-theme="dark"] .previews .pv-star   { background: rgba(4,10,24,.75); color: var(--muted); }
 
-/* ---- theme toggle button ---- */
-.btn-theme {
-  width: 38px; height: 38px; border-radius: 10px;
-  border: 1.5px solid var(--brand); background: transparent;
-  color: var(--muted); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: .15s; flex-shrink: 0;
+/* ---- header icon buttons (search / theme / service) — unified ---- */
+.btn-theme,
+.btn-svc-nav,
+.btn-search-mobile {
+  border: 1.5px solid var(--line); background: transparent; color: var(--muted);
+  transition: border-color .15s, color .15s, background .15s;
 }
-.btn-theme:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+.btn-theme:hover,
+.btn-svc-nav:hover,
+.btn-search-mobile:hover {
+  border-color: var(--brand); color: var(--brand); background: var(--brand-soft);
+}
+.btn-theme {
+  width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
@@ -188,10 +195,10 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .img-timer {
   position: absolute; bottom: 8px; right: 8px;
   display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(0,0,0,.52); color: #fff;
+  background: var(--red-soft); color: var(--red);
   font-family: "Space Grotesk", sans-serif; font-size: 11px; font-weight: 700;
-  padding: 3px 8px; border-radius: 6px;
-  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  padding: 3px 8px; border-radius: 7px;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
 .badge.new     { background: var(--green-soft); color: var(--green); border: 1px solid var(--green); }
 .badge.likenew { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--brand); }
@@ -928,11 +935,10 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ============ SERVICE PAGE ============ */
 .btn-svc-nav {
   display: flex; align-items: center; gap: 6px;
-  background: var(--brand-soft); border: 1.5px solid var(--brand); border-radius: 10px;
-  padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--brand);
-  cursor: pointer; font-family: inherit; transition: background .15s, color .15s; flex-shrink: 0;
+  border-radius: 10px; padding: 7px 14px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit; flex-shrink: 0;
 }
-.btn-svc-nav:hover { background: var(--brand); color: #fff; }
 
 .svc-main { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
 .svc-wrap { display: flex; flex-direction: column; gap: 28px; }
@@ -1068,12 +1074,10 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 .btn-search-mobile {
   display: none;
   width: 38px; height: 38px; border-radius: 10px;
-  border: 1px solid var(--line); background: transparent;
   color: var(--muted); cursor: pointer;
   align-items: center; justify-content: center;
   transition: .15s; flex-shrink: 0;
 }
-.btn-search-mobile:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
 
 .search-overlay {
   position: fixed; inset: 0; z-index: 200;
