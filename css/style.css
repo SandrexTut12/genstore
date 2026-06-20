@@ -64,7 +64,7 @@ html[data-theme="dark"] .previews .pv-star   { background: rgba(4,10,24,.75); co
 /* ---- theme toggle button ---- */
 .btn-theme {
   width: 38px; height: 38px; border-radius: 10px;
-  border: 1px solid var(--line); background: transparent;
+  border: 1.5px solid var(--brand); background: transparent;
   color: var(--muted); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: .15s; flex-shrink: 0;
@@ -111,6 +111,7 @@ header.bar {
 .bar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
 .bar-right > * { height: 38px; }
 .bar-right .btn { padding-top: 0; padding-bottom: 0; }
+.bar-right #topContact { border: 1.5px solid var(--brand); }
 .search input {
   width: 100%; padding: 10px 14px 10px 38px;
   border: 1px solid var(--line); border-radius: 10px;
