@@ -880,7 +880,7 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ============ SERVICE PAGE ============ */
 .btn-svc-nav {
   display: flex; align-items: center; gap: 6px;
-  background: var(--brand-soft); border: 1.5px solid transparent; border-radius: 10px;
+  background: var(--brand-soft); border: 1.5px solid var(--brand); border-radius: 10px;
   padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--brand);
   cursor: pointer; font-family: inherit; transition: background .15s, color .15s; flex-shrink: 0;
 }
