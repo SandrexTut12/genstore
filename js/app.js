@@ -770,9 +770,20 @@ function renderGrid() {
     const specLine = specDefs.length ? (() => {
       const PRIO = ["cpu","ram","storage"];
       const top = specDefs.filter(x => PRIO.includes(x.key));
-      const rest = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => b.val.length - a.val.length);
-      const packed = []; let lo = 0, hi = rest.length - 1;
-      while (lo <= hi) { packed.push(rest[lo++]); if (lo <= hi) packed.push(rest[hi--]); }
+      const pool = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => b.val.length - a.val.length);
+      const estW = v => 4 + v.length;
+      const ROW_W = 34;
+      const packed = [];
+      while (pool.length) {
+        const chip = pool.shift();
+        packed.push(chip);
+        const avail = ROW_W - estW(chip.val);
+        let pi = -1;
+        for (let i = pool.length - 1; i >= 0; i--) {
+          if (estW(pool[i].val) <= avail) { pi = i; break; }
+        }
+        if (pi >= 0) packed.push(...pool.splice(pi, 1));
+      }
       return `<div class="spec-chips">${[...top, ...packed].map(x => {
         const m = x.key==="battery" && x.val.match(/(\d+)\s*%/);
         const pct = m ? parseInt(m[1]) : null;
