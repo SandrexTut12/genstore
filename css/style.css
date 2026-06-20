@@ -200,7 +200,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .sold-overlay span {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 800; font-size: 15px; letter-spacing: .07em;
-  color: #1a2740;
+  color: var(--red);
 }
 
 /* ── Spec button on card ─────────────────────────── */
@@ -236,8 +236,8 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .stt-body { display: flex; flex-direction: column; gap: 5px; }
 .stt-row { display: flex; align-items: center; gap: 8px; }
 .stt-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.stt-lbl { font-size: 10px; font-weight: 700; color: var(--muted); min-width: 46px; flex-shrink: 0; }
-.stt-val { font-size: 12px; color: var(--ink); }
+.stt-lbl { font-size: 10px; font-weight: 800; color: var(--muted); min-width: 46px; flex-shrink: 0; letter-spacing: .03em; }
+.stt-val { font-size: 12px; font-weight: 600; color: var(--ink); display: flex; align-items: center; }
 
 .btn-sold { background: transparent; color: var(--green); border: 1px solid #002B1E; }
 .btn-sold:hover { background: var(--green-soft); }
@@ -1132,9 +1132,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .grid.grid-2col .card .cat { font-size: 11px; }
   .grid.grid-2col .card .name { font-size: 13px; }
   .grid.grid-2col .spec-chips { display: none; }
-  .grid.grid-2col .sale-timer { font-size: 11px; }
-  .grid.grid-2col .card .price { font-size: 18px; }
-  .grid.grid-2col .card .old { font-size: 12px; }
+  .grid.grid-2col .sale-timer { font-size: 10px; padding: 3px 6px; }
+  .grid.grid-2col .card .price .now { font-size: 15px; }
+  .grid.grid-2col .card .price .old { font-size: 11px; }
+  .grid.grid-2col .price-row { flex-wrap: nowrap; gap: 4px; }
 
   /* modal mobile — full screen, scrolls as one unit */
   .overlay { padding: 0; align-items: stretch; }

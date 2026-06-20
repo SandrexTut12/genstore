@@ -1093,7 +1093,8 @@ function buildSpecTT(id) {
   const rows = d.defs.map(x => {
     const bm = x.key==="battery" && x.val.match(/(\d+)\s*%/);
     const clr = x.key==="battery" ? (bm&&parseInt(bm[1])>60?"#00E5A0":bm&&parseInt(bm[1])>30?"#FFB830":"#FF5C78") : (_SPEC_CLR2[x.key]||"var(--brand)");
-    return `<div class="stt-row"><span class="stt-dot" style="background:${clr}"></span><span class="stt-lbl">${_SPEC_LBLS[x.key]||x.key}</span><span class="stt-val">${esc(x.val)}</span></div>`;
+    const battIco = bm ? `<svg class="si" style="margin-left:4px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="${clr}" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/><rect x="4" y="9" width="${Math.round(parseInt(bm[1])*.08)}" height="7" fill="${clr}" rx="1" stroke="none"/></svg>` : "";
+    return `<div class="stt-row"><span class="stt-dot" style="background:${clr}"></span><span class="stt-lbl">${_SPEC_LBLS[x.key]||x.key}</span><span class="stt-val">${esc(x.val)}${battIco}</span></div>`;
   }).join("");
   return `<div class="stt-head">${esc(d.title)}</div><div class="stt-body">${rows}</div>`;
 }
