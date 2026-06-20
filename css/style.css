@@ -948,6 +948,15 @@ footer.footer-hidden { transform: translateY(100%); }
 .svc-order-note { font-size: 13px; color: var(--ink); font-style: italic; }
 .svc-order-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
 .svc-status-sel { padding: 6px 28px 6px 10px; font-size: 12px; min-width: 0; }
+.svc-order-price-row { display: flex; gap: 8px; align-items: center; }
+.svc-price-input {
+  width: 110px; padding: 7px 10px; border: 1.5px solid var(--line); border-radius: 10px;
+  font-size: 13px; font-weight: 600; font-family: inherit; background: var(--surface);
+  color: var(--ink); outline: none;
+}
+.svc-price-input:focus { border-color: var(--brand); }
+.svc-wa-btn { display: flex; align-items: center; gap: 6px; color: #25D366; border-color: #25D366; }
+.svc-wa-btn:hover { background: #d4f5e1; }
 
 .svc-status {
   font-size: 12px; font-weight: 700; padding: 4px 10px;

@@ -194,6 +194,8 @@ async function renderSvcAdminList() {
     const date = new Date(o.created).toLocaleDateString("ka-GE");
     const opts = Object.entries(SVC_STATUS).map(([v, l]) =>
       `<option value="${v}"${o.status === v ? " selected" : ""}>${l}</option>`).join("");
+    const waNum = (o.contact || "").replace(/\D/g, "");
+    const waFull = waNum.startsWith("995") ? waNum : "995" + waNum;
     return `<div class="svc-order">
       <div class="svc-order-top">
         <div>
@@ -207,6 +209,14 @@ async function renderSvcAdminList() {
       </div>
       <div class="svc-order-meta">${esc(o.contact)} &nbsp;·&nbsp; ${date}</div>
       ${o.note ? `<div class="svc-order-note">${esc(o.note)}</div>` : ""}
+      <div class="svc-order-price-row">
+        <input class="svc-price-input" type="number" min="0" placeholder="ფასი ₾"
+          value="${o.price || ""}" id="svcPrice_${o.id}">
+        <button class="btn btn-ghost btn-sm svc-wa-btn" onclick="sendSvcPrice('${o.id}','${waFull}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+          WA-ით გაგზავნა
+        </button>
+      </div>
       <div class="svc-order-actions">
         <select class="fp-select svc-status-sel" onchange="setSvcStatus('${o.id}',this.value)">${opts}</select>
         <button class="btn btn-danger btn-sm" onclick="deleteSvcOrder('${o.id}')">წაშლა</button>
@@ -220,7 +230,25 @@ async function setSvcStatus(id, status) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
   o.status = status;
+  const priceEl = $id("svcPrice_" + id);
+  if (priceEl && priceEl.value) o.price = Number(priceEl.value);
   await dbSvcSave(o);
+  renderSvcAdminList();
+}
+
+async function sendSvcPrice(id, waNum) {
+  const orders = await dbSvcList();
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const priceEl = $id("svcPrice_" + id);
+  const price = priceEl ? priceEl.value.trim() : (o.price || "");
+  if (!price) { toast("ჯერ ჩაწერე ფასი"); return; }
+
+  if (priceEl && price) { o.price = Number(price); o.status = "priced"; await dbSvcSave(o); }
+
+  const parts = [...o.parts, ...(o.install ? ["მონტაჟი"] : [])].join(", ");
+  const msg = `გამარჯობა! თქვენი შეკვეთა — ${o.laptop} (${parts}).\n\nდეტალის ფასი: ${price}₾${o.install ? " + მონტაჟი" : ""}.\n\nდაგვიდასტურეთ და შევუკვეთავთ. მადლობა!`;
+  window.open("https://wa.me/" + waNum + "?text=" + encodeURIComponent(msg), "_blank");
   renderSvcAdminList();
 }
 
