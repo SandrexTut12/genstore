@@ -1077,7 +1077,7 @@ function closeLightbox() {
 }
 
 // ============ ROUTING ============
-function goStore() { location.hash = ""; }
+function goStore() { clearSearch(); clearFilters(); location.hash = ""; }
 function goAdmin() { location.hash = "#admin"; }
 
 function openSearchOverlay() {
