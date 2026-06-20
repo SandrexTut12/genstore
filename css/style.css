@@ -996,29 +996,50 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 }
 
 /* ---- mobile search overlay ---- */
-.btn-search-mobile { display: none; }
+.btn-search-mobile {
+  display: none;
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--muted); cursor: pointer;
+  align-items: center; justify-content: center;
+  transition: .15s; flex-shrink: 0;
+}
+.btn-search-mobile:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
 .search-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,.45);
-  display: flex; flex-direction: column;
-  animation: soFadeIn .15s ease;
+  background: rgba(0,0,0,.35);
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 64px;
+  animation: soFadeIn .18s ease;
 }
 .search-overlay.hidden { display: none; }
 @keyframes soFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.search-overlay-bar {
-  background: var(--surface); padding: 10px 14px;
+
+.search-overlay-island {
+  width: calc(100% - 28px); max-width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 10px 12px;
   display: flex; gap: 10px; align-items: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,.15);
-  animation: soSlideDown .18s ease;
+  box-shadow: 0 12px 40px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.1);
+  animation: islandDrop .25s cubic-bezier(.34,1.4,.64,1);
 }
-@keyframes soSlideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-.search-overlay-bar .search { flex: 1; max-width: 100%; }
-.search-overlay-bar input { font-size: 16px; }
+html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3); }
+@keyframes islandDrop {
+  from { opacity: 0; transform: translateY(-12px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.search-overlay-island .search { flex: 1; max-width: 100%; }
+.search-overlay-island .search input { font-size: 16px; border-radius: 12px; }
 .btn-so-close {
-  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
-  border: 1px solid var(--line); background: transparent; color: var(--ink);
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  border: 1px solid var(--line); background: transparent; color: var(--muted);
   cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: .15s;
 }
+.btn-so-close:hover { border-color: var(--red); color: var(--red); }
 
 /* ---- responsive ---- */
 @media (max-width: 720px) {
