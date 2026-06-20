@@ -1042,7 +1042,7 @@ function closeModal() {
 }
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape")     { closeLightbox(); closeModal(); }
+  if (e.key === "Escape")     { closeLightbox(); closeModal(); closeSearchOverlay(); }
   if (e.key === "ArrowRight") { lbNav(1);  galleryNav(1); }
   if (e.key === "ArrowLeft")  { lbNav(-1); galleryNav(-1); }
 });
@@ -1077,6 +1077,20 @@ function closeLightbox() {
 // ============ ROUTING ============
 function goStore() { location.hash = ""; }
 function goAdmin() { location.hash = "#admin"; }
+
+function openSearchOverlay() {
+  const ov = $id("searchOverlay");
+  if (!ov) return;
+  ov.classList.remove("hidden");
+  setTimeout(() => { const inp = $id("searchOverlayInput"); if (inp) inp.focus(); }, 80);
+}
+function closeSearchOverlay() {
+  const ov = $id("searchOverlay");
+  if (ov) ov.classList.add("hidden");
+  const inp = $id("searchOverlayInput");
+  if (inp) { inp.value = ""; onSearch(""); }
+}
+function onSearchOverlayBg(e) { if (e.target === e.currentTarget) closeSearchOverlay(); }
 
 function route() {
   const h = location.hash;
