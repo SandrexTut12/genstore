@@ -997,14 +997,15 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 
 /* ---- responsive ---- */
 @media (max-width: 720px) {
-  .bar-inner { flex-wrap: wrap; gap: 8px; padding: 10px 16px; }
-  .search { order: 3; max-width: 100%; flex: none; width: 100%; margin-left: 0; }
-  .bar-right { gap: 8px; }
+  .bar-inner { gap: 8px; padding: 10px 14px; }
+  .logo .tag { display: none; }
+  .logo .wm { font-size: 19px; }
+  .svc-nav-lbl { display: none; }
+  .btn-svc-nav { padding: 8px 10px; gap: 0; }
   .label-hide { display: none; }
   #topContact { padding: 8px 10px; }
-  .btn-svc-nav { padding: 7px 11px; font-size: 12px; }
+  .bar-right { gap: 6px; }
   .row2, .row3 { grid-template-columns: 1fr; }
-  .logo .wm { font-size: 20px; }
   .grid-toggle { display: flex; }
 
   /* 2-column grid mode on mobile */
