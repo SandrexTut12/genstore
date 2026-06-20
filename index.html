@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#071428}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260620l">
+  <link rel="stylesheet" href="css/style.css?v=20260620m">
 </head>
 <body>
 
@@ -49,7 +49,10 @@
 
       <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="თემის შეცვლა"></button>
 
-      <button class="btn btn-svc-nav" onclick="goService()">სერვისი</button>
+      <button class="btn btn-svc-nav" onclick="goService()">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        სერვისი
+      </button>
 
       <a class="btn btn-primary" id="topContact" href="#" target="_blank" rel="noopener">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -254,6 +257,38 @@
         </div>
         <div class="svc-hero-title">ლეპტოპის სერვისი</div>
         <div class="svc-hero-sub">შეუკვეთე დეტალი — 2–3 კვირაში მოვიტანთ და გსურვილისამებრ შევცვლით</div>
+      </div>
+
+      <div class="svc-steps">
+        <div class="svc-steps-title">როგორ მუშაობს?</div>
+        <div class="svc-step">
+          <div class="svc-step-num">1</div>
+          <div class="svc-step-txt">
+            <strong>შეავსე ფორმა</strong>
+            <span>მიუთითე ლეპტოპის მოდელი, საჭირო დეტალი და შენი ნომერი</span>
+          </div>
+        </div>
+        <div class="svc-step">
+          <div class="svc-step-num">2</div>
+          <div class="svc-step-txt">
+            <strong>ვეძებთ და ვთვლით ფასს</strong>
+            <span>ვამოწმებთ დეტალის ხელმისაწვდომობას და ღირებულებას</span>
+          </div>
+        </div>
+        <div class="svc-step">
+          <div class="svc-step-num">3</div>
+          <div class="svc-step-txt">
+            <strong>WhatsApp-ით გიგზავნით ფასს</strong>
+            <span>შეთანხმებამდე ვარაფერს ვუკვეთავთ — შენ გადაწყვეტ</span>
+          </div>
+        </div>
+        <div class="svc-step">
+          <div class="svc-step-num">4</div>
+          <div class="svc-step-txt">
+            <strong>დაადასტურე — ვუკვეთავთ</strong>
+            <span>2–3 კვირაში ჩამოდის, შევცვლით სურვილისამებრ</span>
+          </div>
+        </div>
       </div>
 
       <div class="svc-form-card">
@@ -678,6 +713,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260620j"></script>
+<script src="js/app.js?v=20260620k"></script>
 </body>
 </html>
