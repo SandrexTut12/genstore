@@ -768,10 +768,12 @@ function renderGrid() {
       { key:"os",         val: s.os }
     ].filter(x => x.val);
     const specLine = specDefs.length ? (() => {
-      const sorted = [...specDefs].sort((a, b) => b.val.length - a.val.length);
-      const packed = []; let lo = 0, hi = sorted.length - 1;
-      while (lo <= hi) { packed.push(sorted[lo++]); if (lo <= hi) packed.push(sorted[hi--]); }
-      return `<div class="spec-chips">${packed.map(x => {
+      const PRIO = ["cpu","ram","storage"];
+      const top = specDefs.filter(x => PRIO.includes(x.key));
+      const rest = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => b.val.length - a.val.length);
+      const packed = []; let lo = 0, hi = rest.length - 1;
+      while (lo <= hi) { packed.push(rest[lo++]); if (lo <= hi) packed.push(rest[hi--]); }
+      return `<div class="spec-chips">${[...top, ...packed].map(x => {
         const m = x.key==="battery" && x.val.match(/(\d+)\s*%/);
         const pct = m ? parseInt(m[1]) : null;
         const clr = x.key==="battery" ? (pct>60?"#00E5A0":pct>30?"#FFB830":"#FF5C78") : (SPEC_CLR[x.key]||"currentColor");
