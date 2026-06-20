@@ -114,6 +114,122 @@ async function dbSave(p) {
   return false;
 }
 
+// ============ SERVICE DB ============
+const SVC_STATUS = {
+  new: "ახალი", priced: "ფასი გაიგზავნა",
+  confirmed: "დადასტურდა", ordered: "შეკვეთილია", done: "დასრულდა"
+};
+
+async function dbSvcList() {
+  try {
+    const snap = await db.collection("service_orders").get();
+    return snap.docs.map(d => d.data()).sort((a, b) => b.created - a.created);
+  } catch { return []; }
+}
+
+async function dbSvcSave(order) {
+  try { await db.collection("service_orders").doc(order.id).set(order); return true; }
+  catch (e) { toast("შეცდომა: " + (e.message || e.code)); return false; }
+}
+
+async function dbSvcDelete(id) {
+  try { await db.collection("service_orders").doc(id).delete(); return true; }
+  catch { return false; }
+}
+
+// ============ SERVICE PAGE ============
+let svcSelectedParts = new Set();
+
+function goService() { location.hash = "#service"; }
+
+function toggleSvcPart(btn) {
+  const part = btn.dataset.part;
+  if (svcSelectedParts.has(part)) { svcSelectedParts.delete(part); btn.classList.remove("active"); }
+  else { svcSelectedParts.add(part); btn.classList.add("active"); }
+}
+
+async function submitServiceOrder(e) {
+  e.preventDefault();
+  const laptop  = ($id("svcLaptop")  || {}).value?.trim();
+  const contact = ($id("svcContact") || {}).value?.trim();
+  const note    = ($id("svcNote")    || {}).value?.trim();
+  const install = ($id("svcInstall") || {}).checked;
+  if (!laptop)  { toast("მიუთითეთ ლეპტოპის მოდელი"); return; }
+  if (!svcSelectedParts.size) { toast("აირჩიეთ სულ მცირე ერთი დეტალი"); return; }
+  if (!contact) { toast("მიუთითეთ საკონტაქტო ნომერი"); return; }
+
+  const order = {
+    id: "svc_" + Date.now(),
+    laptop, parts: [...svcSelectedParts], install: !!install,
+    contact, note: note || "", status: "new", created: Date.now()
+  };
+  const ok = await dbSvcSave(order);
+  if (!ok) return;
+
+  $id("svcForm").reset();
+  svcSelectedParts.clear();
+  document.querySelectorAll(".svc-part-btn").forEach(b => b.classList.remove("active"));
+  const s = $id("svcSuccess");
+  if (s) { s.classList.remove("hidden"); setTimeout(() => s.classList.add("hidden"), 6000); }
+  toast("შეკვეთა გაიგზავნა!");
+}
+
+// ============ ADMIN — SERVICE ORDERS ============
+async function renderSvcAdminList() {
+  const box = $id("svcAdminList");
+  if (!box) return;
+  box.innerHTML = '<div class="svc-empty-msg">იტვირთება...</div>';
+  const orders = await dbSvcList();
+
+  const badge = $id("svcBadge");
+  const newCnt = orders.filter(o => o.status === "new").length;
+  if (badge) { badge.textContent = newCnt || ""; badge.classList.toggle("hidden", !newCnt); }
+
+  if (!orders.length) {
+    box.innerHTML = '<div class="svc-empty-msg">შეკვეთები არ არის</div>';
+    return;
+  }
+
+  box.innerHTML = orders.map(o => {
+    const date = new Date(o.created).toLocaleDateString("ka-GE");
+    const opts = Object.entries(SVC_STATUS).map(([v, l]) =>
+      `<option value="${v}"${o.status === v ? " selected" : ""}>${l}</option>`).join("");
+    return `<div class="svc-order">
+      <div class="svc-order-top">
+        <div>
+          <div class="svc-order-laptop">${esc(o.laptop)}</div>
+          <div class="svc-order-parts">
+            ${o.parts.map(p => `<span class="svc-part-tag">${esc(p)}</span>`).join("")}
+            ${o.install ? '<span class="svc-part-tag install">+ მონტაჟი</span>' : ""}
+          </div>
+        </div>
+        <span class="svc-status ${o.status}">${esc(SVC_STATUS[o.status] || o.status)}</span>
+      </div>
+      <div class="svc-order-meta">${esc(o.contact)} &nbsp;·&nbsp; ${date}</div>
+      ${o.note ? `<div class="svc-order-note">${esc(o.note)}</div>` : ""}
+      <div class="svc-order-actions">
+        <select class="fp-select svc-status-sel" onchange="setSvcStatus('${o.id}',this.value)">${opts}</select>
+        <button class="btn btn-danger btn-sm" onclick="deleteSvcOrder('${o.id}')">წაშლა</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function setSvcStatus(id, status) {
+  const orders = await dbSvcList();
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  o.status = status;
+  await dbSvcSave(o);
+  renderSvcAdminList();
+}
+
+async function deleteSvcOrder(id) {
+  if (!confirm("შეკვეთა წაიშლება. გავაგრძელო?")) return;
+  await dbSvcDelete(id);
+  renderSvcAdminList();
+}
+
 // recompress a base64 data-URL image to fit smaller dimensions / quality
 function recompressDataUrl(dataUrl, maxDim, quality) {
   return new Promise(resolve => {
@@ -908,9 +1024,16 @@ function goAdmin() { location.hash = "#admin"; }
 
 function route() {
   const h = location.hash;
-  const isAdmin = h === "#admin";
-  $id("view-store").classList.toggle("hidden", isAdmin);
+  const isAdmin   = h === "#admin";
+  const isService = h === "#service";
+  $id("view-store").classList.toggle("hidden", isAdmin || isService);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
+  $id("view-service").classList.toggle("hidden", !isService);
+
+  if (isService) {
+    closeModalDom();
+    return;
+  }
 
   if (isAdmin) {
     closeModalDom();
@@ -919,6 +1042,7 @@ function route() {
       $id("admin-login").classList.add("hidden");
       $id("admin-dash").classList.remove("hidden");
       renderAdminList();
+      renderSvcAdminList();
     } else {
       $id("admin-login").classList.remove("hidden");
       $id("admin-dash").classList.add("hidden");
@@ -1544,8 +1668,8 @@ const MOON_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   localStorage.setItem("gs_theme", t);
-  const btn = $id("themeToggle");
-  if (btn) btn.innerHTML = t === "dark" ? SUN_SVG : MOON_SVG;
+  const svg = t === "dark" ? SUN_SVG : MOON_SVG;
+  ["themeToggle", "themeToggleSvc"].forEach(id => { const b = $id(id); if (b) b.innerHTML = svg; });
 }
 
 function toggleTheme() {
@@ -1560,7 +1684,9 @@ function initTheme() {
 async function init() {
   initTheme();
   syncGridToggleBtn();
-  $id("year").textContent = new Date().getFullYear();
+  const yr = new Date().getFullYear();
+  $id("year").textContent = yr;
+  const ys = $id("yearSvc"); if (ys) ys.textContent = yr;
 
   const fb = getFb();
   $id("topContact").href = fb;
