@@ -138,37 +138,55 @@ async function dbSvcDelete(id) {
 }
 
 // ============ SERVICE PAGE ============
-let svcSelectedParts = new Set();
+let svcPhotos = [null, null];
 
 function goService() { location.hash = "#service"; }
 
-function toggleSvcPart(btn) {
-  const part = btn.dataset.part;
-  if (svcSelectedParts.has(part)) { svcSelectedParts.delete(part); btn.classList.remove("active"); }
-  else { svcSelectedParts.add(part); btn.classList.add("active"); }
+async function onSvcPhoto(e, idx) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const compressed = await recompressDataUrl(ev.target.result, 900, 0.75);
+    svcPhotos[idx] = compressed;
+    const inner = $id("svcPhotoInner" + idx);
+    if (inner) inner.innerHTML = `<img src="${compressed}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function submitServiceOrder(e) {
   e.preventDefault();
   const laptop  = ($id("svcLaptop")  || {}).value?.trim();
+  const detail  = ($id("svcDetail")  || {}).value?.trim();
   const contact = ($id("svcContact") || {}).value?.trim();
   const note    = ($id("svcNote")    || {}).value?.trim();
   const install = ($id("svcInstall") || {}).checked;
   if (!laptop)  { toast("მიუთითეთ ლეპტოპის მოდელი"); return; }
-  if (!svcSelectedParts.size) { toast("აირჩიეთ სულ მცირე ერთი დეტალი"); return; }
+  if (!detail)  { toast("მიუთითეთ საჭირო დეტალი"); return; }
   if (!contact) { toast("მიუთითეთ საკონტაქტო ნომერი"); return; }
 
   const order = {
     id: "svc_" + Date.now(),
-    laptop, parts: [...svcSelectedParts], install: !!install,
-    contact, note: note || "", status: "new", created: Date.now()
+    laptop, detail, install: !!install,
+    contact, note: note || "",
+    photos: svcPhotos.filter(Boolean),
+    status: "new", created: Date.now()
   };
   const ok = await dbSvcSave(order);
   if (!ok) return;
 
   $id("svcForm").reset();
-  svcSelectedParts.clear();
-  document.querySelectorAll(".svc-part-btn").forEach(b => b.classList.remove("active"));
+  svcPhotos = [null, null];
+  [0, 1].forEach(i => {
+    const inner = $id("svcPhotoInner" + i);
+    const labels = ["ლეპტოპი (მთლიანი)", "სერიული ნომერი"];
+    const icons = [
+      `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>`,
+      `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>`
+    ];
+    if (inner) inner.innerHTML = icons[i] + `<span>${labels[i]}</span>`;
+  });
   const s = $id("svcSuccess");
   if (s) { s.classList.remove("hidden"); setTimeout(() => s.classList.add("hidden"), 6000); }
   toast("შეკვეთა გაიგზავნა!");
@@ -201,7 +219,7 @@ async function renderSvcAdminList() {
         <div>
           <div class="svc-order-laptop">${esc(o.laptop)}</div>
           <div class="svc-order-parts">
-            ${o.parts.map(p => `<span class="svc-part-tag">${esc(p)}</span>`).join("")}
+            <span class="svc-part-tag">${esc(o.detail || (o.parts || []).join(", "))}</span>
             ${o.install ? '<span class="svc-part-tag install">+ მონტაჟი</span>' : ""}
           </div>
         </div>
@@ -209,6 +227,7 @@ async function renderSvcAdminList() {
       </div>
       <div class="svc-order-meta">${esc(o.contact)} &nbsp;·&nbsp; ${date}</div>
       ${o.note ? `<div class="svc-order-note">${esc(o.note)}</div>` : ""}
+      ${o.photos && o.photos.length ? `<div class="svc-order-photos">${o.photos.map((ph, i) => `<img src="${ph}" class="svc-order-photo" title="${i===0?"ლეპტოპი":"სერიული ნომერი"}" onclick="this.requestFullscreen?this.requestFullscreen():window.open(this.src)">`).join("")}</div>` : ""}
       <div class="svc-order-price-row">
         <input class="svc-price-input" type="number" min="0" placeholder="ფასი ₾"
           value="${o.price || ""}" id="svcPrice_${o.id}">

@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#071428}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260620i">
+  <link rel="stylesheet" href="css/style.css?v=20260620j">
 </head>
 <body>
 
@@ -238,7 +238,7 @@
         <span class="tag">ლეპტოპის სერვისი</span>
       </div>
       <button class="btn-theme" id="themeToggleSvc" onclick="toggleTheme()" title="თემის შეცვლა"></button>
-      <button class="btn btn-ghost" onclick="goStore()">&#8592; მაღაზია</button>
+      <button class="btn btn-ghost" onclick="goStore()" style="margin-left:auto">&#8592; მაღაზია</button>
     </div>
   </header>
 
@@ -246,27 +246,14 @@
     <div class="svc-wrap">
 
       <div class="svc-hero">
+        <div class="svc-hero-icons">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M8 13h.01M12 13h.01M16 13h.01M6 17h12"/></svg>
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3M6 11v3M10 11v3M14 11v3"/></svg>
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="10" rx="2"/><path d="M12 12v4M8 20h8M9 6h6"/></svg>
+        </div>
         <div class="svc-hero-title">ლეპტოპის სერვისი</div>
         <div class="svc-hero-sub">შეუკვეთე დეტალი — 2–3 კვირაში მოვიტანთ და გსურვილისამებრ შევცვლით</div>
-      </div>
-
-      <div class="svc-tiles">
-        <div class="svc-tile">
-          <svg class="svc-tile-ico" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M8 13h.01M12 13h.01M16 13h.01M6 17h12"/></svg>
-          <div class="svc-tile-name">კლავიატურა</div>
-        </div>
-        <div class="svc-tile">
-          <svg class="svc-tile-ico" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          <div class="svc-tile-name">ეკრანი</div>
-        </div>
-        <div class="svc-tile">
-          <svg class="svc-tile-ico" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3M6 11v3M10 11v3M14 11v3"/></svg>
-          <div class="svc-tile-name">ბატარეა</div>
-        </div>
-        <div class="svc-tile">
-          <svg class="svc-tile-ico" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="10" rx="2"/><path d="M12 12v4M8 20h8M9 6h6"/></svg>
-          <div class="svc-tile-name">დამტენი</div>
-        </div>
       </div>
 
       <div class="svc-form-card">
@@ -285,24 +272,39 @@
 
           <div class="field">
             <label>საჭირო დეტალი / სერვისი *</label>
-            <div class="svc-parts" id="svcPartsWrap">
-              <button type="button" class="svc-part-btn" data-part="კლავიატურა" onclick="toggleSvcPart(this)">კლავიატურა</button>
-              <button type="button" class="svc-part-btn" data-part="ეკრანი" onclick="toggleSvcPart(this)">ეკრანი</button>
-              <button type="button" class="svc-part-btn" data-part="ბატარეა" onclick="toggleSvcPart(this)">ბატარეა</button>
-              <button type="button" class="svc-part-btn" data-part="დამტენი" onclick="toggleSvcPart(this)">დამტენი</button>
-            </div>
+            <input id="svcDetail" type="text" placeholder="მაგ. ეკრანი, კლავიატურა, ბატარეა, დამტენი...">
           </div>
 
           <div class="field">
             <label class="svc-check-lbl">
               <input type="checkbox" id="svcInstall">
-              <span>შეცვლაც მჭირდება (მონტაჟი)</span>
+              <span>შეცვლა / მონტაჟიც მჭირდება <span class="svc-install-note">(ემატება დამატებითი საფასური)</span></span>
             </label>
           </div>
 
           <div class="field">
             <label>კონტაქტი — ტელეფონი / WhatsApp *</label>
             <input id="svcContact" type="tel" placeholder="5XX XXX XXX">
+          </div>
+
+          <div class="field">
+            <label>ფოტოები <span class="opt-lbl">(სასურველი)</span></label>
+            <div class="svc-photos">
+              <div class="svc-photo-slot" onclick="document.getElementById('svcPhotoInput0').click()">
+                <div class="svc-photo-inner" id="svcPhotoInner0">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <span>ლეპტოპი (მთლიანი)</span>
+                </div>
+                <input type="file" id="svcPhotoInput0" accept="image/*" style="display:none" onchange="onSvcPhoto(event,0)">
+              </div>
+              <div class="svc-photo-slot" onclick="document.getElementById('svcPhotoInput1').click()">
+                <div class="svc-photo-inner" id="svcPhotoInner1">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  <span>სერიული ნომერი</span>
+                </div>
+                <input type="file" id="svcPhotoInput1" accept="image/*" style="display:none" onchange="onSvcPhoto(event,1)">
+              </div>
+            </div>
           </div>
 
           <div class="field">
@@ -676,6 +678,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260620h"></script>
+<script src="js/app.js?v=20260620i"></script>
 </body>
 </html>
