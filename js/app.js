@@ -768,10 +768,10 @@ function renderGrid() {
       { key:"os",         val: s.os }
     ].filter(x => x.val);
     const specLine = specDefs.length ? (() => {
-      const PRIO = ["cpu","ram","storage"];
+      const PRIO = ["cpu","ram","storage","resolution"];
       const top = specDefs.filter(x => PRIO.includes(x.key));
-      const estW = v => 4 + [...v].reduce((s,c) => s + (c.charCodeAt(0) > 127 ? 1.5 : 1), 0);
-      const ROW_W = 34;
+      const estW = v => 4 + [...v].reduce((s,c) => s + (c.charCodeAt(0) > 127 ? 2 : 1), 0);
+      const ROW_W = 38;
       const pool = [...specDefs.filter(x => !PRIO.includes(x.key))].sort((a,b) => estW(b.val) - estW(a.val));
       const packed = [];
       while (pool.length) {
