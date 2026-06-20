@@ -779,9 +779,11 @@ function renderGrid() {
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
-    ${timer}
     ${p.sold ? '<span class="sold-text">გაყიდულია</span>' : ''}
-    <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
+    <div class="price-row">
+      <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
+      ${timer}
+    </div>
   </div>
 </div>`;
   }).join("");
