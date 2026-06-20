@@ -1045,6 +1045,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 @media (max-width: 720px) {
   .bar-inner { gap: 8px; padding: 10px 14px; }
   .search { display: none; }
+  .search-overlay-island .search { display: block; }
   .btn-search-mobile { display: flex; }
   .logo .tag { display: none; }
   .logo .wm { font-size: 19px; }
