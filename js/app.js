@@ -1813,11 +1813,12 @@ function renderAdminList() {
     const icUnsold = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
     const icDel = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
     const dpct = discountPct(p);
+    const adminSaleOn = !p.saleEnds || saleActive(p);
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}${p.hidden ? " prod-hidden" : ""}">
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 && adminSaleOn ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
       <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
