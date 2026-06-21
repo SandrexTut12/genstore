@@ -835,21 +835,19 @@ function startCountdowns() {
   }, 1000);
 }
 
-// ---- card image auto-scroll on hover (desktop only) ----
+// ---- card image auto-scroll on hover/touch ----
 function initCardScroll() {
-  if (window.innerWidth <= 720) return;
   document.querySelectorAll(".card .imgwrap").forEach(wrap => {
     const track = wrap.querySelector(".img-scroll-track");
     if (!track) return;
     const w = wrap.clientWidth;
-    // fix each image to exact card width
     Array.from(track.children).forEach(img => { img.style.width = w + "px"; });
-    // duplicate for seamless loop
     Array.from(track.children).forEach(img => track.appendChild(img.cloneNode(true)));
     const loopW = w * (track.children.length / 2);
     let raf = null;
     let offset = 0;
-    wrap.addEventListener("mouseenter", () => {
+
+    function startScroll() {
       track.style.transition = "";
       function step() {
         offset += 0.75;
@@ -858,14 +856,21 @@ function initCardScroll() {
         raf = requestAnimationFrame(step);
       }
       raf = requestAnimationFrame(step);
-    });
-    wrap.addEventListener("mouseleave", () => {
+    }
+
+    function stopScroll() {
       if (raf) { cancelAnimationFrame(raf); raf = null; }
       track.style.transition = "transform 0.5s ease";
       track.style.transform = "translateX(0)";
       offset = 0;
       setTimeout(() => { track.style.transition = ""; }, 500);
-    });
+    }
+
+    wrap.addEventListener("mouseenter", startScroll);
+    wrap.addEventListener("mouseleave", stopScroll);
+    wrap.addEventListener("touchstart", startScroll, { passive: true });
+    wrap.addEventListener("touchend",   stopScroll, { passive: true });
+    wrap.addEventListener("touchcancel", stopScroll, { passive: true });
   });
 }
 
