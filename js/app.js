@@ -1938,8 +1938,13 @@ async function init() {
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
 
-  const byId = arr => [...arr].sort((a, b) => (a.id < b.id ? -1 : 1));
-  if (JSON.stringify(byId(fresh)) !== JSON.stringify(byId(PRODUCTS)) || !cached) {
+  const prodHash = arr => [...arr]
+    .sort((a, b) => a.id < b.id ? -1 : 1)
+    .map(p => [p.id, p.title, p.price, p.oldPrice, p.sold, p.hidden,
+               p.saleEnds, p.cat, (p.images||[]).join(","),
+               JSON.stringify(p.specs||{})].join("|"))
+    .join("||");
+  if (prodHash(fresh) !== prodHash(PRODUCTS) || !cached) {
     PRODUCTS = fresh;
     await migrate();
     updatePriceBounds();
