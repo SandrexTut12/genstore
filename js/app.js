@@ -716,8 +716,10 @@ function renderGrid() {
   const pageList = list.slice((storePage - 1) * ps, storePage * ps);
 
   grid.innerHTML = pageList.map((p, idx) => {
-    const img = p.images && p.images[0]
-      ? `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`
+    const img = p.images && p.images.length
+      ? (p.images.length > 1
+        ? `<div class="img-scroll-track">${p.images.map(src => `<img src="${src}" alt="${esc(p.title)}" loading="lazy">`).join("")}</div>`
+        : `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`)
       : `<div class="noimg">ფოტო არ არის</div>`;
     const saleOn = !p.saleEnds || saleActive(p);
     const displayPrice = (!saleOn && p.oldPrice) ? p.oldPrice : p.price;
@@ -787,6 +789,7 @@ function renderGrid() {
   }).join("");
 
   startCountdowns();
+  initCardScroll();
 
   const pager = $id("store-pagination");
   if (totalPages <= 1) {
@@ -830,6 +833,32 @@ function startCountdowns() {
     });
     if (expired) { clearInterval(countdownTimer); countdownTimer = null; renderGrid(); }
   }, 1000);
+}
+
+// ---- card image auto-scroll on hover (desktop only) ----
+function initCardScroll() {
+  if (window.innerWidth <= 720) return;
+  document.querySelectorAll(".card .imgwrap").forEach(wrap => {
+    const track = wrap.querySelector(".img-scroll-track");
+    if (!track) return;
+    let raf = null;
+    let offset = 0;
+    wrap.addEventListener("mouseenter", () => {
+      const totalW = track.scrollWidth;
+      const visW = wrap.clientWidth;
+      if (totalW <= visW) return;
+      function step() {
+        offset += 0.5;
+        if (offset >= totalW - visW) offset = 0;
+        track.style.transform = `translateX(-${offset}px)`;
+        raf = requestAnimationFrame(step);
+      }
+      raf = requestAnimationFrame(step);
+    });
+    wrap.addEventListener("mouseleave", () => {
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    });
+  });
 }
 
 // ---- loading skeletons ----
