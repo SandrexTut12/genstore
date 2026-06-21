@@ -661,21 +661,27 @@ function toggleFpDd(key) {
     } else if (key !== "price") {
       renderFpDdList(key);
     }
-    // adjust dropdown position to stay on screen
+    // adjust dropdown position using button rect (before list renders)
     const list = dd.querySelector(".fp-dd-list");
     if (list) {
-      // reset
+      const btnRect = dd.getBoundingClientRect();
+      const gap = 6;
+      const spaceBelow = window.innerHeight - btnRect.bottom - gap - 8;
+      const spaceAbove = btnRect.top - gap - 8;
+      const maxH = Math.min(340, Math.max(spaceBelow, spaceAbove, 120));
+      list.style.maxHeight = maxH + "px";
+      // open up if more space above and not enough below
+      if (spaceBelow < 160 && spaceAbove > spaceBelow) {
+        list.style.top = "auto"; list.style.bottom = "calc(100% + " + gap + "px)";
+      } else {
+        list.style.top = "calc(100% + " + gap + "px)"; list.style.bottom = "auto";
+      }
+      // flip left if near right edge
       list.style.left = "0"; list.style.right = "auto";
-      list.style.top = "calc(100% + 6px)"; list.style.bottom = "auto";
-      const r = list.getBoundingClientRect();
-      // flip left if off right edge
-      if (r.right > window.innerWidth - 8) {
-        list.style.left = "auto"; list.style.right = "0";
-      }
-      // flip up if off bottom edge
-      if (r.bottom > window.innerHeight - 8) {
-        list.style.top = "auto"; list.style.bottom = "calc(100% + 6px)";
-      }
+      requestAnimationFrame(() => {
+        const r = list.getBoundingClientRect();
+        if (r.right > window.innerWidth - 8) { list.style.left = "auto"; list.style.right = "0"; }
+      });
     }
   }
 }
