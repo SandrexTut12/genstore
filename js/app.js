@@ -661,22 +661,20 @@ function toggleFpDd(key) {
     } else if (key !== "price") {
       renderFpDdList(key);
     }
-    // adjust dropdown position using button rect (before list renders)
+    // position dropdown: fill space to screen edge, scroll inside
     const list = dd.querySelector(".fp-dd-list");
     if (list) {
       const btnRect = dd.getBoundingClientRect();
-      const gap = 6;
-      const spaceBelow = window.innerHeight - btnRect.bottom - gap - 8;
-      const spaceAbove = btnRect.top - gap - 8;
-      const maxH = Math.min(340, Math.max(spaceBelow, spaceAbove, 120));
-      list.style.maxHeight = maxH + "px";
-      // open up if more space above and not enough below
-      if (spaceBelow < 160 && spaceAbove > spaceBelow) {
-        list.style.top = "auto"; list.style.bottom = "calc(100% + " + gap + "px)";
-      } else {
+      const gap = 6; const pad = 10;
+      const spaceBelow = window.innerHeight - btnRect.bottom - gap - pad;
+      const spaceAbove = btnRect.top - gap - pad;
+      if (spaceBelow >= 120) {
         list.style.top = "calc(100% + " + gap + "px)"; list.style.bottom = "auto";
+        list.style.maxHeight = spaceBelow + "px";
+      } else {
+        list.style.top = "auto"; list.style.bottom = "calc(100% + " + gap + "px)";
+        list.style.maxHeight = Math.max(spaceAbove, 120) + "px";
       }
-      // flip left if near right edge
       list.style.left = "0"; list.style.right = "auto";
       requestAnimationFrame(() => {
         const r = list.getBoundingClientRect();
