@@ -1237,19 +1237,15 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .fb-sort { margin-left: auto; flex: 0; }
   .fb-sort select { width: auto; }
   .fb-price { max-width: none; flex-basis: 100%; order: 3; }
-  /* filter panel dropdowns — single scrollable row on mobile */
-  .fp-dd-row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
-  .fp-dd-row::-webkit-scrollbar { display: none; }
-  .fp-dd { flex-shrink: 0; }
   /* cat-bar: all items shrink proportionally so everything always fits one row */
   .cat-bar-inner { gap: clamp(4px, 1.5vw, 10px); padding: 6px clamp(8px, 3vw, 20px); flex-wrap: nowrap; }
-  .fb-clear, .fb-toggle {
+  .fb-clear, .fb-toggle, .grid-toggle {
     flex-shrink: 1; min-width: 0;
     font-size: clamp(11px, 3.2vw, 13px);
     padding: clamp(5px, 1.4vw, 7px) clamp(7px, 2.2vw, 12px);
     white-space: nowrap; overflow: hidden;
   }
-  .grid-toggle { flex-shrink: 0; }
+  .grid-toggle { display: flex; }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
