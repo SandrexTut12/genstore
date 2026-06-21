@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260621v">
+  <link rel="stylesheet" href="css/style.css?v=20260621w">
 </head>
 <body>
 
@@ -210,6 +210,11 @@
       </div>
     </div>
     </div>
+  </div>
+
+  <div id="previewBanner" class="hidden" style="background:#1a2a10;border-bottom:1px solid #4ade80;padding:8px 20px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;color:#4ade80">
+    <span>&#128065; Preview — დრაფტი პროდუქტები ჩართულია</span>
+    <button onclick="goStore()" style="margin-left:auto;background:#4ade80;color:#0a1f06;border:none;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer">გამოსვლა</button>
   </div>
 
   <main>
@@ -409,6 +414,7 @@
 
     <div class="toolbar">
       <button class="btn btn-ghost" onclick="goStore()">&#8592; მაღაზია</button>
+      <button class="btn btn-primary" onclick="goPreview()" style="margin-left:8px">&#128065; პრევიუ</button>
     </div>
 
     <!-- Service orders -->
@@ -735,6 +741,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="js/app.js?v=20260621y"></script>
+<script src="js/app.js?v=20260621z"></script>
 </body>
 </html>

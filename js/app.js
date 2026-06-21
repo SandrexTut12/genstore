@@ -388,6 +388,7 @@ let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
 let authed      = false;
+let previewMode = false;
 let editingId   = null;
 let formImgs    = [];
 let modalImgs   = [];
@@ -495,7 +496,7 @@ function onSearch(val) {
 function getFiltered() {
   return PRODUCTS
     .filter(p => {
-      if (p.hidden) return false;                 // draft — not shown on storefront
+      if (p.hidden && !previewMode) return false;  // draft — hidden unless preview
       if (priceCeil > 0 && (p.price < priceMin || p.price > priceMax)) return false;
       for (const [key, vals] of Object.entries(specFilters)) {
         if (!vals.size) continue;
@@ -534,7 +535,7 @@ function getFiltered() {
 
 // ---- filter bar (sort + price range) ----
 function updatePriceBounds() {
-  const prices = PRODUCTS.filter(p => !p.hidden).map(p => Number(p.price) || 0);
+  const prices = PRODUCTS.filter(p => !p.hidden || previewMode).map(p => Number(p.price) || 0);
   if (!prices.length) { priceCeil = 0; return; }
   priceFloor = Math.min(...prices);
   priceCeil  = Math.max(...prices);
@@ -1226,8 +1227,16 @@ function closeLightbox() {
 }
 
 // ============ ROUTING ============
-function goStore() { clearSearch(); clearFilters(); location.hash = ""; }
-function goAdmin() { location.hash = "#admin"; }
+function goStore()   { previewMode = false; const b=$id("previewBanner"); if(b) b.classList.add("hidden"); clearSearch(); clearFilters(); location.hash = ""; }
+function goAdmin()   { location.hash = "#admin"; }
+function goPreview() {
+  previewMode = true;
+  location.hash = "";
+  updatePriceBounds();
+  renderGrid();
+  const b = $id("previewBanner");
+  if (b) b.classList.remove("hidden");
+}
 
 function openSearchOverlay() {
   const ov = $id("searchOverlay");
