@@ -661,24 +661,24 @@ function toggleFpDd(key) {
     } else if (key !== "price") {
       renderFpDdList(key);
     }
-    // position dropdown: fill space to screen edge, scroll inside
+    // position dropdown using visualViewport for accurate mobile height
     const list = dd.querySelector(".fp-dd-list");
     if (list) {
+      const vp = window.visualViewport || { height: window.innerHeight, width: window.innerWidth };
       const btnRect = dd.getBoundingClientRect();
-      const gap = 6; const pad = 10;
-      const spaceBelow = window.innerHeight - btnRect.bottom - gap - pad;
-      const spaceAbove = btnRect.top - gap - pad;
-      if (spaceBelow >= 120) {
-        list.style.top = "calc(100% + " + gap + "px)"; list.style.bottom = "auto";
-        list.style.maxHeight = spaceBelow + "px";
+      const pctBelow = ((vp.height - btnRect.bottom) / vp.height * 100) - 2;
+      const pctAbove = (btnRect.top / vp.height * 100) - 2;
+      if (pctBelow >= 15) {
+        list.style.top = "calc(100% + 6px)"; list.style.bottom = "auto";
+        list.style.maxHeight = Math.max(pctBelow, 15) + "vh";
       } else {
-        list.style.top = "auto"; list.style.bottom = "calc(100% + " + gap + "px)";
-        list.style.maxHeight = Math.max(spaceAbove, 120) + "px";
+        list.style.top = "auto"; list.style.bottom = "calc(100% + 6px)";
+        list.style.maxHeight = Math.max(pctAbove, 15) + "vh";
       }
       list.style.left = "0"; list.style.right = "auto";
       requestAnimationFrame(() => {
         const r = list.getBoundingClientRect();
-        if (r.right > window.innerWidth - 8) { list.style.left = "auto"; list.style.right = "0"; }
+        if (r.right > vp.width - 8) { list.style.left = "auto"; list.style.right = "0"; }
       });
     }
   }
