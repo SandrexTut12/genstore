@@ -720,6 +720,7 @@ function renderGrid() {
       ? `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`
       : `<div class="noimg">ფოტო არ არის</div>`;
     const saleOn = !p.saleEnds || saleActive(p);
+    const displayPrice = (!saleOn && p.oldPrice) ? p.oldPrice : p.price;
     const old = (p.oldPrice && saleOn)
       ? `<span class="old">${fmtPrice(p.oldPrice)}</span>`
       : "";
@@ -779,7 +780,7 @@ function renderGrid() {
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
     <div class="price-row">
-      <span class="price"><span class="now">${fmtPrice(p.price)}</span>${old}</span>
+      <span class="price"><span class="now">${fmtPrice(displayPrice)}</span>${old}</span>
     </div>
   </div>
 </div>`;
@@ -893,6 +894,7 @@ function renderProductModal(id) {
   modalIdx  = 0;
 
   const mSaleOn = !p.saleEnds || saleActive(p);
+  const mDisplayPrice = (!mSaleOn && p.oldPrice) ? p.oldPrice : p.price;
   const old = (p.oldPrice && mSaleOn) ? `<span class="old">${fmtPrice(p.oldPrice)}</span>` : "";
   const fb  = getFb();
 
@@ -996,7 +998,7 @@ function renderProductModal(id) {
         <div class="mcat">${[p.brand, p.cat].filter(Boolean).map(esc).join(" · ")}</div>
         <h2>${esc(p.title)}</h2>
         <div class="mprice">
-          <span class="now">${fmtPrice(p.price)}</span>${old}${mDiscBadge}
+          <span class="now">${fmtPrice(mDisplayPrice)}</span>${old}${mDiscBadge}
         </div>
         ${mTimer}
         ${specTable}
