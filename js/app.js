@@ -841,15 +841,19 @@ function initCardScroll() {
   document.querySelectorAll(".card .imgwrap").forEach(wrap => {
     const track = wrap.querySelector(".img-scroll-track");
     if (!track) return;
-    // duplicate images for seamless loop
+    const w = wrap.clientWidth;
+    // fix each image to exact card width
+    Array.from(track.children).forEach(img => { img.style.width = w + "px"; });
+    // duplicate for seamless loop
     Array.from(track.children).forEach(img => track.appendChild(img.cloneNode(true)));
-    const loopW = track.scrollWidth / 2; // width of one full set
+    const loopW = w * (track.children.length / 2);
     let raf = null;
     let offset = 0;
     wrap.addEventListener("mouseenter", () => {
+      track.style.transition = "";
       function step() {
         offset += 0.75;
-        if (offset >= loopW) offset -= loopW; // seamless reset
+        if (offset >= loopW) offset -= loopW;
         track.style.transform = `translateX(-${offset}px)`;
         raf = requestAnimationFrame(step);
       }
@@ -857,6 +861,10 @@ function initCardScroll() {
     });
     wrap.addEventListener("mouseleave", () => {
       if (raf) { cancelAnimationFrame(raf); raf = null; }
+      track.style.transition = "transform 0.5s ease";
+      track.style.transform = "translateX(0)";
+      offset = 0;
+      setTimeout(() => { track.style.transition = ""; }, 500);
     });
   });
 }
