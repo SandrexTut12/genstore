@@ -719,11 +719,12 @@ function renderGrid() {
     const img = p.images && p.images[0]
       ? `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`
       : `<div class="noimg">ფოტო არ არის</div>`;
-    const old = p.oldPrice
+    const saleOn = !p.saleEnds || saleActive(p);
+    const old = (p.oldPrice && saleOn)
       ? `<span class="old">${fmtPrice(p.oldPrice)}</span>`
       : "";
     const dpct = discountPct(p);
-    const discountBadge = (dpct > 0 && !p.sold)
+    const discountBadge = (dpct > 0 && !p.sold && saleOn)
       ? `<span class="badge-discount">-${dpct}%</span>` : "";
     const timer = (dpct > 0 && !p.sold && saleActive(p))
       ? `<div class="img-timer countdown" data-ends="${p.saleEnds}"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="ct">${fmtCountdown(Number(p.saleEnds) - Date.now())}</span></div>`
@@ -891,7 +892,8 @@ function renderProductModal(id) {
   modalImgs = p.images || [];
   modalIdx  = 0;
 
-  const old = p.oldPrice ? `<span class="old">${fmtPrice(p.oldPrice)}</span>` : "";
+  const mSaleOn = !p.saleEnds || saleActive(p);
+  const old = (p.oldPrice && mSaleOn) ? `<span class="old">${fmtPrice(p.oldPrice)}</span>` : "";
   const fb  = getFb();
 
   const mainImg = modalImgs.length
@@ -963,7 +965,7 @@ function renderProductModal(id) {
     : "";
 
   const mdpct = discountPct(p);
-  const mDiscBadge = (mdpct > 0 && !p.sold) ? `<span class="mdisc">-${mdpct}%</span>` : "";
+  const mDiscBadge = (mdpct > 0 && !p.sold && mSaleOn) ? `<span class="mdisc">-${mdpct}%</span>` : "";
   const mTimer = (mdpct > 0 && !p.sold && saleActive(p))
     ? `<div class="msale-timer countdown" data-ends="${p.saleEnds}">
          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>

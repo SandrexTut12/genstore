@@ -42,7 +42,7 @@ html[data-theme="dark"] .card                { border-color: #2A3C60; background
 /* — header — */
 html[data-theme="dark"] header.bar           { background: rgba(19,20,26,.95); backdrop-filter: blur(14px); }
 /* — filter bar strip — */
-html[data-theme="dark"] .cat-bar             { background: #0C1226; border-color: #1C3058; }
+html[data-theme="dark"] .cat-bar             { background: #101215; border-color: #232730; }
 /* — category chips — */
 html[data-theme="dark"] .chip                { border-color: #28406A; color: #8AAED0; background: rgba(20,30,56,.6); }
 html[data-theme="dark"] .chip:hover          { border-color: var(--brand); color: var(--ink); background: rgba(20,204,255,.08); }
