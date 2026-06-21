@@ -48,7 +48,7 @@ html[data-theme="dark"] .chip                { border-color: #28406A; color: #8A
 html[data-theme="dark"] .chip:hover          { border-color: var(--brand); color: var(--ink); background: rgba(20,204,255,.08); }
 html[data-theme="dark"] .chip.active         { color: #13141A; background: var(--brand); border-color: var(--brand); }
 /* — filter toggle button — */
-html[data-theme="dark"] .fb-toggle           { background: #182038; border-color: #2A3C60; color: var(--muted); }
+html[data-theme="dark"] .fb-toggle           { background: #13141A; border-color: #2A2C38; color: var(--muted); }
 html[data-theme="dark"] .fb-toggle:hover,
 html[data-theme="dark"] .fb-toggle.active    { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
 /* — spec button sharper glow — */
