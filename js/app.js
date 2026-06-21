@@ -85,7 +85,7 @@ function getCached() {
 async function dbList() {
   try {
     const snap = await db.collection("products").get();
-    const data = snap.docs.map(d => d.data());
+    const data = snap.docs.map(d => d.data()).sort((a, b) => a.id < b.id ? -1 : 1);
     try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
     return data;
   } catch (e) { return []; }
@@ -1938,7 +1938,8 @@ async function init() {
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
 
-  if (JSON.stringify(fresh) !== JSON.stringify(PRODUCTS) || !cached) {
+  const byId = arr => [...arr].sort((a, b) => (a.id < b.id ? -1 : 1));
+  if (JSON.stringify(byId(fresh)) !== JSON.stringify(byId(PRODUCTS)) || !cached) {
     PRODUCTS = fresh;
     await migrate();
     updatePriceBounds();
