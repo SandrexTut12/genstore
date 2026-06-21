@@ -749,7 +749,7 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ---- filter toggle button ---- */
 .fb-toggle {
   display: flex; align-items: center; gap: 6px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(197, 211, 232, 0.94); border: 1px solid var(--line); border-radius: 10px;
   padding: 7px 12px; font-size: 13px; font-weight: 600; color: var(--ink);
   cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s;
 }
