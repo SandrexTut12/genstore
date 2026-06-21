@@ -1233,6 +1233,9 @@ function goPreview() {
   previewMode = true;
   location.hash = "";
   updatePriceBounds();
+  priceMin = priceFloor;
+  priceMax = priceCeil;
+  syncPriceUI();
   renderGrid();
   const b = $id("previewBanner");
   if (b) b.classList.remove("hidden");
@@ -1780,6 +1783,18 @@ async function toggleSold(id) {
   toast(p.sold ? "გაყიდულია" : "ისევ გამოფინდა");
 }
 
+async function toggleHidden(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  p.hidden = !p.hidden;
+  await dbSave(p);
+  PRODUCTS = await dbList();
+  updatePriceBounds();
+  renderAdminList();
+  renderGrid();
+  toast(p.hidden ? "დაიდრაფტა" : "გამოჩნდა");
+}
+
 async function deleteProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const name = p ? p.title : "";
@@ -1823,15 +1838,18 @@ function renderAdminList() {
     const icDel = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
     const dpct = discountPct(p);
     const adminSaleOn = !p.saleEnds || saleActive(p);
+    const adminDisplayPrice = (!adminSaleOn && p.oldPrice) ? p.oldPrice : p.price;
+    const icHide = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}${p.hidden ? " prod-hidden" : ""}">
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 && adminSaleOn ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(p.price)}</span></div>
+      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 && adminSaleOn ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(adminDisplayPrice)}</span></div>
       <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
       <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')" title="რედაქტირება">${icEdit}<span class="blabel">რედაქტ.</span></button>
+      <button class="btn btn-sm${p.hidden ? " btn-success" : " btn-ghost"}" onclick="toggleHidden('${p.id}')" title="${p.hidden ? "გამოჩენა" : "დამალვა"}">${p.hidden ? icUnsold : icHide}<span class="blabel">${p.hidden ? "გამოჩენა" : "დამალვა"}</span></button>
       <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')" title="${p.sold ? "ისევ გამოფინე" : "გაყიდულია"}">${p.sold ? icUnsold : icSold}<span class="blabel">${p.sold ? "გამოფინე" : "გაყიდულია"}</span></button>
       <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')" title="წაშლა">${icDel}<span class="blabel">წაშლა</span></button>
     </div>
