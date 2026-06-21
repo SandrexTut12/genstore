@@ -661,15 +661,20 @@ function toggleFpDd(key) {
     } else if (key !== "price") {
       renderFpDdList(key);
     }
-    // prevent dropdown from going off right edge
+    // adjust dropdown position to stay on screen
     const list = dd.querySelector(".fp-dd-list");
     if (list) {
-      list.style.left = "0";
-      list.style.right = "auto";
+      // reset
+      list.style.left = "0"; list.style.right = "auto";
+      list.style.top = "calc(100% + 6px)"; list.style.bottom = "auto";
       const r = list.getBoundingClientRect();
+      // flip left if off right edge
       if (r.right > window.innerWidth - 8) {
-        list.style.left = "auto";
-        list.style.right = "0";
+        list.style.left = "auto"; list.style.right = "0";
+      }
+      // flip up if off bottom edge
+      if (r.bottom > window.innerHeight - 8) {
+        list.style.top = "auto"; list.style.bottom = "calc(100% + 6px)";
       }
     }
   }

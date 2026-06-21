@@ -826,6 +826,7 @@ footer.footer-hidden { transform: translateY(100%); }
   padding: 10px; min-width: 200px; max-width: 320px;
   display: none; flex-wrap: wrap; gap: 6px;
   box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  max-height: min(55vh, 340px); overflow-y: auto;
 }
 .fp-dd.open .fp-dd-list { display: flex; }
 
