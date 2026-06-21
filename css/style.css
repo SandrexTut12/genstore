@@ -297,6 +297,8 @@ html[data-theme="dark"] .imgwrap.img-loading { background: #1C2240; }
 .btn-sold.active { background: var(--green-soft); color: var(--green); border-color: var(--green); }
 .btn-success { background: var(--green-soft); color: var(--green); border: 1px solid var(--green); }
 .btn-success:hover { background: var(--green); color: #fff; }
+.btn-cyan { background: transparent; color: var(--brand); border: 1px solid var(--brand); }
+.btn-cyan:hover { background: var(--brand-soft); }
 
 .card .body { padding: 13px 14px 15px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
 .card .cat   { font-size: 12px; color: var(--muted); }

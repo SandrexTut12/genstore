@@ -1849,7 +1849,7 @@ function renderAdminList() {
     </div>
     <div class="prod-actions">
       <button class="btn btn-ghost btn-sm" onclick="editProduct('${p.id}')" title="რედაქტირება">${icEdit}<span class="blabel">რედაქტ.</span></button>
-      <button class="btn btn-sm${p.hidden ? " btn-success" : " btn-ghost"}" onclick="toggleHidden('${p.id}')" title="${p.hidden ? "გამოჩენა" : "დამალვა"}">${p.hidden ? icUnsold : icHide}<span class="blabel">${p.hidden ? "გამოჩენა" : "დამალვა"}</span></button>
+      <button class="btn btn-sm${p.hidden ? " btn-success" : " btn-cyan"}" onclick="toggleHidden('${p.id}')" title="${p.hidden ? "გამოჩენა" : "დამალვა"}">${p.hidden ? icUnsold : icHide}<span class="blabel">${p.hidden ? "გამოჩენა" : "დამალვა"}</span></button>
       <button class="btn btn-sold btn-sm${p.sold ? " active" : ""}" onclick="toggleSold('${p.id}')" title="${p.sold ? "ისევ გამოფინე" : "გაყიდულია"}">${p.sold ? icUnsold : icSold}<span class="blabel">${p.sold ? "გამოფინე" : "გაყიდულია"}</span></button>
       <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')" title="წაშლა">${icDel}<span class="blabel">წაშლა</span></button>
     </div>
