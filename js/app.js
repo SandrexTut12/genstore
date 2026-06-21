@@ -1142,6 +1142,7 @@ function hideSpecTT() {
 document.addEventListener("click", e => {
   if (!e.target.closest("#specTooltip") && !e.target.closest(".spec-btn")) hideSpecTT();
 });
+window.addEventListener("scroll", () => hideSpecTT(), { passive: true });
 // ──────────────────────────────────────────────────────────
 
 document.addEventListener("keydown", e => {
