@@ -183,7 +183,7 @@ header.bar {
   background: rgba(197, 211, 232, 0.4);
   border-bottom: 1px solid var(--line);
 }
-html[data-theme="dark"] .cat-bar { background: #0C1226; border-color: #1C3058; }
+
 .cat-bar-inner {
   max-width: 1180px; margin: 0 auto; padding: 8px 20px;
   display: flex; align-items: center; gap: 10px;
