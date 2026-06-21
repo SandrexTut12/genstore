@@ -542,7 +542,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 footer {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
   border-top: 1px solid var(--line);
-  background: rgba(238, 242, 248, 0.96);
+  background: rgba(197, 211, 232, 0.94);
   backdrop-filter: blur(14px);
   transition: transform .3s ease;
 }
