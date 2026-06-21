@@ -1938,11 +1938,12 @@ async function init() {
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
 
+  const sortedSpecs = s => Object.keys(s||{}).sort().map(k => k+"="+s[k]).join(",");
   const prodHash = arr => [...arr]
     .sort((a, b) => a.id < b.id ? -1 : 1)
-    .map(p => [p.id, p.title, p.price, p.oldPrice, p.sold, p.hidden,
-               p.saleEnds, p.cat, (p.images||[]).join(","),
-               JSON.stringify(p.specs||{})].join("|"))
+    .map(p => [p.id, p.title, p.price, p.oldPrice ?? "", p.sold, p.hidden,
+               p.saleEnds ?? "", p.cat, (p.images||[]).join(","),
+               sortedSpecs(p.specs)].join("|"))
     .join("||");
   if (prodHash(fresh) !== prodHash(PRODUCTS) || !cached) {
     PRODUCTS = fresh;
