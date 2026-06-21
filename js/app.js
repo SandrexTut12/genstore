@@ -841,15 +841,15 @@ function initCardScroll() {
   document.querySelectorAll(".card .imgwrap").forEach(wrap => {
     const track = wrap.querySelector(".img-scroll-track");
     if (!track) return;
+    // duplicate images for seamless loop
+    Array.from(track.children).forEach(img => track.appendChild(img.cloneNode(true)));
+    const loopW = track.scrollWidth / 2; // width of one full set
     let raf = null;
     let offset = 0;
     wrap.addEventListener("mouseenter", () => {
-      const totalW = track.scrollWidth;
-      const visW = wrap.clientWidth;
-      if (totalW <= visW) return;
       function step() {
-        offset += 0.5;
-        if (offset >= totalW - visW) offset = 0;
+        offset += 0.75;
+        if (offset >= loopW) offset -= loopW; // seamless reset
         track.style.transform = `translateX(-${offset}px)`;
         raf = requestAnimationFrame(step);
       }
