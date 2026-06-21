@@ -20,47 +20,47 @@
 
 /* ---- dark theme override ---- */
 html[data-theme="dark"] {
-  --ink:        #E8F4FF;
-  --muted:      #6499C2;
-  --line:       #163466;
-  --canvas:     #071428;
-  --surface:    #0C2050;
-  --surface2:   #112B6A;
-  --brand:      #00BAFF;
-  --brand-dark: #0099D6;
-  --brand-soft: #082244;
+  --ink:        #D4E4F2;
+  --muted:      #6E8FA8;
+  --line:       #263B52;
+  --canvas:     #121C28;
+  --surface:    #1A2737;
+  --surface2:   #223040;
+  --brand:      #29C3F0;
+  --brand-dark: #1AADD8;
+  --brand-soft: #0E2030;
   --green:      #00E5A0;
-  --green-soft: #002B1E;
+  --green-soft: #0A2318;
   --amber:      #FFB830;
-  --amber-soft: #2A1800;
-  --red:        #FF5C78;
-  --red-soft:   #2A0810;
-  --shadow:     0 4px 12px rgba(0,0,0,.5), 0 16px 40px rgba(0,0,0,.4);
+  --amber-soft: #241600;
+  --red:        #FF6080;
+  --red-soft:   #28080E;
+  --shadow:     0 4px 14px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.35);
 }
-html[data-theme="dark"] header.bar           { background: rgba(7,20,40,0.9); }
+html[data-theme="dark"] header.bar           { background: rgba(18,28,40,.93); backdrop-filter: blur(14px); }
 html[data-theme="dark"] .card                { border-color: var(--line); }
-html[data-theme="dark"] .cat-bar             { border-color: rgba(255,255,255,.08); }
-html[data-theme="dark"] .sold-overlay          { background: rgba(7,20,40,.55); }
-html[data-theme="dark"] .spec-tooltip          { box-shadow: 0 8px 32px rgba(0,0,0,.5); }
-html[data-theme="dark"] .overlay             { background: rgba(4,10,24,0.85); }
-html[data-theme="dark"] .modal               { box-shadow: 0 32px 80px rgba(0,0,0,.8); }
-html[data-theme="dark"] .thumbs              { background: rgba(0,0,0,.3); }
-html[data-theme="dark"] footer               { background: rgba(7,20,40,0.96); }
-html[data-theme="dark"] .btn-primary         { color: #071428; }
-html[data-theme="dark"] .chip.active         { color: #071428; }
-html[data-theme="dark"] .pg-btn.active       { color: #071428; }
-html[data-theme="dark"] .spec-chip           { background: rgba(255,255,255,.04); color: var(--cc, #cdd8ec); border-color: rgba(255,255,255,.08); }
-html[data-theme="dark"] #lightbox .lb-nav:hover { color: #071428; }
+html[data-theme="dark"] .cat-bar             { border-color: rgba(255,255,255,.07); }
+html[data-theme="dark"] .sold-overlay        { background: rgba(18,28,40,.58); }
+html[data-theme="dark"] .spec-tooltip        { box-shadow: 0 8px 32px rgba(0,0,0,.45); }
+html[data-theme="dark"] .overlay             { background: rgba(10,16,26,.88); }
+html[data-theme="dark"] .modal               { box-shadow: 0 32px 80px rgba(0,0,0,.7); }
+html[data-theme="dark"] .thumbs              { background: rgba(0,0,0,.25); }
+html[data-theme="dark"] footer               { background: rgba(18,28,40,.97); }
+html[data-theme="dark"] .btn-primary         { color: #121C28; }
+html[data-theme="dark"] .chip.active         { color: #121C28; }
+html[data-theme="dark"] .pg-btn.active       { color: #121C28; }
+html[data-theme="dark"] .spec-chip           { background: rgba(255,255,255,.05); color: var(--cc, #c8daea); border-color: rgba(255,255,255,.09); }
+html[data-theme="dark"] #lightbox .lb-nav:hover { color: #121C28; }
 html[data-theme="dark"] .gallery-prev:hover,
-html[data-theme="dark"] .gallery-next:hover  { color: #071428; }
-html[data-theme="dark"] .previews .pv-star:hover { color: #071428; }
-html[data-theme="dark"] .previews .pv-badge  { color: #071428; }
-html[data-theme="dark"] .modal-close         { background: rgba(7,20,40,.85); }
-html[data-theme="dark"] .gallery-side        { background: #040C1E; }
+html[data-theme="dark"] .gallery-next:hover  { color: #121C28; }
+html[data-theme="dark"] .previews .pv-star:hover { color: #121C28; }
+html[data-theme="dark"] .previews .pv-badge  { color: #121C28; }
+html[data-theme="dark"] .modal-close         { background: rgba(18,28,40,.88); }
+html[data-theme="dark"] .gallery-side        { background: #0C1520; }
 html[data-theme="dark"] .gallery-prev,
-html[data-theme="dark"] .gallery-next        { background: rgba(7,20,40,.75); color: var(--ink); }
-html[data-theme="dark"] .previews .pv .rm    { background: rgba(4,10,24,.85); }
-html[data-theme="dark"] .previews .pv-star   { background: rgba(4,10,24,.75); color: var(--muted); }
+html[data-theme="dark"] .gallery-next        { background: rgba(18,28,40,.78); color: var(--ink); }
+html[data-theme="dark"] .previews .pv .rm    { background: rgba(10,16,26,.88); }
+html[data-theme="dark"] .previews .pv-star   { background: rgba(10,16,26,.78); color: var(--muted); }
 
 /* ---- header icon buttons (search / theme / service) — unified ---- */
 .btn-theme,
