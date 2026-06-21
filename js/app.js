@@ -1773,6 +1773,8 @@ function setStorePage(p) {
 async function toggleSold(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
+  const msg = p.sold ? `„${p.title}" — ისევ გამოვფინო?` : `„${p.title}" — გაყიდულად მოვნიშნო?`;
+  if (!confirm(msg)) return;
   p.sold   = !p.sold;
   p.soldAt = p.sold ? Date.now() : null;
   await dbSave(p);
@@ -1786,6 +1788,8 @@ async function toggleSold(id) {
 async function toggleHidden(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
+  const msg = p.hidden ? `„${p.title}" — გამოვაჩინო?` : `„${p.title}" — დავმალო?`;
+  if (!confirm(msg)) return;
   p.hidden = !p.hidden;
   await dbSave(p);
   PRODUCTS = await dbList();
