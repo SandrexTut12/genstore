@@ -847,10 +847,10 @@ function initCardScroll() {
     let raf = null;
     let offset = 0;
 
-    function startScroll() {
+    function startScroll(speed) {
       track.style.transition = "";
       function step() {
-        offset += 0.75;
+        offset += speed;
         if (offset >= loopW) offset -= loopW;
         track.style.transform = `translateX(-${offset}px)`;
         raf = requestAnimationFrame(step);
@@ -866,9 +866,9 @@ function initCardScroll() {
       setTimeout(() => { track.style.transition = ""; }, 500);
     }
 
-    wrap.addEventListener("mouseenter", startScroll);
+    wrap.addEventListener("mouseenter", () => startScroll(0.75));
     wrap.addEventListener("mouseleave", stopScroll);
-    wrap.addEventListener("touchstart", startScroll, { passive: true });
+    wrap.addEventListener("touchstart", () => startScroll(2), { passive: true });
     wrap.addEventListener("touchend",   stopScroll, { passive: true });
     wrap.addEventListener("touchcancel", stopScroll, { passive: true });
   });
