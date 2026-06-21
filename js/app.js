@@ -635,8 +635,12 @@ function renderFpDdList(key) {
   if (!box) return;
   box.innerHTML = SPEC_OPTS[key].map(v => {
     const on = specFilters[key].has(v);
-    return `<button class="fp-chip${on?" active":""}" onclick="toggleSpecChip('${key}','${v.replace(/\\/g,"\\\\").replace(/'/g,"\\'")}')">${esc(v)}</button>`;
+    return `<button class="fp-chip${on?" active":""}" data-key="${esc(key)}" data-val="${esc(v)}" onclick="fpChipClick(this)">${esc(v)}</button>`;
   }).join("");
+}
+
+function fpChipClick(btn) {
+  toggleSpecChip(btn.dataset.key, btn.dataset.val);
 }
 
 function updateFpDdBtn(key) {
