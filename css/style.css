@@ -1237,6 +1237,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .fb-sort { margin-left: auto; flex: 0; }
   .fb-sort select { width: auto; }
   .fb-price { max-width: none; flex-basis: 100%; order: 3; }
+  /* filter panel dropdowns — single scrollable row on mobile */
+  .fp-dd-row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .fp-dd-row::-webkit-scrollbar { display: none; }
+  .fp-dd { flex-shrink: 0; }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
