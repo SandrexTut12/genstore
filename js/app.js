@@ -842,10 +842,21 @@ function initCardScroll() {
   document.querySelectorAll(".card .imgwrap").forEach(wrap => {
     const track = wrap.querySelector(".img-scroll-track");
     if (!track) return;
+
+    // Tear down previous init (resize support)
+    if (wrap._scrollAbort) { wrap._scrollAbort.abort(); wrap._scrollAbort = null; }
+    if (wrap._scrollRaf)   { cancelAnimationFrame(wrap._scrollRaf); wrap._scrollRaf = null; }
+    const origCount = wrap._scrollOrigCount || track.children.length;
+    wrap._scrollOrigCount = origCount;
+    while (track.children.length > origCount) track.lastChild.remove();
+    track.style.transform = "";
+    track.style.transition = "";
+
     const w = wrap.clientWidth;
+    if (!w) return;
     Array.from(track.children).forEach(img => { img.style.width = w + "px"; });
     Array.from(track.children).forEach(img => track.appendChild(img.cloneNode(true)));
-    const loopW = w * (track.children.length / 2);
+    const loopW = w * origCount;
     let raf = null;
     let offset = 0;
 
@@ -856,25 +867,35 @@ function initCardScroll() {
         if (offset >= loopW) offset -= loopW;
         track.style.transform = `translateX(-${offset}px)`;
         raf = requestAnimationFrame(step);
+        wrap._scrollRaf = raf;
       }
       raf = requestAnimationFrame(step);
+      wrap._scrollRaf = raf;
     }
-
     function stopScroll() {
-      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      if (raf) { cancelAnimationFrame(raf); raf = null; wrap._scrollRaf = null; }
       track.style.transition = "transform 0.5s ease";
       track.style.transform = "translateX(0)";
       offset = 0;
       setTimeout(() => { track.style.transition = ""; }, 500);
     }
 
-    wrap.addEventListener("mouseenter", () => startScroll(0.75));
-    wrap.addEventListener("mouseleave", stopScroll);
-    wrap.addEventListener("touchstart", () => startScroll(2), { passive: true });
-    wrap.addEventListener("touchend",   stopScroll, { passive: true });
-    wrap.addEventListener("touchcancel", stopScroll, { passive: true });
+    const ac = new AbortController();
+    wrap._scrollAbort = ac;
+    const sig = ac.signal;
+    wrap.addEventListener("mouseenter", () => startScroll(0.75), { signal: sig });
+    wrap.addEventListener("mouseleave", stopScroll, { signal: sig });
+    wrap.addEventListener("touchstart", () => startScroll(2), { passive: true, signal: sig });
+    wrap.addEventListener("touchend",   stopScroll, { passive: true, signal: sig });
+    wrap.addEventListener("touchcancel", stopScroll, { passive: true, signal: sig });
   });
 }
+
+let _scrollResizeTid;
+window.addEventListener('resize', () => {
+  clearTimeout(_scrollResizeTid);
+  _scrollResizeTid = setTimeout(initCardScroll, 200);
+});
 
 // ---- loading skeletons ----
 function showSkeletons(n = 8) {
