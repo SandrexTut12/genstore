@@ -716,10 +716,11 @@ function renderGrid() {
   const pageList = list.slice((storePage - 1) * ps, storePage * ps);
 
   grid.innerHTML = pageList.map((p, idx) => {
+    const onld = `onload="this.closest('.imgwrap').classList.remove('img-loading')"`;
     const img = p.images && p.images.length
       ? (p.images.length > 1
-        ? `<div class="img-scroll-track">${p.images.map(src => `<img src="${src}" alt="${esc(p.title)}" loading="lazy">`).join("")}</div>`
-        : `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy">`)
+        ? `<div class="img-scroll-track">${p.images.map((src, i) => `<img src="${src}" alt="${esc(p.title)}" loading="lazy"${i === 0 ? " " + onld : ""}>`).join("")}</div>`
+        : `<img src="${p.images[0]}" alt="${esc(p.title)}" loading="lazy" ${onld}>`)
       : `<div class="noimg">ფოტო არ არის</div>`;
     const saleOn = !p.saleEnds || saleActive(p);
     const displayPrice = (!saleOn && p.oldPrice) ? p.oldPrice : p.price;
@@ -777,7 +778,7 @@ function renderGrid() {
     })() : "";
     const soldOverlay = p.sold ? `<div class="sold-overlay"><span>გაყიდულია</span></div>` : "";
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
-  <div class="imgwrap">${img}${discountBadge}${soldOverlay}${timer}</div>
+  <div class="imgwrap${p.images && p.images.length ? " img-loading" : ""}">${img}${discountBadge}${soldOverlay}${timer}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
