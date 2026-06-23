@@ -1976,6 +1976,8 @@ function initTheme() {
 
 async function init() {
   document.addEventListener("contextmenu", e => e.preventDefault());
+  // clear search on every load so Chrome doesn't restore previous value
+  ["searchInput","searchOverlayInput"].forEach(id => { const el=$id(id); if(el) el.value=""; });
   initTheme();
   syncGridToggleBtn();
   const yr = new Date().getFullYear();
