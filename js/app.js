@@ -8,7 +8,7 @@ const CONFIG = {
   instagram : "https://www.instagram.com/genstore856/",
   whatsapp  : "500700362",
   phone     : "",
-  adminRoute: "#adminpanel"
+  adminRoute: atob("I2FkbWlucGFuZWw=")
 };
 
 // ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
