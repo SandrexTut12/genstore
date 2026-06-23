@@ -393,9 +393,9 @@
     <div class="login-box">
       <div class="wm" onclick="goStore()" style="cursor:pointer">GEN<b>STORE</b></div>
       <p>შესვლა</p>
-      <input id="userInput" type="email" placeholder="ელ-ფოსტა"
+      <input id="userInput" type="email" placeholder="ელ-ფოსტა" autocomplete="off"
         onkeydown="if(event.key==='Enter')doLogin()">
-      <input id="pwInput" type="password" placeholder="პაროლი"
+      <input id="pwInput" type="password" placeholder="პაროლი" autocomplete="new-password"
         onkeydown="if(event.key==='Enter')doLogin()">
       <div class="err" id="pwErr"></div>
       <button class="btn btn-primary" style="width:100%" onclick="doLogin()">შესვლა</button>
@@ -742,6 +742,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260623d"></script>
+<script src="js/app.js?v=20260623e"></script>
 </body>
 </html>
