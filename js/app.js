@@ -1976,11 +1976,6 @@ function initTheme() {
 
 async function init() {
   document.addEventListener("contextmenu", e => e.preventDefault());
-  // random name prevents browser from matching search inputs to saved autocomplete data
-  ["searchInput","searchOverlayInput"].forEach(id => {
-    const el = $id(id);
-    if (el) el.setAttribute("name", "_" + Math.random().toString(36).slice(2));
-  });
   initTheme();
   syncGridToggleBtn();
   const yr = new Date().getFullYear();
