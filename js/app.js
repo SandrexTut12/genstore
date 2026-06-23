@@ -8,9 +8,7 @@ const CONFIG = {
   instagram : "https://www.instagram.com/genstore856/",
   whatsapp  : "500700362",
   phone     : "",
-  adminUser : "admin",
-  adminPass : "genstore",
-  skipLogin : true   // true = პაროლი არ სჭირდება, false = პაროლი სავალდებულოა
+  adminRoute: "#q50magaria"
 };
 
 // ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
@@ -387,7 +385,6 @@ let specFilters = { cat: new Set(), brand: new Set(), cpu: new Set(), gpu: new S
 let priceFloor  = 0, priceCeil = 0;   // overall bounds
 let priceMin    = 0, priceMax = 0;    // selected range
 let dataLoaded  = false;
-let authed      = false;
 let previewMode = false;
 let editingId   = null;
 let formImgs    = [];
@@ -1273,7 +1270,7 @@ function closeLightbox() {
 
 // ============ ROUTING ============
 function goStore()   { previewMode = false; const b=$id("previewBanner"); if(b) b.classList.add("hidden"); clearSearch(); clearFilters(); location.hash = ""; }
-function goAdmin()   { location.hash = "#admin"; }
+function goAdmin()   { location.hash = CONFIG.adminRoute; }
 function goPreview() {
   previewMode = true;
   location.hash = "";
@@ -1308,7 +1305,7 @@ function onSearchOverlayBg(e) { if (e.target === e.currentTarget) closeSearchOve
 
 function route() {
   const h = location.hash;
-  const isAdmin   = h === "#admin";
+  const isAdmin   = h === CONFIG.adminRoute;
   const isService = h === "#service";
   $id("view-store").classList.toggle("hidden", isAdmin || isService);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
@@ -1321,8 +1318,8 @@ function route() {
 
   if (isAdmin) {
     closeModalDom();
-    if (authed || CONFIG.skipLogin) {
-      authed = true;
+    const user = firebase.auth().currentUser;
+    if (user) {
       $id("admin-login").classList.add("hidden");
       $id("admin-dash").classList.remove("hidden");
       renderAdminList();
@@ -1330,7 +1327,7 @@ function route() {
     } else {
       $id("admin-login").classList.remove("hidden");
       $id("admin-dash").classList.add("hidden");
-      setTimeout(() => $id("pwInput").focus(), 50);
+      setTimeout(() => $id("userInput").focus(), 50);
     }
     return;
   }
@@ -1363,33 +1360,25 @@ window.addEventListener("popstate", route);
   }, { passive: true });
 })();
 
-// ============ AUTH ============
-let storedUser = CONFIG.adminUser;
-let storedPass = CONFIG.adminPass;
-
-function doLogin() {
-  const u  = $id("userInput").value.trim();
-  const pw = $id("pwInput").value;
-  if (u === storedUser && pw === storedPass) {
-    authed = true;
-    $id("pwErr").textContent = "";
-    $id("pwInput").value = "";
+// ============ AUTH (Firebase) ============
+async function doLogin() {
+  const email = $id("userInput").value.trim();
+  const pw    = $id("pwInput").value;
+  const err   = $id("pwErr");
+  err.textContent = "";
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, pw);
+    $id("pwInput").value   = "";
     $id("userInput").value = "";
     route();
-  } else {
-    $id("pwErr").textContent = "არასწორი მომხმარებელი ან პაროლი";
+  } catch(e) {
+    err.textContent = "არასწორი ელ-ფოსტა ან პაროლი";
   }
 }
 
-function logout() { authed = false; goStore(); }
-
-function changePassword() {
-  const np = prompt("ახალი პაროლი:");
-  if (np && np.trim()) {
-    storedPass = np.trim();
-    saveSettings({ user: storedUser, password: storedPass });
-    toast("პაროლი შეიცვალა");
-  }
+async function logout() {
+  await firebase.auth().signOut();
+  goStore();
 }
 
 // ============ PRODUCT FORM ============
