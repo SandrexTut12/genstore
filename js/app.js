@@ -8,7 +8,8 @@ const CONFIG = {
   instagram : "https://www.instagram.com/genstore856/",
   whatsapp  : "500700362",
   phone     : "",
-  adminRoute: atob("I2FkbWlucGFuZWw=")
+  adminRoute: atob("I2FkbWlucGFuZWw="),
+  adminEmail: atob("dHV0YXJhc2h2aWxpc0BnbWFpbC5jb20=")
 };
 
 // ============ FILTER SPEC OPTIONS (mirrors admin panel dropdowns) ============
@@ -71,6 +72,19 @@ firebase.initializeApp({
   appId:             "1:516453888895:web:e85d78189f33b5757ce04a"
 });
 const db = firebase.firestore();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+let currentUser = null;
+firebase.auth().onAuthStateChanged(async u => {
+  currentUser = u;
+  updateUserHeader();
+  if (u) await loadFavorites();
+  else favorites.clear();
+  if (dataLoaded) renderGrid();
+  const h = location.hash;
+  if (u && (h === "#login" || h === "#register")) { goProfile(); return; }
+  if (!u && h === "#profile") { goLogin(); return; }
+});
 
 // ============ STORAGE ============
 const CACHE_KEY = "gs_cache_v1";
@@ -167,6 +181,7 @@ async function submitServiceOrder(e) {
 
   const order = {
     id: "svc_" + Date.now(),
+    uid: currentUser ? currentUser.uid : null,
     laptop, detail, install: !!install, installPrice: 0,
     contact, note: note || "",
     photos: svcPhotos.filter(Boolean),
@@ -378,6 +393,7 @@ async function saveSettings(s) {
 
 // ============ STATE ============
 let PRODUCTS    = [];
+let favorites   = new Set();
 let activeCat   = "ყველა";
 let searchQ     = "";
 let sortBy      = "new";
@@ -799,8 +815,10 @@ function renderGrid() {
       return `<button class="spec-btn" onmouseenter="showSpecTT(event,'${p.id}')" onmouseleave="schedHideSpecTT()" onclick="clickSpecTT(event,'${p.id}')"><svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>სპეციფიკაცია</button>`;
     })() : "";
     const soldOverlay = p.sold ? `<div class="sold-overlay"><span>გაყიდულია</span></div>` : "";
+    const isFav = favorites.has(p.id);
+    const favBtn = `<button class="fav-btn${isFav ? " active" : ""}" data-id="${p.id}" onclick="toggleFavorite('${p.id}',event)" title="${isFav ? "ფავორიტებიდან ამოღება" : "ფავორიტებში დამატება"}"><svg viewBox="0 0 24 24" width="15" height="15" fill="${isFav ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>`;
     return `<div class="card reveal${p.sold ? " sold" : ""}" style="animation-delay:${Math.min(idx, 11) * 45}ms" onclick="openProduct('${p.id}')">
-  <div class="imgwrap${p.images && p.images.length ? " img-loading" : ""}">${img}${discountBadge}${soldOverlay}${timer}</div>
+  <div class="imgwrap${p.images && p.images.length ? " img-loading" : ""}">${img}${discountBadge}${soldOverlay}${timer}${favBtn}</div>
   <div class="body">
     <span class="name">${esc(p.title)}</span>
     ${specBtn}
@@ -1269,8 +1287,11 @@ function closeLightbox() {
 }
 
 // ============ ROUTING ============
-function goStore()   { previewMode = false; const b=$id("previewBanner"); if(b) b.classList.add("hidden"); clearSearch(); clearFilters(); location.hash = ""; }
-function goAdmin()   { location.hash = CONFIG.adminRoute; }
+function goStore()    { previewMode = false; const b=$id("previewBanner"); if(b) b.classList.add("hidden"); clearSearch(); clearFilters(); location.hash = ""; }
+function goAdmin()    { location.hash = CONFIG.adminRoute; }
+function goLogin()    { location.hash = "#login"; }
+function goRegister() { location.hash = "#register"; }
+function goProfile()  { location.hash = "#profile"; }
 function goPreview() {
   previewMode = true;
   location.hash = "";
@@ -1305,16 +1326,20 @@ function onSearchOverlayBg(e) { if (e.target === e.currentTarget) closeSearchOve
 
 function route() {
   const h = location.hash;
-  const isAdmin   = h === CONFIG.adminRoute;
-  const isService = h === "#service";
-  $id("view-store").classList.toggle("hidden", isAdmin || isService);
+  const isAdmin    = h === CONFIG.adminRoute;
+  const isService  = h === "#service";
+  const isLogin    = h === "#login";
+  const isRegister = h === "#register";
+  const isProfile  = h === "#profile";
+
+  $id("view-store").classList.toggle("hidden", isAdmin || isService || isLogin || isRegister || isProfile);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
   $id("view-service").classList.toggle("hidden", !isService);
+  $id("view-login").classList.toggle("hidden", !isLogin);
+  $id("view-register").classList.toggle("hidden", !isRegister);
+  $id("view-profile").classList.toggle("hidden", !isProfile);
 
-  if (isService) {
-    closeModalDom();
-    return;
-  }
+  if (isService) { closeModalDom(); return; }
 
   if (isAdmin) {
     closeModalDom();
@@ -1329,6 +1354,24 @@ function route() {
       $id("admin-dash").classList.add("hidden");
       setTimeout(() => $id("userInput").focus(), 50);
     }
+    return;
+  }
+
+  if (isLogin) {
+    closeModalDom();
+    if (currentUser) { goProfile(); return; }
+    return;
+  }
+
+  if (isRegister) {
+    closeModalDom();
+    if (currentUser) { goProfile(); return; }
+    return;
+  }
+
+  if (isProfile) {
+    closeModalDom();
+    renderProfile();
     return;
   }
 
@@ -1379,6 +1422,183 @@ async function doLogin() {
 async function logout() {
   await firebase.auth().signOut();
   goStore();
+}
+
+// ---- user login page ----
+async function doUserLogin() {
+  const email = $id("loginEmail").value.trim();
+  const pw    = $id("loginPw").value;
+  const err   = $id("loginErr");
+  if (err) err.textContent = "";
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, pw);
+    afterUserLogin();
+  } catch(e) {
+    if (err) err.textContent = "არასწორი ელ-ფოსტა ან პაროლი";
+  }
+}
+
+async function doRegister() {
+  const name  = $id("regName").value.trim();
+  const email = $id("regEmail").value.trim();
+  const pw    = $id("regPw").value;
+  const pw2   = $id("regPw2").value;
+  const err   = $id("regErr");
+  if (err) err.textContent = "";
+  if (!name) { if (err) err.textContent = "სახელი სავალდებულოა"; return; }
+  if (pw.length < 6) { if (err) err.textContent = "პაროლი მინ. 6 სიმბოლო"; return; }
+  if (pw !== pw2)    { if (err) err.textContent = "პაროლები არ ემთხვევა"; return; }
+  try {
+    const cred = await firebase.auth().createUserWithEmailAndPassword(email, pw);
+    await cred.user.updateProfile({ displayName: name });
+    await db.collection("users").doc(cred.user.uid).set({ name, email, created: Date.now() });
+    afterUserLogin();
+  } catch(e) {
+    if (err) err.textContent = e.code === "auth/email-already-in-use"
+      ? "ეს ელ-ფოსტა უკვე რეგისტრირებულია"
+      : (e.message || "შეცდომა");
+  }
+}
+
+async function signInGoogle() {
+  try {
+    await firebase.auth().signInWithPopup(googleProvider);
+    afterUserLogin();
+  } catch(e) {
+    if (e.code !== "auth/popup-closed-by-user") {
+      const err = $id("loginErr") || $id("regErr");
+      if (err) err.textContent = "Google შესვლა ვერ მოხერხდა";
+    }
+  }
+}
+
+function afterUserLogin() {
+  const user = firebase.auth().currentUser;
+  if (user && user.email === CONFIG.adminEmail) goAdmin();
+  else goProfile();
+}
+
+async function logoutUser() {
+  await firebase.auth().signOut();
+  favorites.clear();
+  goStore();
+}
+
+function onUserBtnClick() {
+  if (currentUser) goProfile(); else goLogin();
+}
+
+function updateUserHeader() {
+  const btn = $id("btnUser");
+  if (!btn) return;
+  const user = currentUser;
+  if (user) {
+    const initials = (user.displayName || user.email || "U")[0].toUpperCase();
+    btn.innerHTML = user.photoURL
+      ? `<img src="${esc(user.photoURL)}" class="user-avatar-img">`
+      : `<span class="user-initials">${initials}</span>`;
+    btn.classList.add("logged-in");
+  } else {
+    btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    btn.classList.remove("logged-in");
+  }
+}
+
+// ---- favorites ----
+async function loadFavorites() {
+  if (!currentUser) { favorites.clear(); return; }
+  try {
+    const doc = await db.collection("users").doc(currentUser.uid).get();
+    favorites = new Set(doc.exists ? (doc.data().favorites || []) : []);
+  } catch { favorites.clear(); }
+}
+
+async function toggleFavorite(id, e) {
+  e.stopPropagation();
+  if (!currentUser) { goLogin(); return; }
+  if (favorites.has(id)) favorites.delete(id);
+  else favorites.add(id);
+  await db.collection("users").doc(currentUser.uid).set({ favorites: [...favorites] }, { merge: true });
+  document.querySelectorAll(`.fav-btn[data-id="${id}"]`).forEach(btn => {
+    btn.classList.toggle("active", favorites.has(id));
+    btn.querySelector("svg").setAttribute("fill", favorites.has(id) ? "currentColor" : "none");
+  });
+}
+
+// ---- profile ----
+async function renderProfile() {
+  const user = currentUser;
+  if (!user) { goLogin(); return; }
+
+  const name  = user.displayName || user.email || "მომხმარებელი";
+  const email = user.email || "";
+
+  const nameEl     = $id("profName");
+  const emailEl    = $id("profEmail");
+  const avatarEl   = $id("profAvatar");
+  const adminLink  = $id("profAdminLink");
+
+  if (nameEl)   nameEl.textContent  = name;
+  if (emailEl)  emailEl.textContent = email;
+  if (avatarEl) {
+    avatarEl.innerHTML = user.photoURL
+      ? `<img src="${esc(user.photoURL)}" class="prof-avatar-img">`
+      : (name[0] || "U").toUpperCase();
+  }
+  if (adminLink) adminLink.classList.toggle("hidden", email !== CONFIG.adminEmail);
+
+  // Favorites
+  await loadFavorites();
+  const favBox = $id("profFavGrid");
+  if (favBox) {
+    const favProducts = PRODUCTS.filter(p => favorites.has(p.id) && !p.hidden);
+    if (!favProducts.length) {
+      favBox.innerHTML = '<div class="prof-empty">ფავორიტები ცარიელია</div>';
+    } else {
+      favBox.innerHTML = favProducts.map(p => {
+        const img = p.images && p.images.length ? p.images[0] : null;
+        return `<div class="prof-fav-card" onclick="openProduct('${p.id}')">
+          ${img ? `<img src="${img}" class="prof-fav-img" alt="${esc(p.title)}">` : '<div class="prof-fav-noimg"></div>'}
+          <div class="prof-fav-title">${esc(p.title)}</div>
+          <div class="prof-fav-price">${fmtPrice(p.price)}</div>
+        </div>`;
+      }).join("");
+    }
+  }
+
+  // Service orders
+  const ordBox = $id("profOrderList");
+  if (ordBox) {
+    ordBox.innerHTML = '<div class="prof-empty">იტვირთება...</div>';
+    try {
+      const snap = await db.collection("service_orders").where("uid", "==", user.uid).get();
+      const orders = snap.docs.map(d => d.data()).sort((a, b) => b.created - a.created);
+      if (!orders.length) {
+        ordBox.innerHTML = '<div class="prof-empty">სერვის შეკვეთები არ არის</div>';
+      } else {
+        ordBox.innerHTML = orders.map(o => {
+          const date  = new Date(o.created).toLocaleDateString("ka-GE");
+          const label = SVC_STATUS[o.status] || o.status;
+          const priceRow = o.price
+            ? `<div class="prof-order-price">ფასი: <b>${o.price}₾</b>${o.install && o.installPrice ? ` + მონტაჟი: <b>${o.installPrice}₾</b>` : ""}</div>`
+            : "";
+          return `<div class="prof-order">
+            <div class="prof-order-top">
+              <div>
+                <div class="prof-order-laptop">${esc(o.laptop)}</div>
+                <div class="prof-order-detail">${esc(o.detail)}</div>
+              </div>
+              <span class="svc-status ${o.status}">${esc(label)}</span>
+            </div>
+            ${priceRow}
+            <div class="prof-order-date">${date}</div>
+          </div>`;
+        }).join("");
+      }
+    } catch {
+      ordBox.innerHTML = '<div class="prof-empty">შეცდომა</div>';
+    }
+  }
 }
 
 // ============ PRODUCT FORM ============
