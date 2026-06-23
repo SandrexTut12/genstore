@@ -24,7 +24,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260624a">
+  <link rel="stylesheet" href="css/style.css?v=20260624b">
 </head>
 <body>
 
@@ -393,12 +393,12 @@
     <div class="login-box">
       <div class="wm" onclick="goStore()" style="cursor:pointer">GEN<b>STORE</b></div>
       <p>შესვლა</p>
-      <input id="userInput" type="email" placeholder="ელ-ფოსტა"
-        onkeydown="if(event.key==='Enter')doLogin()">
-      <input id="pwInput" type="password" placeholder="პაროლი"
-        onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="err" id="pwErr"></div>
-      <button class="btn btn-primary" style="width:100%" onclick="doLogin()">შესვლა</button>
+      <form autocomplete="on" onsubmit="doLogin();return false">
+        <input id="userInput" type="email" name="email" placeholder="ელ-ფოსტა" autocomplete="email">
+        <input id="pwInput" type="password" name="password" placeholder="პაროლი" autocomplete="current-password">
+        <div class="err" id="pwErr"></div>
+        <button class="btn btn-primary" style="width:100%" type="submit">შესვლა</button>
+      </form>
       <p style="margin-top:16px;margin-bottom:0">
         <a href="#" onclick="goStore();return false" style="color:var(--muted);font-size:14px">
           ← მაღაზიაში დაბრუნება
