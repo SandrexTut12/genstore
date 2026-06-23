@@ -1975,6 +1975,7 @@ function initTheme() {
 }
 
 async function init() {
+  document.addEventListener("contextmenu", e => e.preventDefault());
   initTheme();
   syncGridToggleBtn();
   const yr = new Date().getFullYear();
