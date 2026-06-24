@@ -841,9 +841,16 @@
     <div class="bar-inner">
       <div class="logo" onclick="goStore()" style="cursor:pointer">
         <span class="wm">GEN<b>STORE</b></span>
+        <span class="tag">პროფაილი</span>
       </div>
-      <button class="btn btn-ghost" onclick="goStore()" style="margin-left:auto">&#8592; მაღაზია</button>
-      <button class="btn btn-ghost" onclick="logoutUser()" style="margin-left:8px">გასვლა</button>
+      <div class="bar-right">
+        <button class="btn btn-svc-nav" onclick="goService()">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          <span class="svc-nav-lbl">სერვისი</span>
+        </button>
+        <button class="btn btn-ghost" onclick="goStore()">&#8592; მაღაზია</button>
+        <button class="btn btn-danger btn-sm" onclick="logoutUser()">გასვლა</button>
+      </div>
     </div>
   </header>
   <main class="prof-main">
