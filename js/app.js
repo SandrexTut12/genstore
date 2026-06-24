@@ -1335,9 +1335,9 @@ function route() {
   $id("view-store").classList.toggle("hidden", isAdmin || isService || isLogin || isRegister || isProfile);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
   $id("view-service").classList.toggle("hidden", !isService);
-  $id("view-login").classList.toggle("hidden", !isLogin);
-  $id("view-register").classList.toggle("hidden", !isRegister);
-  $id("view-profile").classList.toggle("hidden", !isProfile);
+  const vl = $id("view-login");    if (vl) vl.classList.toggle("hidden", !isLogin);
+  const vr = $id("view-register"); if (vr) vr.classList.toggle("hidden", !isRegister);
+  const vp = $id("view-profile");  if (vp) vp.classList.toggle("hidden", !isProfile);
 
   if (isService) { closeModalDom(); return; }
 
