@@ -78,9 +78,13 @@ let currentUser = null;
 firebase.auth().onAuthStateChanged(async u => {
   currentUser = u;
   updateUserHeader();
-  if (u) await loadFavorites();
-  else favorites.clear();
-  if (dataLoaded) renderGrid();
+  if (u) {
+    await loadFavorites();
+    // re-render only if user has favorites so hearts fill in
+    if (dataLoaded && favorites.size > 0) renderGrid();
+  } else {
+    favorites.clear();
+  }
   const h = location.hash;
   if (u && (h === "#login" || h === "#register")) { goProfile(); return; }
   if (!u && h === "#profile") { goLogin(); return; }
