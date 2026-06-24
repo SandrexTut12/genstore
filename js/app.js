@@ -1490,14 +1490,14 @@ async function logoutUser() {
 
 function toggleUserDd(e) {
   e.stopPropagation();
-  if (!currentUser) { goLogin(); return; }
-  const dd = $id("userDd");
+  const dd      = $id(currentUser ? "userDd" : "userDdGuest");
+  const other   = $id(currentUser ? "userDdGuest" : "userDd");
+  if (other) other.classList.add("hidden");
   if (dd) dd.classList.toggle("hidden");
 }
 
 function closeUserDd() {
-  const dd = $id("userDd");
-  if (dd) dd.classList.add("hidden");
+  [$id("userDd"), $id("userDdGuest")].forEach(dd => { if (dd) dd.classList.add("hidden"); });
 }
 
 document.addEventListener("click", () => closeUserDd());
