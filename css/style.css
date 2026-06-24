@@ -1268,7 +1268,9 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .prod-actions .bic { width: 18px; height: 18px; }
 }
 
-/* ===== USER BUTTON (header) ===== */
+/* ===== USER BUTTON + DROPDOWN (header) ===== */
+.user-btn-wrap { position: relative; flex-shrink: 0; }
+
 .btn-user {
   display: flex; align-items: center; justify-content: center;
   width: 34px; height: 34px; border-radius: 50%;
@@ -1284,6 +1286,24 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 .btn-user .user-avatar-img {
   width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display: block;
 }
+
+.user-dd {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 6px; min-width: 170px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14); z-index: 200;
+}
+.user-dd-item {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 9px 12px; border-radius: 8px;
+  border: none; background: none; color: var(--text);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  text-align: left; font-family: inherit;
+  transition: background .15s;
+}
+.user-dd-item:hover { background: var(--bg); }
+.user-dd-item.logout { color: var(--red, #e53e3e); }
+.user-dd-sep { height: 1px; background: var(--line); margin: 4px 0; }
 
 /* ===== HEART / FAVORITE BUTTON ===== */
 .fav-btn {

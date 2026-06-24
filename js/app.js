@@ -1488,9 +1488,19 @@ async function logoutUser() {
   goStore();
 }
 
-function onUserBtnClick() {
-  if (currentUser) goProfile(); else goLogin();
+function toggleUserDd(e) {
+  e.stopPropagation();
+  if (!currentUser) { goLogin(); return; }
+  const dd = $id("userDd");
+  if (dd) dd.classList.toggle("hidden");
 }
+
+function closeUserDd() {
+  const dd = $id("userDd");
+  if (dd) dd.classList.add("hidden");
+}
+
+document.addEventListener("click", () => closeUserDd());
 
 function updateUserHeader() {
   const btn = $id("btnUser");
@@ -1502,9 +1512,12 @@ function updateUserHeader() {
       ? `<img src="${esc(user.photoURL)}" class="user-avatar-img">`
       : `<span class="user-initials">${initials}</span>`;
     btn.classList.add("logged-in");
+    const adminBtn = $id("ddAdminBtn");
+    if (adminBtn) adminBtn.classList.toggle("hidden", user.email !== CONFIG.adminEmail);
   } else {
     btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     btn.classList.remove("logged-in");
+    closeUserDd();
   }
 }
 
