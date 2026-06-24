@@ -1511,13 +1511,18 @@ function updateUserHeader() {
   if (user) {
     const photo    = userPhoto || user.photoURL;
     const initials = (user.displayName || user.email || "U")[0].toUpperCase();
-    btn.innerHTML  = photo
-      ? `<img src="${esc(photo)}" class="user-avatar-img">`
-      : `<span class="user-initials">${initials}</span>`;
+    if (photo) {
+      btn.style.backgroundImage = `url('${photo.replace(/'/g, "\\'")}')`;
+      btn.innerHTML = "";
+    } else {
+      btn.style.backgroundImage = "";
+      btn.innerHTML = `<span class="user-initials">${initials}</span>`;
+    }
     btn.classList.add("logged-in");
     const adminBtn = $id("ddAdminBtn");
     if (adminBtn) adminBtn.classList.toggle("hidden", user.email !== CONFIG.adminEmail);
   } else {
+    btn.style.backgroundImage = "";
     btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     btn.classList.remove("logged-in");
     closeUserDd();
