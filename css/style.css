@@ -1377,9 +1377,17 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   background: var(--accent-dim, rgba(0,144,204,.15));
   color: var(--accent); font-size: 26px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+  overflow: visible; position: relative;
 }
 .prof-avatar-img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; }
+.prof-avatar-edit {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+}
+.prof-avatar-edit:hover { filter: brightness(1.15); }
 .prof-info { flex: 1; min-width: 0; }
 .prof-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .prof-email { font-size: 13px; color: var(--muted); margin-bottom: 10px; }

@@ -75,16 +75,18 @@ const db = firebase.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 let currentUser = null;
+let userPhoto   = null;
+
 firebase.auth().onAuthStateChanged(async u => {
   currentUser = u;
-  updateUserHeader();
   if (u) {
-    await loadFavorites();
-    // re-render only if user has favorites so hearts fill in
+    await loadUserData();
     if (dataLoaded && favorites.size > 0) renderGrid();
   } else {
     favorites.clear();
+    userPhoto = null;
   }
+  updateUserHeader();
   const h = location.hash;
   if (u && (h === "#login" || h === "#register")) { goProfile(); return; }
   if (!u && h === "#profile") { goLogin(); return; }
@@ -1507,9 +1509,10 @@ function updateUserHeader() {
   if (!btn) return;
   const user = currentUser;
   if (user) {
+    const photo    = userPhoto || user.photoURL;
     const initials = (user.displayName || user.email || "U")[0].toUpperCase();
-    btn.innerHTML = user.photoURL
-      ? `<img src="${esc(user.photoURL)}" class="user-avatar-img">`
+    btn.innerHTML  = photo
+      ? `<img src="${esc(photo)}" class="user-avatar-img">`
       : `<span class="user-initials">${initials}</span>`;
     btn.classList.add("logged-in");
     const adminBtn = $id("ddAdminBtn");
@@ -1521,13 +1524,38 @@ function updateUserHeader() {
   }
 }
 
-// ---- favorites ----
-async function loadFavorites() {
-  if (!currentUser) { favorites.clear(); return; }
+// ---- user data (favorites + photo) ----
+async function loadUserData() {
+  if (!currentUser) { favorites.clear(); userPhoto = null; return; }
   try {
     const doc = await db.collection("users").doc(currentUser.uid).get();
-    favorites = new Set(doc.exists ? (doc.data().favorites || []) : []);
-  } catch { favorites.clear(); }
+    const data = doc.exists ? doc.data() : {};
+    favorites = new Set(data.favorites || []);
+    userPhoto = data.photo || null;
+  } catch { favorites.clear(); userPhoto = null; }
+}
+
+async function loadFavorites() { await loadUserData(); }
+
+// ---- profile photo upload ----
+async function changeProfilePhoto() {
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "image/*";
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file || !currentUser) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const compressed = await recompressDataUrl(ev.target.result, 300, 0.82);
+      userPhoto = compressed;
+      await db.collection("users").doc(currentUser.uid).set({ photo: compressed }, { merge: true });
+      updateUserHeader();
+      const av = $id("profAvatar");
+      if (av) av.innerHTML = `<img src="${compressed}" class="prof-avatar-img">`;
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
 }
 
 async function toggleFavorite(id, e) {
@@ -1558,9 +1586,13 @@ async function renderProfile() {
   if (nameEl)   nameEl.textContent  = name;
   if (emailEl)  emailEl.textContent = email;
   if (avatarEl) {
-    avatarEl.innerHTML = user.photoURL
-      ? `<img src="${esc(user.photoURL)}" class="prof-avatar-img">`
-      : (name[0] || "U").toUpperCase();
+    const photo = userPhoto || user.photoURL;
+    avatarEl.innerHTML = (photo
+      ? `<img src="${esc(photo)}" class="prof-avatar-img">`
+      : `<span>${(name[0] || "U").toUpperCase()}</span>`) +
+      `<button class="prof-avatar-edit" onclick="changeProfilePhoto()" title="ფოტოს შეცვლა">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>`;
   }
   if (adminLink) adminLink.classList.toggle("hidden", email !== CONFIG.adminEmail);
 
