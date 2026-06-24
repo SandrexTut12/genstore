@@ -1273,7 +1273,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 
 .btn-user {
   display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 8px;
   border: 1.5px solid var(--line); background: var(--surface);
   color: var(--text); cursor: pointer; flex-shrink: 0;
   transition: border-color .18s, background .18s;
@@ -1284,7 +1284,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   font-size: 13px; font-weight: 700; color: var(--accent); line-height: 1;
 }
 .btn-user .user-avatar-img {
-  width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display: block;
+  width: 26px; height: 26px; border-radius: 6px; object-fit: cover; display: block;
 }
 
 .user-dd {
