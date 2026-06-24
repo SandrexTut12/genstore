@@ -1697,7 +1697,7 @@ async function renderProfile() {
           return `<div class="prof-order">
             <div class="prof-order-body">
               <div class="prof-order-top">
-                <div>
+                <div class="prof-order-info">
                   <div class="prof-order-laptop">${esc(o.laptop)}</div>
                   <div class="prof-order-tags">
                     <span class="svc-part-tag">${esc(o.detail || "")}</span>
