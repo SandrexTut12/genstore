@@ -1273,10 +1273,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 
 .btn-user {
   display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px; border-radius: 8px;
+  width: 34px; height: 34px; border-radius: 8px; overflow: hidden;
   border: 1.5px solid var(--line); background: var(--surface);
   color: var(--text); cursor: pointer; flex-shrink: 0;
-  transition: border-color .18s, background .18s;
+  transition: border-color .18s, background .18s; padding: 0;
 }
 .btn-user:hover { border-color: var(--accent); }
 .btn-user.logged-in { border-color: var(--accent); background: var(--accent-dim, rgba(0,144,204,.12)); }
@@ -1284,7 +1284,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   font-size: 13px; font-weight: 700; color: var(--accent); line-height: 1;
 }
 .btn-user .user-avatar-img {
-  width: 100%; height: 100%; border-radius: 6px; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0;
 }
 
 .user-dd {
