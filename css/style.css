@@ -1224,11 +1224,12 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .btn-theme,
   .btn-svc-nav,
   #topContact,
-  .btn-search-mobile {
-    width: 34px; height: 34px; padding: 0; gap: 0;
+  .btn-search-mobile,
+  .btn-user {
+    width: 34px !important; height: 34px !important; padding: 0; gap: 0;
     display: flex; align-items: center; justify-content: center;
   }
-  .btn-user { width: 34px; height: 34px; border-radius: 9px; }
+  .btn-user { border-radius: 9px; }
   .btn-svc-nav { border-radius: 10px; }
   .row2, .row3 { grid-template-columns: 1fr; }
   .grid-toggle { display: flex; }
