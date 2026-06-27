@@ -53,8 +53,6 @@ html[data-theme="dark"] .card                { border-color: #2A3C60; background
 html[data-theme="dark"] header.bar           { background: rgba(19,20,26,.95); backdrop-filter: blur(14px); }
 /* — filter bar strip — */
 html[data-theme="dark"] .cat-bar             { background: #1C1D24; border-color: #2A2C38; }
-html[data-theme="dark"] .filter-panel        { background: #1C1D24; }
-html[data-theme="dark"] .filter-panel.open   { border-color: #2A2C38; border-top-color: transparent; }
 /* — category chips — */
 html[data-theme="dark"] .chip                { border-color: #28406A; color: #8AAED0; background: rgba(20,30,56,.6); }
 html[data-theme="dark"] .chip:hover          { border-color: var(--brand); color: var(--ink); background: rgba(20,204,255,.08); }
@@ -212,8 +210,7 @@ header.bar {
   border-radius: 10px;
 }
 .cat-bar.filter-open {
-  border-radius: 10px 10px 0 0;
-  border-bottom-color: transparent;
+  border-radius: 10px;
 }
 
 .cat-bar-inner {
@@ -824,13 +821,10 @@ footer.footer-hidden { transform: translateY(100%); }
 /* ---- collapsible filter panel ---- */
 .filter-panel {
   max-width: 1180px; margin: 0 auto;
-  background: rgba(197, 211, 232, 0.4);
-  border: 1px solid transparent; border-top: none;
-  border-radius: 0 0 10px 10px;
   display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .28s ease, border-color .28s;
+  transition: grid-template-rows .28s ease;
 }
-.filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); border-top-color: transparent; }
+.filter-panel.open { grid-template-rows: 1fr; }
 .filter-panel > div { overflow: hidden; }
 .filter-panel.open > div { overflow: visible; }
 .fp-inner {
