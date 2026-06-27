@@ -553,6 +553,8 @@ html[data-theme="dark"] .imgwrap.img-loading { background: #1C2240; }
 .btn-cta-fb:hover { background: #1465d0; }
 .btn-cta-ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
 .btn-cta-ig:hover { opacity: .88; }
+.btn-cta-tt { background: #010101; color: #fff; }
+.btn-cta-tt:hover { background: #1a1a1a; }
 .btn-cta-wa { background: #25D366; color: #fff; }
 .btn-cta-wa:hover { background: #1db954; }
 
