@@ -205,7 +205,7 @@ header.bar {
 
 /* ---- category bar (always visible, below header) ---- */
 .cat-bar {
-  max-width: 1180px; margin: 0 auto;
+  width: calc(100% - 40px); max-width: 1140px; margin: 0 auto;
   background: rgba(197, 211, 232, 0.4);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -828,7 +828,7 @@ footer.footer-hidden { transform: translateY(100%); }
 
 /* ---- collapsible filter panel ---- */
 .filter-panel {
-  max-width: 1180px; margin: 0 auto;
+  width: calc(100% - 40px); max-width: 1140px; margin: 0 auto;
   display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows .28s ease;
 }
@@ -1312,17 +1312,15 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .fb-sort { margin-left: auto; flex: 0; }
   .fb-sort select { width: auto; }
   .fb-price { max-width: none; flex-basis: 100%; order: 3; }
-  /* filter bar: full-width on mobile, no rounded corners */
-  .cat-bar { border-radius: 0; border-left: none; border-right: none; border-top: none; }
-  .cat-bar.filter-open { border-radius: 0; }
-  .cat-bar-inner { gap: clamp(4px, 1.5vw, 10px); padding: 6px clamp(8px, 3vw, 20px); flex-wrap: nowrap; }
+  /* filter bar mobile: keep the same rounded box, just tighten spacing */
+  .cat-bar-inner { gap: clamp(4px, 1.5vw, 10px); padding: 6px clamp(8px, 3vw, 14px); flex-wrap: nowrap; }
   .fb-clear, .fb-toggle, .grid-toggle {
     flex-shrink: 1; min-width: 0;
     font-size: clamp(11px, 3.2vw, 13px);
     padding: clamp(5px, 1.4vw, 7px) clamp(7px, 2.2vw, 12px);
     white-space: nowrap; overflow: hidden;
   }
-  .fp-inner { border-radius: 0; border-left: none; border-right: none; padding: 10px 12px; }
+  .fp-inner { padding: 10px 12px; }
   .grid-toggle { display: flex; }
 
   /* footer mobile — only icons, pushed to the right */
