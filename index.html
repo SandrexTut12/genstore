@@ -59,7 +59,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260627s">
+  <link rel="stylesheet" href="css/style.css?v=20260628n">
 </head>
 <body>
 
@@ -153,8 +153,14 @@
     </div>
   </div>
 
+  <!-- Promo banner -->
+  <div class="store-banner">
+    <img src="assets/banner.png" alt="GenStore Banner">
+  </div>
+
+  <div class="filter-box">
   <!-- Always-visible row: grid toggle (mobile) + clear (when dirty) + filter toggle (right) -->
-  <div class="cat-bar">
+  <div class="cat-bar" id="catBar">
     <div class="cat-bar-inner">
       <button class="grid-toggle" id="gridToggle" onclick="toggleMobileGrid()"></button>
       <button class="fb-clear" id="fbClear" onclick="clearFilters()">
@@ -282,6 +288,7 @@
     </div>
     </div>
   </div>
+  </div><!-- /filter-box -->
 
   <div id="previewBanner" class="hidden" style="background:#1a2a10;border-bottom:1px solid #4ade80;padding:8px 20px;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;color:#4ade80">
     <span>&#128065; Preview — დრაფტი პროდუქტები ჩართულია</span>
@@ -926,6 +933,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260627n"></script>
+<script src="js/app.js?v=20260628m"></script>
 </body>
 </html>

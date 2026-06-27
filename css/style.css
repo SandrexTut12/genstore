@@ -2,7 +2,7 @@
   --ink:        #0F1F3D;
   --muted:      #5A7A9E;
   --line:       #C5D3E8;
-  --canvas:     #EEF2F8;
+  --canvas:     #E5ECF5;
   --surface:    #FFFFFF;
   --surface2:   #E2EAF6;
   --brand:      #0090CC;
@@ -20,7 +20,7 @@
   --text:       #0F1F3D;
   --accent:     #0090CC;
   --accent-dim: rgba(0,144,204,.15);
-  --bg:         #EEF2F8;
+  --bg:         #E5ECF5;
 }
 
 /* ---- dark theme override ---- */
@@ -53,6 +53,8 @@ html[data-theme="dark"] .card                { border-color: #2A3C60; background
 html[data-theme="dark"] header.bar           { background: rgba(19,20,26,.95); backdrop-filter: blur(14px); }
 /* — filter bar strip — */
 html[data-theme="dark"] .cat-bar             { background: #1C1D24; border-color: #2A2C38; }
+html[data-theme="dark"] .filter-panel        { background: #1C1D24; }
+html[data-theme="dark"] .filter-panel.open   { border-color: #2A2C38; border-top-color: transparent; }
 /* — category chips — */
 html[data-theme="dark"] .chip                { border-color: #28406A; color: #8AAED0; background: rgba(20,30,56,.6); }
 html[data-theme="dark"] .chip:hover          { border-color: var(--brand); color: var(--ink); background: rgba(20,204,255,.08); }
@@ -204,12 +206,18 @@ header.bar {
 
 /* ---- category bar (always visible, below header) ---- */
 .cat-bar {
+  max-width: 1180px; margin: 0 auto;
   background: rgba(197, 211, 232, 0.4);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.cat-bar.filter-open {
+  border-radius: 10px 10px 0 0;
+  border-bottom-color: transparent;
 }
 
 .cat-bar-inner {
-  max-width: 1180px; margin: 0 auto; padding: 8px 20px;
+  padding: 8px 20px;
   display: flex; align-items: center; gap: 10px;
 }
 .cat-bar-inner .fb-toggle { margin-left: auto; }
@@ -228,6 +236,8 @@ header.bar {
 /* ---- grid ---- */
 main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+.store-banner { max-width: 1180px; margin: 0 auto; padding: 16px 20px 14px; }
+.store-banner img { width: 100%; height: auto; display: block; border-radius: 12px; }
 
 .card {
   background: var(--surface); border: 1px solid #9EB3CC;
@@ -813,11 +823,14 @@ footer.footer-hidden { transform: translateY(100%); }
 
 /* ---- collapsible filter panel ---- */
 .filter-panel {
+  max-width: 1180px; margin: 0 auto;
+  background: rgba(197, 211, 232, 0.4);
+  border: 1px solid transparent; border-top: none;
+  border-radius: 0 0 10px 10px;
   display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows .28s ease, border-color .28s;
-  border-bottom: 1px solid transparent;
 }
-.filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
+.filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); border-top-color: transparent; }
 .filter-panel > div { overflow: hidden; }
 .filter-panel.open > div { overflow: visible; }
 .fp-inner {

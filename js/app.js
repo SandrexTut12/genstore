@@ -651,6 +651,8 @@ function toggleFilters() {
   const btn   = $id("fbToggle");
   const open  = panel.classList.toggle("open");
   btn.classList.toggle("active", open);
+  const catBarEl = document.querySelector(".cat-bar");
+  if (catBarEl) catBarEl.classList.toggle("filter-open", open);
   if (open) renderFpDropdowns();
   else closeAllFpDd();
 }
@@ -2313,6 +2315,8 @@ const MOON_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   localStorage.setItem("gs_theme", t);
+  const bannerImg = document.querySelector(".store-banner img");
+  if (bannerImg) bannerImg.src = t === "dark" ? "assets/banner.png" : "assets/banner-light.png";
   const svg = t === "dark" ? SUN_SVG : MOON_SVG;
   ["themeToggle", "themeToggleSvc"].forEach(id => { const b = $id(id); if (b) b.innerHTML = svg; });
 }
