@@ -1204,7 +1204,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 }
 
 @media (max-width: 720px) {
-  .bar-inner { gap: 8px; padding: 10px 14px; }
+  .bar-inner { gap: 8px; padding: 10px 16px 10px 14px; }
   .search { display: none; }
   .search-overlay-island .search { display: block; }
   .btn-search-mobile { display: flex; }
@@ -1303,6 +1303,16 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .prod-actions .blabel { display: none; }
   .prod-actions .btn { padding: 8px 4px; gap: 0; }
   .prod-actions .bic { width: 18px; height: 18px; }
+  /* admin form compact */
+  .page-admin { padding: 16px 12px 60px; }
+  .page-admin h1 { font-size: 18px; }
+  .page-admin .sub { font-size: 12px; margin-bottom: 16px; }
+  .panel { padding: 14px 12px; }
+  .panel h3 { font-size: 13px; margin-bottom: 12px; }
+  .field { margin-bottom: 10px; }
+  .field label { font-size: 11px; margin-bottom: 4px; }
+  .field input, .field select, .field textarea { padding: 7px 9px; font-size: 13px; border-radius: 8px; }
+  .field textarea { min-height: 72px; }
 }
 
 /* ===== USER BUTTON + DROPDOWN (header) ===== */
