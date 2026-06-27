@@ -830,7 +830,7 @@ footer.footer-hidden { transform: translateY(100%); }
 .filter-panel {
   width: calc(100% - 40px); max-width: 1140px; margin: 0 auto;
   display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .28s ease;
+  transition: grid-template-rows .16s ease;
 }
 .filter-panel > div { overflow: hidden; }
 .filter-panel.open { grid-template-rows: 1fr; }
