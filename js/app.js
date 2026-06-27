@@ -2331,10 +2331,6 @@ function initTheme() {
 }
 
 async function init() {
-  // Move filter-panel inside cat-bar so they render as one unified box
-  const catBarEl = document.querySelector(".cat-bar");
-  const filterPanelEl = document.querySelector(".filter-panel");
-  if (catBarEl && filterPanelEl) catBarEl.appendChild(filterPanelEl);
 
   document.addEventListener("contextmenu", e => e.preventDefault());
   // clear search on every load so Chrome doesn't restore previous value

@@ -815,12 +815,10 @@ footer.footer-hidden { transform: translateY(100%); }
 .fb-toggle.active .fb-toggle-arrow { transform: rotate(180deg); }
 .fb-toggle-arrow { transition: transform .2s; }
 
-/* ---- collapsible filter panel ---- */
-.filter-panel {
-  display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .28s ease;
-}
-.filter-panel.open { grid-template-rows: 1fr; }
+/* ---- filter panel (always visible) ---- */
+.filter-panel { display: block; }
+.filter-panel > div { overflow: visible !important; }
+.fb-toggle { display: none !important; }
 .filter-panel > div { overflow: hidden; }
 .filter-panel.open > div { overflow: visible; }
 .fp-inner {
