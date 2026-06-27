@@ -2331,20 +2331,6 @@ function initTheme() {
 }
 
 async function init() {
-  // Consolidate the filter UI into a single box: move "clear" + grid toggle into
-  // the chips row, then drop the now-empty top bar (the old "ფილტრი" toggle row).
-  (function () {
-    const ddRow = document.querySelector(".fp-dd-row");
-    if (ddRow) {
-      const gridToggle = document.getElementById("gridToggle");
-      const fbClear    = document.getElementById("fbClear");
-      if (gridToggle) ddRow.insertBefore(gridToggle, ddRow.firstChild);
-      if (fbClear)    ddRow.appendChild(fbClear);
-    }
-    const catBar = document.querySelector(".cat-bar");
-    if (catBar) catBar.remove();
-  })();
-
   document.addEventListener("contextmenu", e => e.preventDefault());
   // clear search on every load so Chrome doesn't restore previous value
   ["searchInput","searchOverlayInput"].forEach(id => { const el=$id(id); if(el) el.value=""; });
