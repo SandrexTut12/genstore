@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1F3D"/>
+      <stop offset="100%" style="stop-color:#182038"/>
+    </linearGradient>
+  </defs>
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- accent stripe -->
+  <rect x="0" y="0" width="8" height="630" fill="#0090CC"/>
+  <!-- logo text -->
+  <text x="600" y="255" font-family="Arial Black, Arial, sans-serif" font-size="112" font-weight="900" text-anchor="middle" fill="#FFFFFF" letter-spacing="-2">Gen<tspan fill="#0090CC">STORE</tspan></text>
+  <!-- tagline -->
+  <text x="600" y="335" font-family="Arial, sans-serif" font-size="32" font-weight="400" text-anchor="middle" fill="#8AAED0" letter-spacing="1">ტექნიკის ონლაინ მაღაზია</text>
+  <!-- divider -->
+  <rect x="480" y="370" width="240" height="2" rx="1" fill="#304468"/>
+  <!-- chips -->
+  <rect x="270" y="400" width="180" height="48" rx="24" fill="#0A1D36" stroke="#0090CC" stroke-width="1.5"/>
+  <text x="360" y="431" font-family="Arial, sans-serif" font-size="22" font-weight="600" text-anchor="middle" fill="#0090CC">ლეპტოპები</text>
+  <rect x="510" y="400" width="180" height="48" rx="24" fill="#0A1D36" stroke="#304468" stroke-width="1.5"/>
+  <text x="600" y="431" font-family="Arial, sans-serif" font-size="22" font-weight="600" text-anchor="middle" fill="#8AAED0">ტელეფონები</text>
+  <rect x="750" y="400" width="180" height="48" rx="24" fill="#0A1D36" stroke="#304468" stroke-width="1.5"/>
+  <text x="840" y="431" font-family="Arial, sans-serif" font-size="22" font-weight="600" text-anchor="middle" fill="#8AAED0">ტაბლეტები</text>
+  <!-- url -->
+  <text x="600" y="545" font-family="Arial, sans-serif" font-size="26" font-weight="600" text-anchor="middle" fill="#304468">genstore.ge</text>
+</svg>
