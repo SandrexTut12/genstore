@@ -1323,10 +1323,11 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .field label .lbl-ic { width: 11px; height: 11px; }
   .field input, .field select, .field textarea { padding: 7px 9px; font-size: 13px; border-radius: 8px; }
   .field textarea { min-height: 72px; }
-  /* spec split-field: 20% select / 80% input on mobile */
-  .split-field { display: grid !important; grid-template-columns: 1fr 4fr; gap: 6px; }
-  .split-field select { width: 100% !important; max-width: none !important; font-size: 13px !important; padding: 7px 6px !important; box-sizing: border-box; }
-  .split-field input  { width: 100% !important; font-size: 13px; padding: 7px 9px; box-sizing: border-box; }
+  /* spec split-field: select = auto width, input/last-select fills rest */
+  .split-field { display: flex !important; gap: 6px; }
+  .split-field select { flex: 0 0 auto !important; max-width: 120px !important; font-size: 13px !important; padding: 7px 6px !important; box-sizing: border-box; }
+  .split-field select:last-child:not(:first-child) { flex: 1 1 0 !important; max-width: none !important; }
+  .split-field input  { flex: 1 1 0 !important; min-width: 0; font-size: 13px; padding: 7px 9px; box-sizing: border-box; }
   /* all selects dark dropdown list on mobile */
   select { color-scheme: dark; }
 }
