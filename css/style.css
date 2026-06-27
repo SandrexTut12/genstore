@@ -1305,7 +1305,9 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .fb-sort { margin-left: auto; flex: 0; }
   .fb-sort select { width: auto; }
   .fb-price { max-width: none; flex-basis: 100%; order: 3; }
-  /* cat-bar: all items shrink proportionally so everything always fits one row */
+  /* cat-bar: full-width on mobile, no rounded corners */
+  .cat-bar { border-radius: 0; border-left: none; border-right: none; border-top: none; }
+  .filter-panel { border-radius: 0; border-left: none; border-right: none; }
   .cat-bar-inner { gap: clamp(4px, 1.5vw, 10px); padding: 6px clamp(8px, 3vw, 20px); flex-wrap: nowrap; }
   .fb-clear, .fb-toggle, .grid-toggle {
     flex-shrink: 1; min-width: 0;
