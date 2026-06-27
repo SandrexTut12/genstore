@@ -1327,8 +1327,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .field textarea { min-height: 72px; }
   /* spec split-field: force left select to stay compact regardless of inline styles */
   .split-field { gap: 6px; }
-  .split-field select { max-width: 110px !important; font-size: 11px !important; padding: 6px 4px !important; }
+  .split-field select { max-width: 110px !important; font-size: 11px !important; padding: 6px 4px !important; color-scheme: dark; }
   .split-field input  { font-size: 12px; padding: 7px 8px; }
+  /* all selects dark dropdown list on mobile */
+  select { color-scheme: dark; }
 }
 
 /* ===== USER BUTTON + DROPDOWN (header) ===== */
