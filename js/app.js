@@ -241,15 +241,11 @@ async function renderSvcAdminList() {
     const waNum = (o.contact || "").replace(/\D/g, "");
     const waFull = waNum.startsWith("995") ? waNum : "995" + waNum;
     return `<div class="svc-order">
-      <div class="svc-order-top">
-        <div class="svc-order-info">
-          <div class="svc-order-laptop">${esc(o.laptop)}</div>
-          <div class="svc-order-parts">
-            <span class="svc-part-tag">${esc(o.detail || (o.parts || []).join(", "))}</span>
-            ${o.install ? `<span class="svc-part-tag install">+ მონტაჟი${o.installPrice ? " — " + o.installPrice + "₾" : ""}</span>` : ""}
-          </div>
-        </div>
-        <span class="svc-status ${o.status}">${esc(SVC_STATUS[o.status] || o.status)}</span>
+      <div class="svc-order-laptop">${esc(o.laptop)}</div>
+      <div class="svc-order-parts">
+        <span class="svc-status ${o.status}" style="flex-shrink:0">${esc(SVC_STATUS[o.status] || o.status)}</span>
+        <span class="svc-part-tag">${esc(o.detail || (o.parts || []).join(", "))}</span>
+        ${o.install ? `<span class="svc-part-tag install">+ მონტაჟი${o.installPrice ? " — " + o.installPrice + "₾" : ""}</span>` : ""}
       </div>
       <div class="svc-order-meta">${esc(o.contact)} &nbsp;·&nbsp; ${date}</div>
       ${o.note ? `<div class="svc-order-note">${esc(o.note)}</div>` : ""}
