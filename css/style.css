@@ -1374,7 +1374,7 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 
 /* ===== AUTH PAGES (login / register) ===== */
 .auth-main {
-  min-height: calc(100vh - 60px); display: flex;
+  min-height: calc(100dvh - 60px); display: flex;
   align-items: center; justify-content: center;
   padding: 24px 16px;
 }
@@ -1559,7 +1559,14 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 .prof-empty { color: var(--muted); font-size: 14px; padding: 20px 0; text-align: center; }
 
 @media (max-width: 480px) {
-  .auth-box { padding: 28px 20px; }
+  .auth-main { padding: 12px 14px; align-items: center; }
+  .auth-box { padding: 22px 18px; border-radius: 14px; }
+  .auth-title { font-size: 19px; margin-bottom: 14px; }
+  .btn-google { padding: 10px 14px; font-size: 13px; }
+  .auth-or { margin: 12px 0; font-size: 12px; }
+  .auth-input { padding: 9px 12px; font-size: 13px; margin-bottom: 8px; }
+  .auth-submit { padding: 10px; font-size: 14px; }
+  .auth-switch { margin: 12px 0 0; font-size: 13px; }
   .prof-hero { padding: 18px 16px; gap: 14px; }
   .prof-avatar { width: 52px; height: 52px; font-size: 20px; }
   .prof-name { font-size: 16px; }
