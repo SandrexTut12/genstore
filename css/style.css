@@ -16,6 +16,11 @@
   --red-soft:   #FDE8EC;
   --radius:     14px;
   --shadow:     0 4px 12px rgba(0,0,0,.1), 0 16px 40px rgba(0,0,0,.08);
+  /* aliases used throughout UI */
+  --text:       #0F1F3D;
+  --accent:     #0090CC;
+  --accent-dim: rgba(0,144,204,.15);
+  --bg:         #EEF2F8;
 }
 
 /* ---- dark theme override ---- */
@@ -36,6 +41,11 @@ html[data-theme="dark"] {
   --red:        #FF6480;
   --red-soft:   #260812;
   --shadow:     0 4px 16px rgba(0,0,0,.60), 0 16px 48px rgba(0,0,0,.46);
+  /* aliases */
+  --text:       #EAF2FF;
+  --accent:     #14CCFF;
+  --accent-dim: rgba(20,204,255,.12);
+  --bg:         #13141A;
 }
 /* — cards — */
 html[data-theme="dark"] .card                { border-color: #2A3C60; background: var(--surface); }
@@ -86,6 +96,18 @@ html[data-theme="dark"] .gallery-prev,
 html[data-theme="dark"] .gallery-next        { background: rgba(19,20,26,.82); color: var(--ink); }
 html[data-theme="dark"] .previews .pv .rm    { background: rgba(10,11,18,.88); }
 html[data-theme="dark"] .previews .pv-star   { background: rgba(10,11,18,.80); color: var(--muted); }
+/* — form elements — */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea            { color-scheme: dark; }
+html[data-theme="dark"] .field input,
+html[data-theme="dark"] .field select,
+html[data-theme="dark"] .field textarea     { background: var(--surface2); color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"] .field select option,
+html[data-theme="dark"] select option       { background: var(--surface2); color: var(--ink); }
+html[data-theme="dark"] .svc-status-sel     { background: var(--surface2); color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"] .svc-price-input    { background: var(--surface2); color: var(--ink); border-color: var(--line); }
+html[data-theme="dark"] .fp-select          { background: var(--surface2); color: var(--ink); }
 
 /* ---- header icon buttons (search / theme / service) — unified ---- */
 .btn-theme,
@@ -1079,7 +1101,7 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
   margin-bottom: 10px;
 }
 .svc-order-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.svc-order-laptop { font-weight: 700; font-size: 15px; }
+.svc-order-laptop { font-weight: 700; font-size: 15px; word-break: break-all; overflow-wrap: break-word; }
 .svc-order-parts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
 .svc-part-tag {
   font-size: 12px; font-weight: 600; padding: 3px 10px;
@@ -1088,7 +1110,7 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 .svc-part-tag.install { background: var(--green-soft); color: var(--green); }
 .svc-order-meta { font-size: 13px; color: var(--muted); }
 .svc-order-note { font-size: 13px; color: var(--ink); font-style: italic; }
-.svc-order-photos { display: flex; gap: 6px; }
+.svc-order-photos { display: flex; gap: 6px; flex-wrap: wrap; }
 .svc-order-photo { width: 56px; height: 42px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--line); flex-shrink: 0; }
 .svc-photo-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .svc-photo-modal-img { max-width: min(90vw, 600px); max-height: 80vh; border-radius: 12px; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,.5); }
@@ -1300,9 +1322,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 }
 
 .user-dd {
-  position: absolute; top: calc(100% + 8px); right: 0;
+  position: absolute; top: calc(100% + 8px); right: 0; left: auto;
   background: var(--surface); border: 1px solid var(--line);
   border-radius: 12px; padding: 6px; min-width: 170px;
+  max-width: calc(100vw - 16px);
   box-shadow: 0 8px 24px rgba(0,0,0,.14); z-index: 200;
 }
 .user-dd-item {
