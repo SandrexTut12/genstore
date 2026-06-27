@@ -242,7 +242,7 @@ async function renderSvcAdminList() {
     const waFull = waNum.startsWith("995") ? waNum : "995" + waNum;
     return `<div class="svc-order">
       <div class="svc-order-top">
-        <div>
+        <div class="svc-order-info">
           <div class="svc-order-laptop">${esc(o.laptop)}</div>
           <div class="svc-order-parts">
             <span class="svc-part-tag">${esc(o.detail || (o.parts || []).join(", "))}</span>
