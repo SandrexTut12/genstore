@@ -556,6 +556,17 @@ html[data-theme="dark"] .imgwrap.img-loading { background: #1C2240; }
 .btn-cta-wa { background: #25D366; color: #fff; }
 .btn-cta-wa:hover { background: #1db954; }
 
+.btn-installment {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px 16px; margin-bottom: 10px;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff; font-size: 14px; font-weight: 700;
+  border-radius: 12px; text-decoration: none;
+  transition: opacity .18s, transform .15s;
+  letter-spacing: .01em;
+}
+.btn-installment:hover { opacity: .9; transform: translateY(-1px); }
+
 /* ---- footer ---- */
 footer {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;

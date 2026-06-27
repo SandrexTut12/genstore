@@ -1134,6 +1134,10 @@ function renderProductModal(id) {
         ${mTimer}
         ${specTable}
         ${p.desc ? `<div class="desc">${esc(p.desc)}</div>` : ""}
+        ${p.mymarket ? `<a class="btn-installment" href="${esc(p.mymarket)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          განვადება MyMarket-ით
+        </a>` : ""}
         ${p.sold ? `<div class="sold-badge-modal">გაყიდულია</div>` : `<div class="cta">${ctaFb}${ctaIg}${ctaWa}${ctaPhone}</div>`}
       </div>
     </div>
@@ -1740,8 +1744,9 @@ function resetForm() {
   $id("fPrice").value   = "";
   $id("fOld").value     = "";
   $id("fDesc").value    = "";
-  $id("fFbPost").value  = "";
-  $id("fSaleEnds").value = "";
+  $id("fFbPost").value     = "";
+  $id("fMymarket").value   = "";
+  $id("fSaleEnds").value   = "";
   $id("fHidden").checked = false;
   $id("fCPUBrand").selectedIndex = 0;
   $id("fCPUModel").value  = "";
@@ -2047,7 +2052,8 @@ async function saveProduct() {
     cond    : "used",
     specs,
     desc    : $id("fDesc").value.trim(),
-    fbPost  : $id("fFbPost").value.trim(),
+    fbPost   : $id("fFbPost").value.trim(),
+    mymarket : $id("fMymarket").value.trim(),
     saleEnds: $id("fSaleEnds").value ? new Date($id("fSaleEnds").value).getTime() : null,
     hidden  : $id("fHidden").checked,
     images  : formImgs.slice(),
@@ -2101,7 +2107,8 @@ function editProduct(id) {
   $id("fPrice").value   = p.price;
   $id("fOld").value     = p.oldPrice || "";
   $id("fDesc").value    = p.desc || "";
-  $id("fFbPost").value  = p.fbPost || "";
+  $id("fFbPost").value    = p.fbPost || "";
+  $id("fMymarket").value  = p.mymarket || "";
   $id("fHidden").checked = !!p.hidden;
   if (p.saleEnds) {
     const d = new Date(Number(p.saleEnds));
