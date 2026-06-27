@@ -1106,7 +1106,7 @@ html[data-theme="dark"] #view-service { background: var(--canvas); }
 .svc-part-tag {
   font-size: 12px; font-weight: 600; padding: 3px 10px;
   background: var(--brand-soft); color: var(--brand); border-radius: 999px;
-  word-break: break-all; overflow-wrap: break-word;
+  max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .svc-part-tag.install { background: var(--green-soft); color: var(--green); }
 .svc-order-meta { font-size: 13px; color: var(--muted); word-break: break-all; overflow-wrap: break-word; }
