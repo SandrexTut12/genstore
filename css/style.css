@@ -1323,10 +1323,10 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .field label .lbl-ic { width: 11px; height: 11px; }
   .field input, .field select, .field textarea { padding: 7px 9px; font-size: 13px; border-radius: 8px; }
   .field textarea { min-height: 72px; }
-  /* spec split-field: force left select to stay compact regardless of inline styles */
-  .split-field { gap: 6px; }
-  .split-field select { max-width: 110px !important; font-size: 11px !important; padding: 6px 4px !important; color-scheme: dark; }
-  .split-field input  { font-size: 12px; padding: 7px 8px; }
+  /* spec split-field: equal 2-column grid on mobile */
+  .split-field { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .split-field select { width: 100% !important; max-width: none !important; font-size: 11px !important; padding: 6px 5px !important; color-scheme: dark; box-sizing: border-box; }
+  .split-field input  { width: 100% !important; font-size: 12px; padding: 7px 8px; box-sizing: border-box; }
   /* all selects dark dropdown list on mobile */
   select { color-scheme: dark; }
 }
