@@ -54,6 +54,7 @@ html[data-theme="dark"] header.bar           { background: rgba(19,20,26,.95); b
 /* — filter bar strip — */
 html[data-theme="dark"] .cat-bar             { background: #1C1D24; border-color: #2A2C38; }
 html[data-theme="dark"] .filter-panel        { background: #1C1D24; }
+html[data-theme="dark"] .filter-panel.open   { border-color: #2A2C38; }
 /* — category chips — */
 html[data-theme="dark"] .chip                { border-color: #28406A; color: #8AAED0; background: rgba(20,30,56,.6); }
 html[data-theme="dark"] .chip:hover          { border-color: var(--brand); color: var(--ink); background: rgba(20,204,255,.08); }
@@ -212,7 +213,7 @@ header.bar {
 }
 .cat-bar.filter-open {
   border-radius: 10px 10px 0 0;
-  border-bottom: none;
+  border-bottom-color: transparent;
 }
 
 .cat-bar-inner {
@@ -824,10 +825,12 @@ footer.footer-hidden { transform: translateY(100%); }
 .filter-panel {
   max-width: 1180px; margin: 0 auto;
   background: rgba(197, 211, 232, 0.4);
+  border: 1px solid transparent; border-top: none;
+  border-radius: 0 0 10px 10px;
   display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .28s ease;
+  transition: grid-template-rows .28s ease, border-color .28s;
 }
-.filter-panel.open { grid-template-rows: 1fr; }
+.filter-panel.open { grid-template-rows: 1fr; border-color: var(--line); }
 .filter-panel > div { overflow: hidden; }
 .filter-panel.open > div { overflow: visible; }
 .fp-inner {
@@ -1304,7 +1307,8 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .fb-price { max-width: none; flex-basis: 100%; order: 3; }
   /* cat-bar: full-width on mobile, no rounded corners */
   .cat-bar { border-radius: 0; border-left: none; border-right: none; border-top: none; }
-  .cat-bar.filter-open { border-radius: 0; }
+  .cat-bar.filter-open { border-radius: 0; border-bottom-color: transparent; }
+  .filter-panel { border-radius: 0; border-left: none; border-right: none; }
   .cat-bar-inner { gap: clamp(4px, 1.5vw, 10px); padding: 6px clamp(8px, 3vw, 20px); flex-wrap: nowrap; }
   .fb-clear, .fb-toggle, .grid-toggle {
     flex-shrink: 1; min-width: 0;
