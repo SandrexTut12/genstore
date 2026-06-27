@@ -5,7 +5,7 @@
 const CONFIG = {
   facebook  : "https://www.facebook.com/profile.php?id=61590242855257",
   messenger : "https://m.me/1093496020521668",
-  instagram : "https://www.instagram.com/genstore856/",
+  instagram : "https://www.instagram.com/genstorege/",
   whatsapp  : "500700362",
   phone     : "",
   adminRoute: atob("I2FkbWlucGFuZWw="),
