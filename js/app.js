@@ -760,8 +760,14 @@ function renderGrid() {
   const empty = $id("empty");
 
   if (PRODUCTS.length === 0) {
-    grid.innerHTML = "";
-    empty.classList.remove("hidden");
+    if (!dataLoaded) {
+      // still fetching — show loading skeletons, not the "no products" message
+      empty.classList.add("hidden");
+      showSkeletons();
+    } else {
+      grid.innerHTML = "";
+      empty.classList.remove("hidden");
+    }
     return;
   }
   empty.classList.add("hidden");
