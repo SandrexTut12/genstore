@@ -165,6 +165,7 @@ header.bar {
 .search { flex: 1; max-width: 440px; position: relative; }
 .bar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
 .bar-right > * { height: 38px; }
+@media (max-width: 720px) { .bar-right > * { height: 34px; } }
 .bar-right .btn { padding-top: 0; padding-bottom: 0; }
 .bar-right #topContact { border: 1.5px solid var(--brand); }
 .search input {
@@ -1210,23 +1211,24 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 }
 
 @media (max-width: 720px) {
-  .bar-inner { gap: 8px; padding: 10px 16px 10px 14px; }
+  .bar-inner { gap: 6px; padding: 10px 14px; }
   .search { display: none; }
   .search-overlay-island .search { display: block; }
   .btn-search-mobile { display: flex; }
   .logo .tag { display: none; }
-  .logo .wm { font-size: 19px; }
+  .logo .wm { font-size: 17px; }
   .svc-nav-lbl { display: none; }
   .label-hide { display: none; }
-  .bar-right { gap: 6px; }
-  /* all icon buttons same 38×38 size */
+  .bar-right { gap: 5px; }
+  /* all icon buttons 34×34 on mobile */
   .btn-theme,
   .btn-svc-nav,
   #topContact,
   .btn-search-mobile {
-    width: 38px; height: 38px; padding: 0; gap: 0;
+    width: 34px; height: 34px; padding: 0; gap: 0;
     display: flex; align-items: center; justify-content: center;
   }
+  .btn-user { width: 34px; height: 34px; border-radius: 9px; }
   .btn-svc-nav { border-radius: 10px; }
   .row2, .row3 { grid-template-columns: 1fr; }
   .grid-toggle { display: flex; }
