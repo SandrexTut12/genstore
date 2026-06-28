@@ -913,16 +913,24 @@ function renderParts() {
   if (!sec || !rail) return;
   if (!PARTS.length) { sec.classList.add("hidden"); return; }
   sec.classList.remove("hidden");
-  rail.innerHTML = PARTS.map(pt => `
-    <div class="part-card">
+  rail.innerHTML = PARTS.map(pt => {
+    const models = (pt.models || "").split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+    const modelsHtml = models.length ? `
+      <div class="part-models" title="${esc(models.join(", "))}">
+        ${models.map(m => `<span class="pm-tag">${esc(m)}</span>`).join("")}
+      </div>` : "";
+    return `
+    <div class="part-card${models.length ? " has-models" : ""}"${models.length ? ' onclick="this.classList.toggle(\'expanded\')"' : ""}>
       <div class="part-img">${pt.image
         ? `<img src="${pt.image}" alt="${esc(pt.name)}" loading="lazy">`
         : `<div class="noimg">ფოტო არ არის</div>`}</div>
       <div class="part-body">
         <span class="part-name">${esc(pt.name)}</span>
         <span class="part-price">${fmtPrice(pt.price)}</span>
+        ${modelsHtml}
       </div>
-    </div>`).join("");
+    </div>`;
+  }).join("");
   updatePartsArrows();
 }
 function scrollParts(dir) {
@@ -2350,6 +2358,7 @@ async function savePart() {
     id     : editingPartId || uid(),
     name,
     price  : Number(price),
+    models : $id("ptModels").value.trim(),
     image  : partImg || existing?.image || "",
     created: existing?.created || Date.now()
   };
@@ -2365,7 +2374,7 @@ async function savePart() {
 
 function resetPartForm() {
   editingPartId = null; partImg = "";
-  ["ptName", "ptPrice", "ptPhoto"].forEach(id => { const e = $id(id); if (e) e.value = ""; });
+  ["ptName", "ptPrice", "ptModels", "ptPhoto"].forEach(id => { const e = $id(id); if (e) e.value = ""; });
   const pv = $id("ptPreview"); if (pv) pv.innerHTML = "";
   const ft = $id("partFormTitle"); if (ft) ft.textContent = "ნაწილის დამატება";
   const sb = $id("ptSaveBtn");     if (sb) sb.textContent = "დამატება";
@@ -2374,8 +2383,9 @@ function resetPartForm() {
 function editPart(id) {
   const pt = PARTS.find(x => x.id === id); if (!pt) return;
   editingPartId = id; partImg = pt.image || "";
-  $id("ptName").value  = pt.name;
-  $id("ptPrice").value = pt.price;
+  $id("ptName").value   = pt.name;
+  $id("ptPrice").value  = pt.price;
+  $id("ptModels").value = pt.models || "";
   const pv = $id("ptPreview"); if (pv) pv.innerHTML = pt.image ? `<img src="${pt.image}" alt="">` : "";
   const ft = $id("partFormTitle"); if (ft) ft.textContent = "რედაქტირება — " + pt.name;
   const sb = $id("ptSaveBtn");     if (sb) sb.textContent = "განახლება";
@@ -2401,6 +2411,7 @@ function renderPartAdminList() {
       <div class="pt-row-info">
         <span class="pt-row-name">${esc(pt.name)}</span>
         <span class="pt-row-price">${fmtPrice(pt.price)}</span>
+        ${pt.models ? `<span class="pt-row-models">${esc(pt.models)}</span>` : ""}
       </div>
       <div class="pt-row-actions">
         <button class="btn btn-ghost btn-sm" onclick="editPart('${pt.id}')">✎</button>
