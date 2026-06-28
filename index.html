@@ -61,7 +61,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260628z19">
+  <link rel="stylesheet" href="css/style.css?v=20260628z20">
 </head>
 <body>
 
@@ -443,9 +443,13 @@
   <div class="store-banner" id="partsBanner">
     <img src="assets/parts-dark.png" alt="GenStore — ლეპტოპის ნაწილები" id="partsBannerImg">
   </div>
+  <div class="parts-divider"></div>
 
   <main>
-    <div class="parts-page-head"><h1>ნაწილები</h1></div>
+    <div class="parts-page-head">
+      <h1>ნაწილები</h1>
+      <button class="grid-toggle" id="gridTogglePt" onclick="toggleMobileGrid()"></button>
+    </div>
     <div class="parts-cat-bar" id="partsCatBar">
       <button class="pcat-chip active">ყველა</button>
     </div>
@@ -1129,6 +1133,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260628z19"></script>
+<script src="js/app.js?v=20260628z20"></script>
 </body>
 </html>

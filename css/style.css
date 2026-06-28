@@ -317,7 +317,11 @@ html[data-theme="dark"] .parts-arrow { border-color: #2A3C60; }
 .parts-nav { margin-left: 12px !important; }
 
 /* ---- parts full page ---- */
-.parts-page-head { margin: 6px 0 16px; }
+#partsBanner { padding-bottom: 6px; }
+.parts-divider { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+.parts-divider::after { content: ""; display: block; border-top: 1px solid var(--line); }
+#view-parts main { padding-top: 16px; }
+.parts-page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
 .parts-page-head h1 { font-size: 26px; font-weight: 800; color: var(--ink); margin: 0; }
 .parts-cat-bar {
   display: flex; gap: 8px; flex-wrap: wrap;

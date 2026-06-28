@@ -472,19 +472,21 @@ function getPageSize() {
 }
 
 function syncGridToggleBtn() {
-  const btn  = $id("gridToggle");
-  const grid = $id("grid");
-  const is2  = mobileGrid === 2;
-  if (btn) { btn.innerHTML = is2 ? IC_GRID2 : IC_GRID1; btn.classList.toggle("active", is2); }
-  if (grid) grid.classList.toggle("grid-2col", is2);
+  const is2 = mobileGrid === 2;
+  [["gridToggle", "grid"], ["gridTogglePt", "partsGrid"]].forEach(([btnId, gridId]) => {
+    const btn = $id(btnId), grid = $id(gridId);
+    if (btn) { btn.innerHTML = is2 ? IC_GRID2 : IC_GRID1; btn.classList.toggle("active", is2); }
+    if (grid) grid.classList.toggle("grid-2col", is2);
+  });
 }
 
 function toggleMobileGrid() {
   mobileGrid = mobileGrid === 1 ? 2 : 1;
   localStorage.setItem("gs_mgrid", mobileGrid);
-  storePage = 1;
+  storePage = 1; partsPage = 1;
   syncGridToggleBtn();
   renderGrid();
+  if (typeof renderPartsPage === "function" && !$id("view-parts").classList.contains("hidden")) renderPartsPage();
 }
 
 // ============ HELPERS ============
@@ -1098,6 +1100,7 @@ function renderPartsPage() {
   grid.innerHTML = pageList.length
     ? pageList.map(partCardHTML).join("")
     : `<div class="empty" style="grid-column:1/-1"><div class="big">${emptyMsg}</div></div>`;
+  grid.classList.toggle("grid-2col", mobileGrid === 2);
   if (pager) {
     pager.innerHTML = paginationHTML(partsPage, totalPages, "setPartsPage");
     pager.style.display = list.length ? "flex" : "none";
