@@ -1017,9 +1017,9 @@ function initPartsDrag() {
   const end = () => { down = false; rail.classList.remove("dragging"); };
   rail.addEventListener("pointerup", end);
   rail.addEventListener("pointerleave", end);
-  // suppress only the model-expand toggle right after a drag — never block the order links
+  // after a drag, cancel only non-link clicks (the model-expand toggle) — order links always work
   rail.addEventListener("click", e => {
-    if (moved && e.target.closest(".part-compat")) { e.stopPropagation(); e.preventDefault(); }
+    if (moved && !e.target.closest("a, button")) { e.stopPropagation(); e.preventDefault(); }
   }, true);
 }
 
@@ -1045,11 +1045,38 @@ function setPartCat(cat) {
   renderPartsCatBar();
   renderPartsPage();
 }
+let partsSearch = "";
 function partsForCat() {
-  return activePartCat === "ყველა"
+  let list = activePartCat === "ყველა"
     ? PARTS
     : PARTS.filter(p => (p.category || "სხვა") === activePartCat);
+  const q = partsSearch.trim().toLowerCase();
+  if (q) list = list.filter(p =>
+    (p.name || "").toLowerCase().includes(q) ||
+    (p.models || "").toLowerCase().includes(q) ||
+    (p.category || "").toLowerCase().includes(q));
+  return list;
 }
+function onPartsSearch(v) {
+  partsSearch = v;
+  partsPage = 1;
+  ["partsSearchInput", "partsSearchOverlayInput"].forEach(id => { const e = $id(id); if (e && e.value !== v) e.value = v; });
+  const clr = $id("partsSearchClear"); if (clr) clr.classList.toggle("hidden", !v);
+  renderPartsPage();
+}
+function clearPartsSearch() {
+  partsSearch = "";
+  ["partsSearchInput", "partsSearchOverlayInput"].forEach(id => { const e = $id(id); if (e) e.value = ""; });
+  const clr = $id("partsSearchClear"); if (clr) clr.classList.add("hidden");
+  partsPage = 1; renderPartsPage();
+}
+function openPartsSearchOverlay() {
+  const ov = $id("partsSearchOverlay"); if (!ov) return;
+  ov.classList.remove("hidden");
+  setTimeout(() => { const i = $id("partsSearchOverlayInput"); if (i) i.focus(); }, 50);
+}
+function closePartsSearchOverlay() { const ov = $id("partsSearchOverlay"); if (ov) ov.classList.add("hidden"); }
+function onPartsSearchOverlayBg(e) { if (e.target === e.currentTarget) closePartsSearchOverlay(); }
 function renderPartsPage() {
   const grid  = $id("partsGrid");
   const pager = $id("parts-pagination");
@@ -1066,9 +1093,11 @@ function renderPartsPage() {
   if (partsPage > totalPages) partsPage = totalPages;
   if (partsPage < 1) partsPage = 1;
   const pageList = list.slice((partsPage - 1) * ps, partsPage * ps);
+  const emptyMsg = partsSearch.trim() ? "ვერაფერი მოიძებნა"
+    : activePartCat === "ყველა" ? "ნაწილები ჯერ არ არის" : "ამ კატეგორიაში ნაწილი არ არის";
   grid.innerHTML = pageList.length
     ? pageList.map(partCardHTML).join("")
-    : `<div class="empty" style="grid-column:1/-1"><div class="big">${activePartCat === "ყველა" ? "ნაწილები ჯერ არ არის" : "ამ კატეგორიაში ნაწილი არ არის"}</div></div>`;
+    : `<div class="empty" style="grid-column:1/-1"><div class="big">${emptyMsg}</div></div>`;
   if (pager) {
     pager.innerHTML = paginationHTML(partsPage, totalPages, "setPartsPage");
     pager.style.display = list.length ? "flex" : "none";
@@ -1502,7 +1531,7 @@ window.addEventListener("scroll", () => hideSpecTT(), { passive: true });
 // ──────────────────────────────────────────────────────────
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape")     { closeLightbox(); closeModal(); closeSearchOverlay(); hideSpecTT(); }
+  if (e.key === "Escape")     { closeLightbox(); closeModal(); closeSearchOverlay(); closePartsSearchOverlay(); hideSpecTT(); }
   if (e.key === "ArrowRight") { lbNav(1);  galleryNav(1); }
   if (e.key === "ArrowLeft")  { lbNav(-1); galleryNav(-1); }
 });
@@ -1645,13 +1674,13 @@ window.addEventListener("popstate", route);
 // footer: visible only at very top or very bottom, hidden in between
 // (also lifts the Messenger button above the footer while it's visible)
 (function() {
-  const footer = document.querySelector('footer');
-  const fab    = document.getElementById('messengerFab');
+  const footers = document.querySelectorAll('footer');
+  const fab     = document.getElementById('messengerFab');
   function update() {
     const y = window.scrollY;
     const maxY = document.documentElement.scrollHeight - window.innerHeight;
     const footerVisible = (y < 60 || y >= maxY - 10);
-    footer.classList.toggle('footer-hidden', !footerVisible);
+    footers.forEach(f => f.classList.toggle('footer-hidden', !footerVisible));
     if (fab) fab.classList.toggle('above-footer', footerVisible);
   }
   window.addEventListener('scroll', update, { passive: true });
@@ -2644,23 +2673,27 @@ function initTheme() {
 async function init() {
   document.addEventListener("contextmenu", e => e.preventDefault());
   // clear search on every load so Chrome doesn't restore previous value
-  ["searchInput","searchOverlayInput"].forEach(id => { const el=$id(id); if(el) el.value=""; });
+  ["searchInput","searchOverlayInput","partsSearchInput","partsSearchOverlayInput"].forEach(id => { const el=$id(id); if(el) el.value=""; });
   initTheme();
   syncGridToggleBtn();
   const yr = new Date().getFullYear();
   $id("year").textContent = yr;
   const ys = $id("yearSvc"); if (ys) ys.textContent = yr;
+  const ypt = $id("yearPt"); if (ypt) ypt.textContent = yr;
 
   const fb = getFb();
+  const ig = CONFIG.instagram || "#";
+  const wa = CONFIG.whatsapp ? "https://wa.me/995" + CONFIG.whatsapp.replace(/\D/g, "") : "#";
   $id("topContact").href = fb;
   $id("socialFb").href   = fb;
   const ptc = $id("ptContact"); if (ptc) ptc.href = fb;
   const mfab = $id("messengerFab");
   if (mfab) mfab.href = CONFIG.messenger || fb;
-  $id("socialIg").href   = CONFIG.instagram || "#";
-  $id("socialWa").href   = CONFIG.whatsapp
-    ? "https://wa.me/995" + CONFIG.whatsapp.replace(/\D/g, "")
-    : "#";
+  $id("socialIg").href   = ig;
+  $id("socialWa").href   = wa;
+  // parts page footer links
+  const setHref = (id, href) => { const e = $id(id); if (e) e.href = href; };
+  setHref("socialFbPt", fb); setHref("socialIgPt", ig); setHref("socialWaPt", wa);
 
   // show cached data instantly while Firebase loads
   const cached = getCached();
