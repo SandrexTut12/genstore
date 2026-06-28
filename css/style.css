@@ -238,6 +238,56 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .store-banner { max-width: 1180px; margin: 0 auto; padding: 16px 20px 14px; }
 .store-banner img { width: 100%; height: auto; display: block; border-radius: 12px; }
 
+/* ---- parts section (separate swipeable rail) ---- */
+.parts-section { margin-top: 44px; }
+.parts-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.parts-head h2 { font-size: 22px; font-weight: 700; color: var(--ink); margin: 0; }
+.parts-nav { display: flex; gap: 8px; margin-left: auto; }
+.parts-arrow {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.parts-arrow:hover { border-color: var(--brand); color: var(--brand); }
+.parts-rail {
+  display: flex; gap: 16px; overflow-x: auto;
+  scroll-snap-type: x mandatory; padding-bottom: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+}
+.parts-rail::-webkit-scrollbar { height: 6px; }
+.parts-rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+.part-card {
+  flex: 0 0 calc((100% - 3 * 16px) / 4); box-sizing: border-box;
+  scroll-snap-align: start;
+  background: var(--surface); border: 1px solid #9EB3CC; border-radius: 14px;
+  overflow: hidden; transition: transform .15s, box-shadow .15s;
+}
+.part-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,.10); }
+.part-img { aspect-ratio: 1 / 1; background: var(--canvas); overflow: hidden; }
+.part-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.part-img .noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
+.part-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.part-name {
+  font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.part-price { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 17px; color: var(--brand); }
+html[data-theme="dark"] .part-card  { border-color: #2A3C60; }
+html[data-theme="dark"] .parts-arrow { border-color: #2A3C60; }
+
+/* admin parts manager */
+.pt-preview { margin-top: 8px; }
+.pt-preview img { width: 90px; height: 90px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+.pt-admin-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.pt-row { display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; }
+.pt-row-img { width: 46px; height: 46px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--canvas); }
+.pt-row-img img { width: 100%; height: 100%; object-fit: cover; }
+.pt-row-info { display: flex; flex-direction: column; min-width: 0; }
+.pt-row-name { font-weight: 600; font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pt-row-price { font-weight: 700; color: var(--brand); font-size: 13px; }
+.pt-row-actions { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
+
 .card {
   background: var(--surface); border: 1px solid #9EB3CC;
   border-radius: var(--radius); overflow: hidden; cursor: pointer;
@@ -1340,6 +1390,12 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   }
   .fp-inner { padding: 10px 12px; }
   .grid-toggle { display: flex; }
+
+  /* parts rail: ~2 visible per row on mobile */
+  .parts-section { margin-top: 28px; }
+  .parts-head h2 { font-size: 18px; }
+  .parts-rail { gap: 12px; }
+  .part-card { flex: 0 0 calc((100% - 12px) / 2); }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }

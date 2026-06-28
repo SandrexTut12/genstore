@@ -161,6 +161,23 @@ async function dbSvcDelete(id) {
   catch { return false; }
 }
 
+// ============ PARTS DB ============
+let PARTS = [];
+async function dbPartsList() {
+  try {
+    const snap = await db.collection("parts").get();
+    return snap.docs.map(d => d.data()).sort((a, b) => (b.created || 0) - (a.created || 0));
+  } catch { return []; }
+}
+async function dbPartSave(part) {
+  try { await db.collection("parts").doc(part.id).set(part); return true; }
+  catch (e) { toast("შეცდომა: " + (e.message || e.code)); return false; }
+}
+async function dbPartDelete(id) {
+  try { await db.collection("parts").doc(id).delete(); return true; }
+  catch { return false; }
+}
+
 // ============ SERVICE PAGE ============
 let svcPhotos = [null, null];
 
@@ -889,6 +906,38 @@ function renderGrid() {
   }
 }
 
+// ---- parts rail (separate swipeable section) ----
+function renderParts() {
+  const sec  = $id("partsSection");
+  const rail = $id("partsRail");
+  if (!sec || !rail) return;
+  if (!PARTS.length) { sec.classList.add("hidden"); return; }
+  sec.classList.remove("hidden");
+  rail.innerHTML = PARTS.map(pt => `
+    <div class="part-card">
+      <div class="part-img">${pt.image
+        ? `<img src="${pt.image}" alt="${esc(pt.name)}" loading="lazy">`
+        : `<div class="noimg">ფოტო არ არის</div>`}</div>
+      <div class="part-body">
+        <span class="part-name">${esc(pt.name)}</span>
+        <span class="part-price">${fmtPrice(pt.price)}</span>
+      </div>
+    </div>`).join("");
+  updatePartsArrows();
+}
+function scrollParts(dir) {
+  const rail = $id("partsRail");
+  if (!rail) return;
+  rail.scrollBy({ left: dir * Math.round(rail.clientWidth * 0.85), behavior: "smooth" });
+}
+function updatePartsArrows() {
+  const rail = $id("partsRail");
+  const nav  = $id("partsPrev") && $id("partsPrev").parentElement;
+  if (!rail || !nav) return;
+  // hide the arrows entirely when everything already fits
+  nav.style.display = rail.scrollWidth > rail.clientWidth + 4 ? "flex" : "none";
+}
+
 // ---- countdown ticker (cards + modal) ----
 let countdownTimer = null;
 function startCountdowns() {
@@ -1390,6 +1439,7 @@ function route() {
       $id("admin-dash").classList.remove("hidden");
       renderAdminList();
       renderSvcAdminList();
+      renderPartAdminList();
     } else {
       $id("admin-login").classList.remove("hidden");
       $id("admin-dash").classList.add("hidden");
@@ -2276,6 +2326,89 @@ function setAdminPage(p) {
   renderAdminList();
 }
 
+// ============ PARTS (admin) ============
+let editingPartId = null;
+let partImg = "";
+
+async function onPartPhoto(files) {
+  if (!files || !files[0]) return;
+  try {
+    partImg = await compressImage(files[0], 800, 0.82);
+    const pv = $id("ptPreview");
+    if (pv) pv.innerHTML = `<img src="${partImg}" alt="">`;
+  } catch { toast("ფოტო ვერ დაიმუშავა"); }
+}
+
+async function savePart() {
+  const name  = $id("ptName").value.trim();
+  const price = $id("ptPrice").value;
+  if (!name)  { toast("შეიყვანე დასახელება"); $id("ptName").focus(); return; }
+  if (price === "" || Number(price) < 0) { toast("შეიყვანე ფასი"); $id("ptPrice").focus(); return; }
+
+  const existing = editingPartId ? PARTS.find(x => x.id === editingPartId) : null;
+  const part = {
+    id     : editingPartId || uid(),
+    name,
+    price  : Number(price),
+    image  : partImg || existing?.image || "",
+    created: existing?.created || Date.now()
+  };
+  const ok = await dbPartSave(part);
+  if (!ok) return;
+  PARTS = await dbPartsList();
+  const wasEdit = !!editingPartId;
+  resetPartForm();
+  renderParts();
+  renderPartAdminList();
+  toast(wasEdit ? "განახლდა" : "დაემატა");
+}
+
+function resetPartForm() {
+  editingPartId = null; partImg = "";
+  ["ptName", "ptPrice", "ptPhoto"].forEach(id => { const e = $id(id); if (e) e.value = ""; });
+  const pv = $id("ptPreview"); if (pv) pv.innerHTML = "";
+  const ft = $id("partFormTitle"); if (ft) ft.textContent = "ნაწილის დამატება";
+  const sb = $id("ptSaveBtn");     if (sb) sb.textContent = "დამატება";
+}
+
+function editPart(id) {
+  const pt = PARTS.find(x => x.id === id); if (!pt) return;
+  editingPartId = id; partImg = pt.image || "";
+  $id("ptName").value  = pt.name;
+  $id("ptPrice").value = pt.price;
+  const pv = $id("ptPreview"); if (pv) pv.innerHTML = pt.image ? `<img src="${pt.image}" alt="">` : "";
+  const ft = $id("partFormTitle"); if (ft) ft.textContent = "რედაქტირება — " + pt.name;
+  const sb = $id("ptSaveBtn");     if (sb) sb.textContent = "განახლება";
+  $id("ptName").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+async function deletePart(id) {
+  if (!confirm("წავშალო ეს ნაწილი?")) return;
+  await dbPartDelete(id);
+  PARTS = await dbPartsList();
+  if (editingPartId === id) resetPartForm();
+  renderParts();
+  renderPartAdminList();
+  toast("წაიშალა");
+}
+
+function renderPartAdminList() {
+  const box = $id("ptAdminList"); if (!box) return;
+  if (!PARTS.length) { box.innerHTML = `<div class="svc-empty-msg">ნაწილები ჯერ არ არის</div>`; return; }
+  box.innerHTML = PARTS.map(pt => `
+    <div class="pt-row">
+      <div class="pt-row-img">${pt.image ? `<img src="${pt.image}" alt="">` : ""}</div>
+      <div class="pt-row-info">
+        <span class="pt-row-name">${esc(pt.name)}</span>
+        <span class="pt-row-price">${fmtPrice(pt.price)}</span>
+      </div>
+      <div class="pt-row-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editPart('${pt.id}')">✎</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePart('${pt.id}')">✕</button>
+      </div>
+    </div>`).join("");
+}
+
 
 // ============ FORM BINDING ============
 function bindForm() {
@@ -2371,10 +2504,12 @@ async function init() {
     showSkeletons();
   }
 
-  // fetch settings + products in parallel
-  const [s, fresh] = await Promise.all([getSettings(), dbList()]);
+  // fetch settings + products + parts in parallel
+  const [s, fresh, parts] = await Promise.all([getSettings(), dbList(), dbPartsList()]);
   if (s.user)     storedUser = s.user;
   if (s.password) storedPass = s.password;
+  PARTS = parts;
+  renderParts();
 
   const sortedSpecs = s => Object.keys(s||{}).sort().map(k => k+"="+s[k]).join(",");
   const prodHash = arr => [...arr]

@@ -61,7 +61,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260628z9">
+  <link rel="stylesheet" href="css/style.css?v=20260628z11">
 </head>
 <body>
 
@@ -304,6 +304,22 @@
       <div class="empty-spinner"></div>
       <div class="big">იტვირთება...</div>
     </div>
+
+    <!-- Parts section (separate, swipeable rail) -->
+    <section class="parts-section hidden" id="partsSection">
+      <div class="parts-head">
+        <h2>ნაწილები</h2>
+        <div class="parts-nav">
+          <button class="parts-arrow" id="partsPrev" onclick="scrollParts(-1)" aria-label="წინა">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="parts-arrow" id="partsNext" onclick="scrollParts(1)" aria-label="შემდეგი">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="parts-rail" id="partsRail"></div>
+    </section>
   </main>
 
   <footer>
@@ -779,6 +795,31 @@
       <h3>პროდუქტები (<span id="prodCount">0</span>)</h3>
       <div class="prod-list" id="prodList"></div>
     </div>
+
+    <!-- Parts management -->
+    <div class="panel">
+      <h3 id="partFormTitle">ნაწილის დამატება</h3>
+      <div class="row2">
+        <div class="field">
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>დასახელება *</label>
+          <input id="ptName" type="text" placeholder="მაგ: RAM 8GB DDR4">
+        </div>
+        <div class="field">
+          <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ფასი (&#8382;) *</label>
+          <input id="ptPrice" type="number" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="field">
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>ფოტო</label>
+        <input id="ptPhoto" type="file" accept="image/*" onchange="onPartPhoto(this.files)">
+        <div id="ptPreview" class="pt-preview"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="ptSaveBtn" onclick="savePart()">დამატება</button>
+        <button class="btn btn-ghost" onclick="resetPartForm()">გასუფთავება</button>
+      </div>
+      <div class="pt-admin-list" id="ptAdminList"></div>
+    </div>
   </div>
 
 </div>
@@ -942,6 +983,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260628z10"></script>
+<script src="js/app.js?v=20260628z11"></script>
 </body>
 </html>
