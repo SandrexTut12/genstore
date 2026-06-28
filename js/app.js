@@ -2325,6 +2325,8 @@ function applyTheme(t) {
   localStorage.setItem("gs_theme", t);
   const bannerImg = document.querySelector(".store-banner img");
   if (bannerImg) bannerImg.src = t === "dark" ? "assets/banner.png" : "assets/banner-light.png";
+  const fav = document.getElementById("favicon");
+  if (fav) fav.href = (t === "dark" ? "assets/favicon-16x16.png" : "assets/favicon-light.png") + "?v=20260628fav";
   const svg = t === "dark" ? SUN_SVG : MOON_SVG;
   ["themeToggle", "themeToggleSvc"].forEach(id => { const b = $id(id); if (b) b.innerHTML = svg; });
 }
