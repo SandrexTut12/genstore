@@ -61,7 +61,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260628z15">
+  <link rel="stylesheet" href="css/style.css?v=20260628z16">
 </head>
 <body>
 
@@ -360,7 +360,7 @@
     <div class="bar-inner">
       <div class="logo" onclick="goStore()" style="cursor:pointer">
         <span class="wm">GEN<b>STORE</b></span>
-        <span class="tag">ნაწილები</span>
+        <span class="tag">ონლაინ მაღაზია</span>
       </div>
       <div class="bar-right">
         <button class="btn-svc-nav" onclick="goStore()" title="მაღაზია">
@@ -844,6 +844,17 @@
         </div>
       </div>
       <div class="field">
+        <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>კატეგორია</label>
+        <select id="ptCat">
+          <option>დამტენი</option>
+          <option>ეკრანი</option>
+          <option>კლავიატურა</option>
+          <option>ელემენტი</option>
+          <option>სპიკერი</option>
+          <option>სხვა</option>
+        </select>
+      </div>
+      <div class="field">
         <label><svg class="lbl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>თავსებადი მოდელები <span style="font-weight:400;color:var(--muted)">— რომელ მოდელებზე ჯდება (მძიმით გამოყავი)</span></label>
         <textarea id="ptModels" rows="2" placeholder="მაგ: 14ARE05, 14IIL05, 14ITL05, 14ALC05"></textarea>
       </div>
@@ -1021,6 +1032,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260628z15"></script>
+<script src="js/app.js?v=20260628z16"></script>
 </body>
 </html>

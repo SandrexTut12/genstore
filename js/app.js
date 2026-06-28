@@ -1024,8 +1024,32 @@ function initPartsDrag() {
 }
 
 // ---- parts full page (#parts) ----
+const PART_CATS = ["დამტენი", "ეკრანი", "კლავიატურა", "ელემენტი", "სპიკერი", "სხვა"];
 let partsPage = 1;
-function goPartsPage() { location.hash = "#parts"; }
+let activePartCat = "ყველა";
+function goPartsPage() { activePartCat = "ყველა"; location.hash = "#parts"; }
+function renderPartsCatBar() {
+  const bar = $id("partsCatBar");
+  if (!bar) return;
+  // only show categories that actually have parts (plus "ყველა")
+  const present = new Set(PARTS.map(p => p.category || "სხვა"));
+  const cats = ["ყველა", ...PART_CATS.filter(c => present.has(c))];
+  if (!cats.includes(activePartCat)) activePartCat = "ყველა";
+  bar.innerHTML = cats.map(c =>
+    `<button class="pcat-chip${c === activePartCat ? " active" : ""}" onclick="setPartCat('${c}')">${esc(c)}</button>`
+  ).join("");
+}
+function setPartCat(cat) {
+  activePartCat = cat;
+  partsPage = 1;
+  renderPartsCatBar();
+  renderPartsPage();
+}
+function partsForCat() {
+  return activePartCat === "ყველა"
+    ? PARTS
+    : PARTS.filter(p => (p.category || "სხვა") === activePartCat);
+}
 function renderPartsPage() {
   const grid  = $id("partsGrid");
   const pager = $id("parts-pagination");
@@ -1036,7 +1060,7 @@ function renderPartsPage() {
     if (pager) pager.style.display = "none";
     return;
   }
-  const list = PARTS;
+  const list = partsForCat();
   const ps = PAGE_SIZE;
   const totalPages = Math.max(1, Math.ceil(list.length / ps));
   if (partsPage > totalPages) partsPage = totalPages;
@@ -1044,7 +1068,7 @@ function renderPartsPage() {
   const pageList = list.slice((partsPage - 1) * ps, partsPage * ps);
   grid.innerHTML = pageList.length
     ? pageList.map(partCardHTML).join("")
-    : `<div class="empty" style="grid-column:1/-1"><div class="big">ნაწილები ჯერ არ არის</div></div>`;
+    : `<div class="empty" style="grid-column:1/-1"><div class="big">${activePartCat === "ყველა" ? "ნაწილები ჯერ არ არის" : "ამ კატეგორიაში ნაწილი არ არის"}</div></div>`;
   if (pager) {
     pager.innerHTML = paginationHTML(partsPage, totalPages, "setPartsPage");
     pager.style.display = list.length ? "flex" : "none";
@@ -1565,7 +1589,7 @@ function route() {
   const vp = $id("view-profile");  if (vp) vp.classList.toggle("hidden", !isProfile);
   const vpt = $id("view-parts");   if (vpt) vpt.classList.toggle("hidden", !isParts);
 
-  if (isParts) { closeModalDom(); partsPage = 1; renderPartsPage(); window.scrollTo(0, 0); return; }
+  if (isParts) { closeModalDom(); partsPage = 1; renderPartsCatBar(); renderPartsPage(); window.scrollTo(0, 0); return; }
 
   if (isService) { closeModalDom(); return; }
 
@@ -2485,12 +2509,13 @@ async function savePart() {
 
   const existing = editingPartId ? PARTS.find(x => x.id === editingPartId) : null;
   const part = {
-    id     : editingPartId || uid(),
+    id      : editingPartId || uid(),
     name,
-    price  : Number(price),
-    models : $id("ptModels").value.trim(),
-    image  : partImg || existing?.image || "",
-    created: existing?.created || Date.now()
+    price   : Number(price),
+    category: $id("ptCat").value,
+    models  : $id("ptModels").value.trim(),
+    image   : partImg || existing?.image || "",
+    created : existing?.created || Date.now()
   };
   const ok = await dbPartSave(part);
   if (!ok) return;
@@ -2505,6 +2530,7 @@ async function savePart() {
 function resetPartForm() {
   editingPartId = null; partImg = "";
   ["ptName", "ptPrice", "ptModels", "ptPhoto"].forEach(id => { const e = $id(id); if (e) e.value = ""; });
+  const pc = $id("ptCat"); if (pc) pc.selectedIndex = 0;
   const pv = $id("ptPreview"); if (pv) pv.innerHTML = "";
   const ft = $id("partFormTitle"); if (ft) ft.textContent = "ნაწილის დამატება";
   const sb = $id("ptSaveBtn");     if (sb) sb.textContent = "დამატება";
@@ -2515,6 +2541,7 @@ function editPart(id) {
   editingPartId = id; partImg = pt.image || "";
   $id("ptName").value   = pt.name;
   $id("ptPrice").value  = pt.price;
+  if ($id("ptCat")) $id("ptCat").value = pt.category || "სხვა";
   $id("ptModels").value = pt.models || "";
   const pv = $id("ptPreview"); if (pv) pv.innerHTML = pt.image ? `<img src="${pt.image}" alt="">` : "";
   const ft = $id("partFormTitle"); if (ft) ft.textContent = "რედაქტირება — " + pt.name;
