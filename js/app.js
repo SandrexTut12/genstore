@@ -906,25 +906,27 @@ function renderGrid() {
   }
 }
 
-// ---- parts: shared card + order link ----
-const MSG_ICON = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.13 2 11.22c0 2.9 1.43 5.49 3.69 7.18V22l3.37-1.85c.9.25 1.85.38 2.94.38 5.5 0 10-4.13 10-9.31C22 6.13 17.5 2 12 2zm1.01 12.53l-2.55-2.72-4.97 2.72 5.47-5.81 2.61 2.72 4.91-2.72-5.48 5.81z"/></svg>`;
+// ---- parts: shared card + order links ----
+const MSG_ICON = `<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.13 2 11.22c0 2.9 1.43 5.49 3.69 7.18V22l3.37-1.85c.9.25 1.85.38 2.94.38 5.5 0 10-4.13 10-9.31C22 6.13 17.5 2 12 2zm1.01 12.53l-2.55-2.72-4.97 2.72 5.47-5.81 2.61 2.72 4.91-2.72-5.48 5.81z"/></svg>`;
+const WA_ICON = `<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.86-2.03-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.48.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.42.25-.69.25-1.28.18-1.41-.07-.12-.27-.19-.57-.34z"/><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.76.46 3.48 1.34 5l-1.42 5.18 5.3-1.39c1.46.8 3.1 1.22 4.78 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13c-1.5 0-2.97-.4-4.25-1.16l-.3-.18-3.15.83.84-3.07-.2-.32a8.2 8.2 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24z"/></svg>`;
 
-function partOrderLink(pt) {
-  // WhatsApp prefilled with the part name if a number is set, else Messenger
-  if (CONFIG.whatsapp) {
-    const num = "995" + String(CONFIG.whatsapp).replace(/\D/g, "");
-    const txt = `გამარჯობა, მაინტერესებს ნაწილი: ${pt.name}${pt.price != null ? " — " + pt.price + "₾" : ""}`;
-    return "https://wa.me/" + num + "?text=" + encodeURIComponent(txt);
-  }
-  return CONFIG.messenger || getFb();
+function partWaLink(pt) {
+  if (!CONFIG.whatsapp) return CONFIG.messenger || getFb();
+  const num = "995" + String(CONFIG.whatsapp).replace(/\D/g, "");
+  const txt = `გამარჯობა, მაინტერესებს ნაწილი: ${pt.name}${pt.price != null ? " — " + pt.price + "₾" : ""}`;
+  return "https://wa.me/" + num + "?text=" + encodeURIComponent(txt);
 }
 
 function partCardHTML(pt) {
   const models = (pt.models || "").split(/[,\n]/).map(s => s.trim()).filter(Boolean);
   const modelsHtml = models.length ? `
-      <div class="part-models" title="${esc(models.join(", "))}">
-        ${models.map(m => `<span class="pm-tag">${esc(m)}</span>`).join("")}
+      <div class="part-compat">
+        <span class="part-compat-lbl">თავსებადია:</span>
+        <div class="part-models" title="${esc(models.join(", "))}">
+          ${models.map(m => `<span class="pm-tag">${esc(m)}</span>`).join("")}
+        </div>
       </div>` : "";
+  const msgLink = CONFIG.messenger || getFb();
   return `
     <div class="part-card${models.length ? " has-models" : ""}"${models.length ? ' onclick="this.classList.toggle(\'expanded\')"' : ""}>
       <div class="part-img">${pt.image
@@ -934,7 +936,13 @@ function partCardHTML(pt) {
         <span class="part-name">${esc(pt.name)}</span>
         <span class="part-price">${fmtPrice(pt.price)}</span>
         ${modelsHtml}
-        <a class="part-order" href="${partOrderLink(pt)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${MSG_ICON}შეკვეთა</a>
+        <div class="part-cta">
+          <span class="part-cta-lbl">შეკვეთა</span>
+          <div class="part-cta-row">
+            <a class="part-cta-btn wa"  href="${partWaLink(pt)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp-ით შეკვეთა">${WA_ICON}<span class="pcl">WhatsApp</span></a>
+            <a class="part-cta-btn msg" href="${msgLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Messenger-ით შეკვეთა">${MSG_ICON}<span class="pcl">Messenger</span></a>
+          </div>
+        </div>
       </div>
     </div>`;
 }

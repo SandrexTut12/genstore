@@ -261,22 +261,25 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .part-card {
   flex: 0 0 calc((100% - 3 * 16px) / 4); box-sizing: border-box;
   scroll-snap-align: start;
+  display: flex; flex-direction: column;
   background: var(--surface); border: 1px solid #9EB3CC; border-radius: 14px;
   overflow: hidden; transition: transform .15s, box-shadow .15s, border-color .15s;
 }
 .part-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.12); border-color: var(--brand); }
-.part-img { aspect-ratio: 1 / 1; background: var(--canvas); overflow: hidden; }
+.part-img { aspect-ratio: 1 / 1; background: var(--canvas); overflow: hidden; flex-shrink: 0; }
 .part-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .part-img .noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
-.part-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.part-body { flex: 1 1 auto; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
 .part-name {
-  font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3;
+  font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; min-height: 2.6em;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .part-price { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 17px; color: var(--brand); }
+.part-compat { margin-top: 2px; }
+.part-compat-lbl { font-size: 11px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 3px; }
 .part-models {
-  display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;
-  max-height: 50px; overflow: hidden; transition: max-height .2s ease;
+  display: flex; flex-wrap: wrap; gap: 4px;
+  max-height: 48px; overflow: hidden; transition: max-height .2s ease;
 }
 .part-card.expanded .part-models { max-height: 400px; }
 .pm-tag {
@@ -284,18 +287,24 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
   background: var(--brand-soft); color: var(--brand); border-radius: 6px; white-space: nowrap;
 }
 .part-card.has-models { cursor: pointer; }
-.part-order {
-  margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--brand); color: #fff; border-radius: 9px; padding: 8px 10px;
-  font-size: 12.5px; font-weight: 700; text-decoration: none; font-family: inherit;
-  cursor: pointer; transition: opacity .15s, transform .1s;
+/* order CTA: WhatsApp + Messenger, pinned to the bottom of every card */
+.part-cta { margin-top: auto; padding-top: 10px; }
+.part-cta-lbl { font-size: 10.5px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+.part-cta-row { display: flex; gap: 6px; }
+.part-cta-btn {
+  flex: 1 1 0; min-width: 0; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 8px 6px; border-radius: 9px; font-size: 11.5px; font-weight: 700;
+  text-decoration: none; font-family: inherit; color: #fff; white-space: nowrap;
+  transition: opacity .15s, transform .1s;
 }
-.part-order:hover  { opacity: .9; }
-.part-order:active { transform: scale(.97); }
-.part-order svg { flex-shrink: 0; }
+.part-cta-btn:hover  { opacity: .9; }
+.part-cta-btn:active { transform: scale(.97); }
+.part-cta-btn svg { flex-shrink: 0; }
+.part-cta-btn.wa  { background: #25D366; }
+.part-cta-btn.msg { background: #0084FF; }
 html[data-theme="dark"] .part-card  { border-color: #2A3C60; }
 html[data-theme="dark"] .parts-arrow { border-color: #2A3C60; }
-html[data-theme="dark"] .part-order { color: #0A1420; }
 
 /* "view all" link + nav in the rail header */
 .parts-viewall {
@@ -1443,6 +1452,9 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .parts-head h2 { font-size: 18px; }
   .parts-rail { gap: 12px; }
   .part-card { flex: 0 0 calc((100% - 12px) / 2); }
+  .part-cta-btn .pcl { display: none; }   /* icon-only buttons on mobile */
+  .part-cta-btn { padding: 9px 4px; }
+  .parts-page-head h1 { font-size: 20px; }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
