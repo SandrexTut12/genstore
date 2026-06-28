@@ -2653,8 +2653,10 @@ const MOON_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   localStorage.setItem("gs_theme", t);
-  const bannerImg = document.querySelector(".store-banner img");
+  const bannerImg = document.querySelector("#view-store .store-banner img");
   if (bannerImg) bannerImg.src = t === "dark" ? "assets/banner.png" : "assets/banner-light.png";
+  const partsBannerImg = document.getElementById("partsBannerImg");
+  if (partsBannerImg) partsBannerImg.src = t === "dark" ? "assets/parts-dark.png" : "assets/parts-light.png";
   const fav = document.getElementById("favicon");
   if (fav) fav.href = (t === "dark" ? "assets/favicon-16x16.png" : "assets/favicon-light.png") + "?v=20260628fav";
   const svg = t === "dark" ? SUN_SVG : MOON_SVG;
