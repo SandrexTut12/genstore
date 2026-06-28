@@ -906,20 +906,26 @@ function renderGrid() {
   }
 }
 
-// ---- parts rail (separate swipeable section) ----
-function renderParts() {
-  const sec  = $id("partsSection");
-  const rail = $id("partsRail");
-  if (!sec || !rail) return;
-  if (!PARTS.length) { sec.classList.add("hidden"); return; }
-  sec.classList.remove("hidden");
-  rail.innerHTML = PARTS.map(pt => {
-    const models = (pt.models || "").split(/[,\n]/).map(s => s.trim()).filter(Boolean);
-    const modelsHtml = models.length ? `
+// ---- parts: shared card + order link ----
+const MSG_ICON = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.13 2 11.22c0 2.9 1.43 5.49 3.69 7.18V22l3.37-1.85c.9.25 1.85.38 2.94.38 5.5 0 10-4.13 10-9.31C22 6.13 17.5 2 12 2zm1.01 12.53l-2.55-2.72-4.97 2.72 5.47-5.81 2.61 2.72 4.91-2.72-5.48 5.81z"/></svg>`;
+
+function partOrderLink(pt) {
+  // WhatsApp prefilled with the part name if a number is set, else Messenger
+  if (CONFIG.whatsapp) {
+    const num = "995" + String(CONFIG.whatsapp).replace(/\D/g, "");
+    const txt = `გამარჯობა, მაინტერესებს ნაწილი: ${pt.name}${pt.price != null ? " — " + pt.price + "₾" : ""}`;
+    return "https://wa.me/" + num + "?text=" + encodeURIComponent(txt);
+  }
+  return CONFIG.messenger || getFb();
+}
+
+function partCardHTML(pt) {
+  const models = (pt.models || "").split(/[,\n]/).map(s => s.trim()).filter(Boolean);
+  const modelsHtml = models.length ? `
       <div class="part-models" title="${esc(models.join(", "))}">
         ${models.map(m => `<span class="pm-tag">${esc(m)}</span>`).join("")}
       </div>` : "";
-    return `
+  return `
     <div class="part-card${models.length ? " has-models" : ""}"${models.length ? ' onclick="this.classList.toggle(\'expanded\')"' : ""}>
       <div class="part-img">${pt.image
         ? `<img src="${pt.image}" alt="${esc(pt.name)}" loading="lazy">`
@@ -928,9 +934,20 @@ function renderParts() {
         <span class="part-name">${esc(pt.name)}</span>
         <span class="part-price">${fmtPrice(pt.price)}</span>
         ${modelsHtml}
+        <a class="part-order" href="${partOrderLink(pt)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${MSG_ICON}შეკვეთა</a>
       </div>
     </div>`;
-  }).join("");
+}
+
+// ---- parts rail (homepage swipeable section) ----
+function renderParts() {
+  const sec  = $id("partsSection");
+  const rail = $id("partsRail");
+  if (!sec || !rail) return;
+  if (!PARTS.length) { sec.classList.add("hidden"); return; }
+  sec.classList.remove("hidden");
+  rail.innerHTML = PARTS.map(partCardHTML).join("");
+  initPartsDrag();
   updatePartsArrows();
 }
 function scrollParts(dir) {
@@ -944,6 +961,71 @@ function updatePartsArrows() {
   if (!rail || !nav) return;
   // hide the arrows entirely when everything already fits
   nav.style.display = rail.scrollWidth > rail.clientWidth + 4 ? "flex" : "none";
+}
+// drag-to-scroll (mouse) on the rail; suppresses the click that follows a drag
+function initPartsDrag() {
+  const rail = $id("partsRail");
+  if (!rail || rail._dragInit) return;
+  rail._dragInit = true;
+  let down = false, startX = 0, startScroll = 0, moved = false;
+  rail.addEventListener("pointerdown", e => {
+    if (e.pointerType === "touch") return;       // native touch scroll handles fingers
+    down = true; moved = false; startX = e.clientX; startScroll = rail.scrollLeft;
+    rail.classList.add("dragging");
+  });
+  rail.addEventListener("pointermove", e => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 4) moved = true;
+    rail.scrollLeft = startScroll - dx;
+  });
+  const end = () => { down = false; rail.classList.remove("dragging"); };
+  rail.addEventListener("pointerup", end);
+  rail.addEventListener("pointerleave", end);
+  rail.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+}
+
+// ---- parts full page (#parts) ----
+let partsPage = 1;
+function goPartsPage() { location.hash = "#parts"; }
+function renderPartsPage() {
+  const grid  = $id("partsGrid");
+  const pager = $id("parts-pagination");
+  if (!grid) return;
+  const list = PARTS;
+  const ps = PAGE_SIZE;
+  const totalPages = Math.max(1, Math.ceil(list.length / ps));
+  if (partsPage > totalPages) partsPage = totalPages;
+  if (partsPage < 1) partsPage = 1;
+  const pageList = list.slice((partsPage - 1) * ps, partsPage * ps);
+  grid.innerHTML = pageList.length
+    ? pageList.map(partCardHTML).join("")
+    : `<div class="empty" style="grid-column:1/-1"><div class="big">ნაწილები ჯერ არ არის</div></div>`;
+  if (pager) {
+    pager.innerHTML = paginationHTML(partsPage, totalPages, "setPartsPage");
+    pager.style.display = list.length ? "flex" : "none";
+  }
+}
+function setPartsPage(n) {
+  partsPage = n;
+  renderPartsPage();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// shared pagination markup (same look as the store)
+function paginationHTML(page, totalPages, fn) {
+  if (totalPages <= 1) return `<button class="pg-btn active">1</button>`;
+  const maxVisible = 5;
+  let start = Math.max(1, page - Math.floor(maxVisible / 2));
+  let end   = Math.min(totalPages, start + maxVisible - 1);
+  if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+  let b = "";
+  b += `<button class="pg-btn pg-arrow"${page === 1 ? " disabled" : ` onclick="${fn}(${page - 1})"`}>&#8592;</button>`;
+  if (start > 1) b += `<button class="pg-btn" onclick="${fn}(1)">1</button>${start > 2 ? '<span class="pg-dots">…</span>' : ""}`;
+  for (let i = start; i <= end; i++) b += `<button class="pg-btn${i === page ? " active" : ""}" onclick="${fn}(${i})">${i}</button>`;
+  if (end < totalPages) b += `${end < totalPages - 1 ? '<span class="pg-dots">…</span>' : ""}<button class="pg-btn" onclick="${fn}(${totalPages})">${totalPages}</button>`;
+  b += `<button class="pg-btn pg-arrow"${page === totalPages ? " disabled" : ` onclick="${fn}(${page + 1})"`}>&#8594;</button>`;
+  return b;
 }
 
 // ---- countdown ticker (cards + modal) ----
@@ -1429,13 +1511,17 @@ function route() {
   const isLogin    = h === "#login";
   const isRegister = h === "#register";
   const isProfile  = h === "#profile";
+  const isParts    = h === "#parts";
 
-  $id("view-store").classList.toggle("hidden", isAdmin || isService || isLogin || isRegister || isProfile);
+  $id("view-store").classList.toggle("hidden", isAdmin || isService || isLogin || isRegister || isProfile || isParts);
   $id("view-admin").classList.toggle("hidden", !isAdmin);
   $id("view-service").classList.toggle("hidden", !isService);
   const vl = $id("view-login");    if (vl) vl.classList.toggle("hidden", !isLogin);
   const vr = $id("view-register"); if (vr) vr.classList.toggle("hidden", !isRegister);
   const vp = $id("view-profile");  if (vp) vp.classList.toggle("hidden", !isProfile);
+  const vpt = $id("view-parts");   if (vpt) vpt.classList.toggle("hidden", !isParts);
+
+  if (isParts) { closeModalDom(); partsPage = 1; renderPartsPage(); window.scrollTo(0, 0); return; }
 
   if (isService) { closeModalDom(); return; }
 
@@ -2472,7 +2558,7 @@ function applyTheme(t) {
   const fav = document.getElementById("favicon");
   if (fav) fav.href = (t === "dark" ? "assets/favicon-16x16.png" : "assets/favicon-light.png") + "?v=20260628fav";
   const svg = t === "dark" ? SUN_SVG : MOON_SVG;
-  ["themeToggle", "themeToggleSvc"].forEach(id => { const b = $id(id); if (b) b.innerHTML = svg; });
+  ["themeToggle", "themeToggleSvc", "themeTogglePt"].forEach(id => { const b = $id(id); if (b) b.innerHTML = svg; });
 }
 
 function toggleTheme() {
@@ -2497,6 +2583,7 @@ async function init() {
   const fb = getFb();
   $id("topContact").href = fb;
   $id("socialFb").href   = fb;
+  const ptc = $id("ptContact"); if (ptc) ptc.href = fb;
   const mfab = $id("messengerFab");
   if (mfab) mfab.href = CONFIG.messenger || fb;
   $id("socialIg").href   = CONFIG.instagram || "#";
