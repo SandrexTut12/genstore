@@ -163,11 +163,20 @@ async function dbSvcDelete(id) {
 
 // ============ PARTS DB ============
 let PARTS = [];
+const PARTS_CACHE_KEY = "gs_parts";
+function getCachedParts() {
+  try { const c = localStorage.getItem(PARTS_CACHE_KEY); return c ? JSON.parse(c) : null; } catch { return null; }
+}
 async function dbPartsList() {
   try {
     const snap = await db.collection("parts").get();
-    return snap.docs.map(d => d.data()).sort((a, b) => (b.created || 0) - (a.created || 0));
-  } catch { return []; }
+    const data = snap.docs.map(d => d.data()).sort((a, b) => (b.created || 0) - (a.created || 0));
+    try { localStorage.setItem(PARTS_CACHE_KEY, JSON.stringify(data)); } catch {}
+    return data;
+  } catch {
+    const c = getCachedParts();
+    return c || [];
+  }
 }
 async function dbPartSave(part) {
   try { await db.collection("parts").doc(part.id).set(part); return true; }
@@ -920,7 +929,7 @@ function partWaLink(pt) {
 function partCardHTML(pt) {
   const models = (pt.models || "").split(/[,\n]/).map(s => s.trim()).filter(Boolean);
   const modelsHtml = models.length ? `
-      <div class="part-compat">
+      <div class="part-compat" onclick="this.closest('.part-card').classList.toggle('expanded')">
         <span class="part-compat-lbl">თავსებადია:</span>
         <div class="part-models" title="${esc(models.join(", "))}">
           ${models.map(m => `<span class="pm-tag">${esc(m)}</span>`).join("")}
@@ -928,7 +937,7 @@ function partCardHTML(pt) {
       </div>` : "";
   const msgLink = CONFIG.messenger || getFb();
   return `
-    <div class="part-card${models.length ? " has-models" : ""}"${models.length ? ' onclick="this.classList.toggle(\'expanded\')"' : ""}>
+    <div class="part-card">
       <div class="part-img">${pt.image
         ? `<img src="${pt.image}" alt="${esc(pt.name)}" loading="lazy">`
         : `<div class="noimg">ფოტო არ არის</div>`}</div>
@@ -948,6 +957,24 @@ function partCardHTML(pt) {
 }
 
 // ---- parts rail (homepage swipeable section) ----
+const partSkelHTML = `
+  <div class="part-card skel">
+    <div class="part-img skel-box"></div>
+    <div class="part-body">
+      <div class="skel-line w70"></div>
+      <div class="skel-line w40"></div>
+      <div class="skel-line w90" style="margin-top:auto"></div>
+    </div>
+  </div>`;
+function showPartsSkeleton(n = 6) {
+  const sec  = $id("partsSection");
+  const rail = $id("partsRail");
+  if (!sec || !rail) return;
+  sec.classList.remove("hidden");
+  rail.innerHTML = partSkelHTML.repeat(n);
+  const nav = $id("partsPrev") && $id("partsPrev").parentElement;
+  if (nav) nav.style.display = "none";
+}
 function renderParts() {
   const sec  = $id("partsSection");
   const rail = $id("partsRail");
@@ -990,7 +1017,10 @@ function initPartsDrag() {
   const end = () => { down = false; rail.classList.remove("dragging"); };
   rail.addEventListener("pointerup", end);
   rail.addEventListener("pointerleave", end);
-  rail.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+  // suppress only the model-expand toggle right after a drag — never block the order links
+  rail.addEventListener("click", e => {
+    if (moved && e.target.closest(".part-compat")) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
 }
 
 // ---- parts full page (#parts) ----
@@ -1000,6 +1030,12 @@ function renderPartsPage() {
   const grid  = $id("partsGrid");
   const pager = $id("parts-pagination");
   if (!grid) return;
+  // still loading and nothing cached → skeletons instead of "no parts"
+  if (!dataLoaded && !PARTS.length) {
+    grid.innerHTML = partSkelHTML.repeat(8);
+    if (pager) pager.style.display = "none";
+    return;
+  }
   const list = PARTS;
   const ps = PAGE_SIZE;
   const totalPages = Math.max(1, Math.ceil(list.length / ps));
@@ -2609,6 +2645,11 @@ async function init() {
   } else {
     showSkeletons();
   }
+
+  // parts: cached instantly, otherwise show skeleton cards so it doesn't pop in
+  const cachedParts = getCachedParts();
+  if (cachedParts) { PARTS = cachedParts; renderParts(); }
+  else showPartsSkeleton();
 
   // fetch settings + products + parts in parallel
   const [s, fresh, parts] = await Promise.all([getSettings(), dbList(), dbPartsList()]);

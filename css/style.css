@@ -252,9 +252,11 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .parts-arrow:hover { border-color: var(--brand); color: var(--brand); }
 .parts-rail {
   display: flex; gap: 16px; overflow-x: auto;
-  scroll-snap-type: x mandatory; padding-bottom: 4px;
+  scroll-snap-type: x mandatory; padding: 8px 0 14px;
   scrollbar-width: none; cursor: grab; -ms-overflow-style: none;
 }
+.part-card.skel { pointer-events: none; }
+.part-compat { cursor: pointer; }
 .parts-rail::-webkit-scrollbar { display: none; }
 .parts-rail.dragging { cursor: grabbing; scroll-snap-type: none; }
 .parts-rail.dragging .part-card { pointer-events: none; }
