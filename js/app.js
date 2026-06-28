@@ -1431,17 +1431,19 @@ window.addEventListener("hashchange", route);
 window.addEventListener("popstate", route);
 
 // footer: visible only at very top or very bottom, hidden in between
+// (also lifts the Messenger button above the footer while it's visible)
 (function() {
   const footer = document.querySelector('footer');
-  window.addEventListener('scroll', function() {
+  const fab    = document.getElementById('messengerFab');
+  function update() {
     const y = window.scrollY;
     const maxY = document.documentElement.scrollHeight - window.innerHeight;
-    if (y < 60 || y >= maxY - 10) {
-      footer.classList.remove('footer-hidden');
-    } else {
-      footer.classList.add('footer-hidden');
-    }
-  }, { passive: true });
+    const footerVisible = (y < 60 || y >= maxY - 10);
+    footer.classList.toggle('footer-hidden', !footerVisible);
+    if (fab) fab.classList.toggle('above-footer', footerVisible);
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 })();
 
 // ============ AUTH (Firebase) ============

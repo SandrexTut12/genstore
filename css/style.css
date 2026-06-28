@@ -767,8 +767,9 @@ footer.footer-hidden { transform: translateY(100%); }
   background: radial-gradient(circle at 30% 18%, #00B2FF 0%, #006AFF 42%, #A033FF 72%, #FF5E7D 100%);
   box-shadow: 0 6px 20px rgba(0,106,255,.42);
   color: #fff; cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease;
+  transition: transform .18s ease, box-shadow .18s ease, bottom .3s ease;
 }
+.messenger-fab.above-footer { bottom: 72px; }
 .messenger-fab svg { width: 32px; height: 32px; }
 .messenger-fab:hover { transform: scale(1.08); box-shadow: 0 8px 26px rgba(0,106,255,.55); }
 .messenger-fab:active { transform: scale(.96); }
