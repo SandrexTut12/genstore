@@ -759,6 +759,29 @@ footer.footer-hidden { transform: translateY(100%); }
 }
 .toast.show { opacity: 1; bottom: 32px; }
 
+/* ---- floating Messenger button ---- */
+.messenger-fab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 55;
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 18%, #00B2FF 0%, #006AFF 42%, #A033FF 72%, #FF5E7D 100%);
+  box-shadow: 0 6px 20px rgba(0,106,255,.42);
+  color: #fff; cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.messenger-fab svg { width: 32px; height: 32px; }
+.messenger-fab:hover { transform: scale(1.08); box-shadow: 0 8px 26px rgba(0,106,255,.55); }
+.messenger-fab:active { transform: scale(.96); }
+/* web (desktop) gets a distinct solid Messenger blue */
+@media (min-width: 721px) {
+  .messenger-fab {
+    width: 60px; height: 60px;
+    background: #0084FF;
+    box-shadow: 0 6px 22px rgba(0,132,255,.45);
+  }
+  .messenger-fab:hover { box-shadow: 0 10px 28px rgba(0,132,255,.6); }
+}
+
 /* ---- footer social ---- */
 .foot-social {
   display: flex; align-items: center; gap: 6px;

@@ -2349,6 +2349,8 @@ async function init() {
   const fb = getFb();
   $id("topContact").href = fb;
   $id("socialFb").href   = fb;
+  const mfab = $id("messengerFab");
+  if (mfab) mfab.href = CONFIG.messenger || fb;
   $id("socialIg").href   = CONFIG.instagram || "#";
   $id("socialWa").href   = CONFIG.whatsapp
     ? "https://wa.me/995" + CONFIG.whatsapp.replace(/\D/g, "")
