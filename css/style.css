@@ -1223,12 +1223,6 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 .btn-so-close:hover { border-color: var(--red); color: var(--red); }
 
 /* ---- responsive ---- */
-/* desktop: filter row stays on one line, buttons shrink proportionally */
-@media (min-width: 721px) {
-  .fp-dd-row { flex-wrap: nowrap; }
-  .fp-dd { flex-shrink: 1; min-width: 0; }
-  .fp-dd-btn { overflow: hidden; }
-}
 
 @media (max-width: 720px) {
   .bar-inner { gap: 6px; padding: 10px 14px; }
