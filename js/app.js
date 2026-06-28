@@ -946,10 +946,10 @@ function partCardHTML(pt) {
         <span class="part-price">${fmtPrice(pt.price)}</span>
         ${modelsHtml}
         <div class="part-cta">
-          <span class="part-cta-lbl">შეკვეთა</span>
+          <span class="part-cta-lbl">ყიდვა</span>
           <div class="part-cta-row">
-            <a class="part-cta-btn wa"  href="${partWaLink(pt)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp-ით შეკვეთა">${WA_ICON}<span class="pcl">WhatsApp</span></a>
-            <a class="part-cta-btn msg" href="${msgLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Messenger-ით შეკვეთა">${MSG_ICON}<span class="pcl">Messenger</span></a>
+            <a class="part-cta-btn wa"  href="${partWaLink(pt)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp-ით ყიდვა">${WA_ICON}<span class="pcl">WhatsApp</span></a>
+            <a class="part-cta-btn msg" href="${msgLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Messenger-ით ყიდვა">${MSG_ICON}<span class="pcl">Messenger</span></a>
           </div>
         </div>
       </div>
@@ -1770,41 +1770,44 @@ async function logoutUser() {
 
 function toggleUserDd(e) {
   e.stopPropagation();
-  const dd      = $id(currentUser ? "userDd" : "userDdGuest");
-  const other   = $id(currentUser ? "userDdGuest" : "userDd");
-  if (other) other.classList.add("hidden");
-  if (dd) dd.classList.toggle("hidden");
+  const wrap = e.currentTarget.closest(".user-btn-wrap");
+  if (!wrap) return;
+  const dd    = wrap.querySelector(currentUser ? ".user-dd-auth" : ".user-dd-guest");
+  const willOpen = dd && dd.classList.contains("hidden");
+  closeUserDd();                      // close every dropdown first
+  if (willOpen) dd.classList.remove("hidden");
 }
 
 function closeUserDd() {
-  [$id("userDd"), $id("userDdGuest")].forEach(dd => { if (dd) dd.classList.add("hidden"); });
+  document.querySelectorAll(".user-dd").forEach(dd => dd.classList.add("hidden"));
 }
 
 document.addEventListener("click", () => closeUserDd());
 
 function updateUserHeader() {
-  const btn = $id("btnUser");
-  if (!btn) return;
   const user = currentUser;
-  if (user) {
-    const photo    = userPhoto || user.photoURL;
-    const initials = (user.displayName || user.email || "U")[0].toUpperCase();
-    if (photo) {
-      btn.style.backgroundImage = `url('${photo.replace(/'/g, "\\'")}')`;
-      btn.innerHTML = "";
+  const userSvg = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  document.querySelectorAll(".btn-user").forEach(btn => {
+    if (user) {
+      const photo    = userPhoto || user.photoURL;
+      const initials = (user.displayName || user.email || "U")[0].toUpperCase();
+      if (photo) {
+        btn.style.backgroundImage = `url('${photo.replace(/'/g, "\\'")}')`;
+        btn.innerHTML = "";
+      } else {
+        btn.style.backgroundImage = "";
+        btn.innerHTML = `<span class="user-initials">${initials}</span>`;
+      }
+      btn.classList.add("logged-in");
     } else {
       btn.style.backgroundImage = "";
-      btn.innerHTML = `<span class="user-initials">${initials}</span>`;
+      btn.innerHTML = userSvg;
+      btn.classList.remove("logged-in");
     }
-    btn.classList.add("logged-in");
-    const adminBtn = $id("ddAdminBtn");
-    if (adminBtn) adminBtn.classList.toggle("hidden", user.email !== CONFIG.adminEmail);
-  } else {
-    btn.style.backgroundImage = "";
-    btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-    btn.classList.remove("logged-in");
-    closeUserDd();
-  }
+  });
+  document.querySelectorAll(".dd-admin-btn").forEach(ab =>
+    ab.classList.toggle("hidden", !user || user.email !== CONFIG.adminEmail));
+  if (!user) closeUserDd();
 }
 
 // ---- user data (favorites + photo) ----
