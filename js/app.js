@@ -2384,7 +2384,10 @@ async function saveProduct() {
     if (!ok) return;
 
     formImgs = p.images.slice();
-    PRODUCTS = await dbList();
+    // update locally instead of re-downloading every product (images make that slow)
+    const _i = PRODUCTS.findIndex(x => x.id === p.id);
+    if (_i >= 0) PRODUCTS[_i] = p; else PRODUCTS.unshift(p);
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(PRODUCTS)); } catch {}
     if (isNew) adminPage = 1;
     resetForm();
     updatePriceBounds();
@@ -2469,7 +2472,7 @@ async function toggleSold(id) {
   p.sold   = !p.sold;
   p.soldAt = p.sold ? Date.now() : null;
   await dbSave(p);
-  PRODUCTS = await dbList();
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(PRODUCTS)); } catch {}
   updatePriceBounds();
   renderAdminList();
   renderGrid();
@@ -2483,7 +2486,7 @@ async function toggleHidden(id) {
   if (!confirm(msg)) return;
   p.hidden = !p.hidden;
   await dbSave(p);
-  PRODUCTS = await dbList();
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(PRODUCTS)); } catch {}
   updatePriceBounds();
   renderAdminList();
   renderGrid();
@@ -2496,7 +2499,8 @@ async function deleteProduct(id) {
   const name = p ? p.title : "";
   if (!confirm("წავშალო „" + name + "“?")) return;
   await dbRemove(id);
-  PRODUCTS = await dbList();
+  PRODUCTS = PRODUCTS.filter(x => x.id !== id);
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(PRODUCTS)); } catch {}
   if (editingId === id) resetForm();
   updatePriceBounds();
   renderAdminList();
