@@ -77,6 +77,8 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 let currentUser = null;
 let userPhoto   = null;
+let userRole    = null;   // "admin" | "moderator" | null
+let userRoleLoaded = false;
 
 firebase.auth().onAuthStateChanged(async u => {
   currentUser = u;
@@ -91,6 +93,8 @@ firebase.auth().onAuthStateChanged(async u => {
   const h = location.hash;
   if (u && (h === "#login" || h === "#register")) { goProfile(); return; }
   if (!u && h === "#profile") { goLogin(); return; }
+  // role is now known → refresh the admin view if we're on it
+  if (h === CONFIG.adminRoute && typeof route === "function") route();
 });
 
 // ============ STORAGE ============
@@ -1628,12 +1632,26 @@ function route() {
   if (isAdmin) {
     closeModalDom();
     const user = firebase.auth().currentUser;
-    if (user) {
+    if (user && canAdmin()) {
       $id("admin-login").classList.add("hidden");
       $id("admin-dash").classList.remove("hidden");
+      applyAdminRoleView();
       renderAdminList();
-      renderSvcAdminList();
-      renderPartAdminList();
+      if (isMainAdmin()) {
+        renderSvcAdminList();
+        renderPartAdminList();
+        renderUsersAdmin();
+      }
+    } else if (user && !userRoleLoaded) {
+      // role still loading — wait for it, then re-route (don't bounce yet)
+      $id("admin-dash").classList.add("hidden");
+      $id("admin-login").classList.add("hidden");
+      loadUserData().then(() => { updateUserHeader(); route(); });
+    } else if (user) {
+      // logged in but not privileged → bounce to store
+      $id("admin-dash").classList.add("hidden");
+      $id("admin-login").classList.add("hidden");
+      goStore();
     } else {
       $id("admin-login").classList.remove("hidden");
       $id("admin-dash").classList.add("hidden");
@@ -1759,9 +1777,10 @@ async function signInGoogle() {
   }
 }
 
-function afterUserLogin() {
-  const user = firebase.auth().currentUser;
-  if (user && user.email === CONFIG.adminEmail) goAdmin();
+async function afterUserLogin() {
+  await loadUserData();      // make sure the role is known before deciding where to go
+  updateUserHeader();
+  if (canAdmin()) goAdmin();
   else goProfile();
 }
 
@@ -1809,20 +1828,35 @@ function updateUserHeader() {
     }
   });
   document.querySelectorAll(".dd-admin-btn").forEach(ab =>
-    ab.classList.toggle("hidden", !user || user.email !== CONFIG.adminEmail));
+    ab.classList.toggle("hidden", !canAdmin()));
   if (!user) closeUserDd();
 }
 
-// ---- user data (favorites + photo) ----
+// ---- user data (favorites + photo + role) ----
 async function loadUserData() {
-  if (!currentUser) { favorites.clear(); userPhoto = null; return; }
+  if (!currentUser) { favorites.clear(); userPhoto = null; userRole = null; userRoleLoaded = false; return; }
   try {
     const doc = await db.collection("users").doc(currentUser.uid).get();
     const data = doc.exists ? doc.data() : {};
     favorites = new Set(data.favorites || []);
     userPhoto = data.photo || null;
-  } catch { favorites.clear(); userPhoto = null; }
+    userRole  = currentUser.email === CONFIG.adminEmail ? "admin"
+              : (data.role === "moderator" ? "moderator" : null);
+    // make sure the user is registered in the directory (so admin can grant roles)
+    if (!doc.exists || !data.email) {
+      db.collection("users").doc(currentUser.uid).set(
+        { name: data.name || currentUser.displayName || "", email: currentUser.email || "", created: data.created || Date.now() },
+        { merge: true }
+      ).catch(() => {});
+    }
+  } catch { favorites.clear(); userPhoto = null; userRole = currentUser.email === CONFIG.adminEmail ? "admin" : null; }
+  userRoleLoaded = true;
 }
+
+// role helpers
+function isMainAdmin() { return userRole === "admin"; }
+function isModerator() { return userRole === "moderator"; }
+function canAdmin()    { return userRole === "admin" || userRole === "moderator"; }
 
 async function loadFavorites() { await loadUserData(); }
 
@@ -1883,7 +1917,7 @@ async function renderProfile() {
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       </button>`;
   }
-  if (adminLink) adminLink.classList.toggle("hidden", email !== CONFIG.adminEmail);
+  if (adminLink) adminLink.classList.toggle("hidden", !canAdmin());
 
   // Favorites
   await loadFavorites();
@@ -2319,7 +2353,16 @@ async function saveProduct() {
     created : existing?.created || Date.now(),
     sold    : existing?.sold    || false,
     soldAt  : existing?.soldAt  || null,
+    owner     : existing?.owner     || (currentUser ? currentUser.uid : null),
+    ownerName : existing?.ownerName || (currentUser ? (currentUser.displayName || currentUser.email) : ""),
+    ownerEmail: existing?.ownerEmail|| (currentUser ? currentUser.email : ""),
   };
+
+  // moderators may only edit their own products
+  if (editingId && isModerator() && existing && existing.owner && existing.owner !== currentUser.uid) {
+    toast("ამ პროდუქტის რედაქტირება არ შეგიძლია");
+    return;
+  }
 
   const isNew = !editingId;
 
@@ -2355,9 +2398,14 @@ async function saveProduct() {
   }
 }
 
+function canEditProduct(p) {
+  return isMainAdmin() || (isModerator() && currentUser && p && p.owner === currentUser.uid);
+}
+
 function editProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
+  if (!canEditProduct(p)) { toast("ამ პროდუქტზე წვდომა არ გაქვს"); return; }
   editingId = id;
   const s = p.specs || {};
   $id("formTitle").textContent = "რედაქტირება — " + p.title;
@@ -2444,6 +2492,7 @@ async function toggleHidden(id) {
 
 async function deleteProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
+  if (!canEditProduct(p)) { toast("ამ პროდუქტზე წვდომა არ გაქვს"); return; }
   const name = p ? p.title : "";
   if (!confirm("წავშალო „" + name + "“?")) return;
   await dbRemove(id);
@@ -2457,8 +2506,11 @@ async function deleteProduct(id) {
 }
 
 function renderAdminList() {
-  $id("prodCount").textContent = PRODUCTS.length;
-  const list = PRODUCTS.slice().sort((a, b) => {
+  // moderators only see (and manage) their own products
+  let base = PRODUCTS;
+  if (isModerator() && currentUser) base = PRODUCTS.filter(p => p.owner === currentUser.uid);
+  $id("prodCount").textContent = base.length;
+  const list = base.slice().sort((a, b) => {
     if (!!a.sold !== !!b.sold) return a.sold ? 1 : -1;
     return (b.created || 0) - (a.created || 0);
   });
@@ -2487,11 +2539,14 @@ function renderAdminList() {
     const adminSaleOn = !p.saleEnds || saleActive(p);
     const adminDisplayPrice = (!adminSaleOn && p.oldPrice) ? p.oldPrice : p.price;
     const icHide = `<svg class="bic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+    const ownerTag = isMainAdmin()
+      ? `<span class="row-owner-tag">${esc(p.ownerName || (p.ownerEmail || "ადმინი"))}</span> `
+      : "";
     return `<div class="prod-row${p.sold ? " prod-sold" : ""}${p.hidden ? " prod-hidden" : ""}">
   ${imgEl}
   <div class="prod-body">
     <div class="prod-meta">
-      <div class="m">${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 && adminSaleOn ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(adminDisplayPrice)}</span></div>
+      <div class="m">${ownerTag}${p.sold ? '<span class="row-sold-tag">გაყიდულია</span> ' : ''}${p.hidden ? '<span class="row-draft-tag">დამალული</span> ' : ''}${dpct > 0 && adminSaleOn ? `<span class="row-disc-tag">-${dpct}%</span> ` : ''}${esc(p.cat)} · <span class="row-price">${fmtPrice(adminDisplayPrice)}</span></div>
       <div class="t">${esc(p.title)}</div>
     </div>
     <div class="prod-actions">
@@ -2517,10 +2572,63 @@ function renderAdminList() {
 }
 
 function setAdminPage(p) {
-  const total = Math.ceil(PRODUCTS.length / PAGE_SIZE);
+  const count = (isModerator() && currentUser) ? PRODUCTS.filter(x => x.owner === currentUser.uid).length : PRODUCTS.length;
+  const total = Math.ceil(count / PAGE_SIZE);
   if (p < 1 || p > total) return;
   adminPage = p;
   renderAdminList();
+}
+
+// ============ ROLES / MODERATORS (admin) ============
+// hide admin-only panels when a moderator opens the dashboard
+function applyAdminRoleView() {
+  const dash = $id("admin-dash");
+  if (!dash) return;
+  const mod = isModerator();
+  dash.classList.toggle("mod-view", mod);
+  const sub = dash.querySelector(".sub");
+  if (sub) sub.textContent = mod
+    ? "დაამატე და დაარედაქტირე შენი პროდუქტები."
+    : "დაამატე, დაარედაქტირე ან წაშალე პროდუქტები.";
+}
+
+async function dbUsersList() {
+  try {
+    const snap = await db.collection("users").get();
+    return snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+  } catch { return []; }
+}
+
+async function renderUsersAdmin() {
+  const box = $id("usersAdminList");
+  if (!box) return;
+  box.innerHTML = `<div class="svc-empty-msg">იტვირთება...</div>`;
+  const users = (await dbUsersList())
+    .filter(u => u.email !== CONFIG.adminEmail)
+    .sort((a, b) => (b.role === "moderator" ? 1 : 0) - (a.role === "moderator" ? 1 : 0));
+  if (!users.length) { box.innerHTML = `<div class="svc-empty-msg">მომხმარებლები არ არის</div>`; return; }
+  box.innerHTML = users.map(u => {
+    const isMod = u.role === "moderator";
+    const count = PRODUCTS.filter(p => p.owner === u.uid).length;
+    return `<div class="user-row">
+      <div class="user-row-info">
+        <span class="user-row-name">${esc(u.name || u.email || u.uid)}${isMod ? ' <span class="mod-badge">მოდერატორი</span>' : ''}</span>
+        <span class="user-row-email">${esc(u.email || "")}${isMod ? ` · ${count} პროდუქტი` : ""}</span>
+      </div>
+      <button class="btn btn-sm ${isMod ? "btn-danger" : "btn-primary"}" onclick="toggleModerator('${u.uid}', ${isMod ? "false" : "true"})">
+        ${isMod ? "მოხსნა" : "მოდერატორად დანიშვნა"}
+      </button>
+    </div>`;
+  }).join("");
+}
+
+async function toggleModerator(uid, makeMod) {
+  if (!isMainAdmin()) return;
+  try {
+    await db.collection("users").doc(uid).set({ role: makeMod ? "moderator" : "" }, { merge: true });
+    toast(makeMod ? "მოდერატორად დაინიშნა ✓" : "მოდერატორი მოიხსნა");
+    renderUsersAdmin();
+  } catch (e) { toast("შეცდომა: " + (e.message || e.code)); }
 }
 
 // ============ PARTS (admin) ============

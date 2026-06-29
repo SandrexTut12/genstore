@@ -61,7 +61,7 @@
     html{background:#EEF2F8}
     html[data-theme="dark"]{background:#13141A}
   </style>
-  <link rel="stylesheet" href="css/style.css?v=20260628z21">
+  <link rel="stylesheet" href="css/style.css?v=20260629a">
 </head>
 <body>
 
@@ -932,7 +932,7 @@
     </div>
 
     <!-- Parts management -->
-    <div class="panel">
+    <div class="panel" id="partsAdminPanel">
       <h3 id="partFormTitle">ნაწილის დამატება</h3>
       <div class="row2">
         <div class="field">
@@ -969,6 +969,15 @@
         <button class="btn btn-ghost" onclick="resetPartForm()">გასუფთავება</button>
       </div>
       <div class="pt-admin-list" id="ptAdminList"></div>
+    </div>
+
+    <!-- Users / moderators (admin only) -->
+    <div class="panel" id="usersAdminPanel">
+      <div class="svc-admin-hdr">
+        <span>მომხმარებლები და მოდერატორები</span>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="renderUsersAdmin()">↻</button>
+      </div>
+      <div class="users-admin-list" id="usersAdminList"><div class="svc-empty-msg">იტვირთება...</div></div>
     </div>
   </div>
 
@@ -1133,6 +1142,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="js/app.js?v=20260628z20"></script>
+<script src="js/app.js?v=20260629a"></script>
 </body>
 </html>
