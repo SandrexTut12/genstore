@@ -273,19 +273,19 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 .part-img .noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
 .part-body { flex: 1 1 auto; padding: 11px 13px 12px; display: flex; flex-direction: column; gap: 4px; }
 .part-name {
-  font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; min-height: 2.6em;
+  font-size: 12.5px; font-weight: 600; color: var(--ink); line-height: 1.3; min-height: 2.5em;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.part-price { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 17px; color: var(--brand); }
+.part-price { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 14.5px; color: var(--brand); }
 .part-compat { margin-top: 2px; }
-.part-compat-lbl { font-size: 11px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 3px; }
+.part-compat-lbl { font-size: 10px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 3px; }
 .part-models {
   display: flex; flex-wrap: wrap; gap: 4px;
   max-height: 48px; overflow: hidden; transition: max-height .2s ease;
 }
 .part-card.expanded .part-models { max-height: 400px; }
 .pm-tag {
-  font-size: 10.5px; font-weight: 600; padding: 2px 7px;
+  font-size: 9.5px; font-weight: 600; padding: 2px 6px;
   background: var(--brand-soft); color: var(--brand); border-radius: 6px; white-space: nowrap;
 }
 .part-card.has-models { cursor: pointer; }
@@ -328,8 +328,8 @@ html[data-theme="dark"] .parts-arrow { border-color: #2A3C60; }
   margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line);
 }
 .pcat-chip {
-  padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line);
-  background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600;
+  padding: 6px 13px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); font-size: 12px; font-weight: 600;
   cursor: pointer; font-family: inherit; transition: .15s;
 }
 .pcat-chip:hover { border-color: var(--brand); color: var(--brand); }
@@ -1361,7 +1361,9 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
 /* ---- responsive ---- */
 
 @media (max-width: 720px) {
-  .bar-inner { gap: 6px; padding: 10px 14px; }
+  .bar-inner { gap: 6px; padding: 10px 16px; }
+  .bar-right { margin-right: 4px; }
+  .messenger-fab { display: none; }   /* hide floating Messenger on mobile (both pages) */
   .search { display: none; }
   .search-overlay-island .search { display: block; }
   .btn-search-mobile { display: flex; }
@@ -1462,6 +1464,8 @@ html[data-theme="dark"] .search-overlay-island { box-shadow: 0 12px 40px rgba(0,
   .part-cta-btn .pcl { display: none; }   /* icon-only buttons on mobile */
   .part-cta-btn { padding: 9px 4px; }
   .parts-page-head h1 { font-size: 20px; }
+  .pcat-chip { padding: 5px 12px; font-size: 11.5px; }
+  .parts-cat-bar { gap: 6px; margin-bottom: 18px; padding-bottom: 14px; }
 
   /* footer mobile — only icons, pushed to the right */
   .foot { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; font-size: 12px; }
